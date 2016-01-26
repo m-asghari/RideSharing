@@ -1,0 +1,97 @@
+\documentclass[]{vldb}
+\usepackage{graphicx}
+\usepackage{times}
+%\usepackage[T1]{fontenc} 
+%\usepackage{tgtermes} 
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{epsfig}
+%\usepackage{microtype}
+%\usepackage[iso]{umlaute}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{bbm}
+\usepackage{subfigure}
+\usepackage{ifthen}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{color}
+%\usepackage{marginnote}
+\usepackage{algorithmic}
+\usepackage{paralist}
+\usepackage{tabularx}
+\usepackage[justification=centering]{caption}
+\usepackage[capitalise]{cleveref}
+
+\newcommand{\DB}{\ensuremath{\mathcal{D}}}
+\newcommand{\db}{\ensuremath{\mathcal{D}}} %the database
+\newcommand{\NN}{\ensuremath{\mathbb{N}}}
+\newcommand{\RR}{\ensuremath{\mathbb{R}}}
+\newcommand{\statevec}{\ensuremath{\vec{s}} }
+\newcommand{\query}{\ensuremath{q} } %the query object
+\newcommand{\loc}{\ensuremath{x} } %a single location
+\newcommand{\sd}{\ensuremath{\mathcal{S}}} %spatial domain
+\newcommand{\td}{\ensuremath{\mathcal{T}}} %time domain
+\newcommand{\tint}{\ensuremath{t} }
+\newcommand{\dbobj}{\ensuremath{o} }
+\newcommand{\vardbobj}{\ensuremath{g}}
+\newcommand{\vart}{\ensuremath{h}}
+\newcommand{\tm}{\ensuremath{M}} %transitionmatrix
+\newcommand{\probm}{\ensuremath{J}}
+\newcommand{\pw}{\ensuremath{\bullet}} %piecewise multiplication
+\newcommand{\mm}{\ensuremath{\cdot}} %matrix multiplication
+\newcommand{\tpoint}[1]{\ensuremath{\mathbb{#1}} }
+\newcommand{\plusequal}{\ensuremath{{ + \atop =}}}
+\newcommand{\obs}{\ensuremath{ob}}
+\newcommand{\CP}[1]{{\color{red}#1}}
+\newcommand{\TODO}[1]{{\bfseries\color{red}TODO: #1}}
+
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{example}{Example}
+
+\graphicspath{.}
+\newboolean{TR}
+\setboolean{TR}{true}
+\renewcommand{\textfraction}{0.00}
+\renewcommand{\topfraction}{1.0}
+\renewcommand{\bottomfraction}{1.0}
+\setcounter{totalnumber}{100}
+\setcounter{bottomnumber}{100}
+\setcounter{topnumber}{100}
+
+\title{RideSharing}
+
+\author{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\input{sec_introduction}
+\input{sec_problemdef}
+\input{sec_overview}
+\input{sec_optimization}
+\input{sec_experiments}
+\input{sec_related}
+\input{sec_conclusion}
+
+\vspace{-0.1in}
+\section*{Acknowledgement}
+
+\begin{scriptsize}
+%\begin{footnotesize}
+\bibliographystyle{IEEEtran}
+\bibliography{roadnetworks}
+%\end{footnotesize}
+\end{scriptsize}
+
+\end{document}
