@@ -1,0 +1,106 @@
+\documentclass[]{vldb}
+
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\graphicspath{.}
+
+\usepackage{appendix}
+
+% use this package if you need more space
+\usepackage{times}
+
+\usepackage{relsize}
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage{paralist}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{ifthen}
+
+% Math
+\usepackage{amsmath}
+\usepackage{mathtools}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% Theorem, Lemma, etc.
+\usepackage[capitalise]{cleveref}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{example}{Example}
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+% Floats
+\usepackage{float}
+\renewcommand{\textfraction}{0.00}
+\renewcommand{\topfraction}{1.0}
+\renewcommand{\bottomfraction}{1.0}
+\setcounter{totalnumber}{100}
+\setcounter{bottomnumber}{100}
+\setcounter{topnumber}{100}
+
+% URLs
+\usepackage{url}
+
+% 
+\usepackage{multirow}
+\usepackage{colortbl}
+\definecolor{kugray5}{RGB}{224,224,224}
+
+% Captions
+\usepackage{caption}
+%\setlength{\belowcaptionskip}{-5pt}
+%\setlength{\abovecaptionskip}{-1pt}
+\captionsetup{font=bf}
+\usepackage[justification=centering]{caption}
+
+\newcommand{\TODO}[2]{\textbf{\textcolor{red}{TODO: (#1) #2}}}
+\newcommand{\dingedit}[1]{\textcolor{red}{\emph{[Ding: #1]}}}
+\newcommand{\moedit}[1]{\textcolor{cyan}{\emph{[Mohammad: #1]}}}
+\newcommand{\fname}{\textcolor{blue}{\textbf{FRAMEWORK\_NAME }}}
+
+\title{RideSharing}
+
+\author{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+
+\end{abstract}
+
+\input{sec_introduction}
+\input{sec_problemdef}
+\input{sec_overview}
+\input{sec_framework}
+\input{sec_optimization}
+\input{sec_experiments}
+\input{sec_related}
+\input{sec_conclusion}
+
+\vspace{-0.1in}
+%\section*{Acknowledgement}
+
+\begin{scriptsize}
+%\begin{footnotesize}
+\bibliographystyle{IEEEtran}
+\bibliography{sharing}
+%\end{footnotesize}
+\end{scriptsize}
+
+\end{document}
