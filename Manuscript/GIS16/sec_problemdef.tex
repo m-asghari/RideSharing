@@ -53,7 +53,12 @@ Every request $r$ has a default fare based on the shortest distance, $d_r$, from
 	\vspace{-0mm}\caption{Rider profile} \vspace{-2mm} \label{fig:rider_profile}
 \end{figure}\vspace{-0mm}
 
-Subsequently, for a request $r$ with shortest distance $d_r$, detour $\delta d_r$ and a profile $f_r$, the final fare is $fare(r) = F(d_r) f_r(\delta d_r)$.
+Subsequently, for a request $r$ with shortest distance $d_r$, detour $\delta d_r$ and a profile $f_r$, the final fare is:
+
+\begin{equation}
+\label{eq:fare}
+fare(r) = F(d_r) f_r(\delta d_r)
+\end{equation}
 
 Every driver has a unique profile which allows him to specify the cost of his service. Similar to a rider, a driver's profile can be any function. In fact, the function can take any arbitrary input in addition to the distance. For example, it is possible to define the driver's profile as $g: n, d \rightarrow \$$ where $n$ is the number of passengers being serviced by the driver. Without loss of generality, in this paper we assume distance is the only input of the profile. Intuitively, the profile is a monotonically increasing function. For example, the profile in \cref{fig:driver_profile} is one where the driver charges \$1 per mile.
 
@@ -63,20 +68,22 @@ Every driver has a unique profile which allows him to specify the cost of his se
 	\vspace{-0mm}\caption{Driver profile} \vspace{-2mm} \label{fig:driver_profile}
 \end{figure}\vspace{-0mm}
  
-At any point in time, each driver has a schedule. A driver will be compensated during the time its schedule is not empty. Therefore, for every driver $v$, the payment he receives is:
+At any point in time, each driver has a schedule. A driver will be compensated during the time its schedule is not empty. Therefore, for every driver $v$, the cost is:
 
-\begin{equation*}
-payment_v = \int_{start_s}^{end_s} I\left( s_v(t) \neq \left\langle \right\rangle\right).g(dist(t))dt
-\end{equation*}
+\begin{equation}
+\label{eq:payment}
+cost_v = \int_{start_s}^{end_s} I\left( s_v(t) \neq \left\langle \right\rangle\right).g(dist(t))dt
+\end{equation}
 
 \noindent Where $I()$ is the indicator function, $s_v(t)$ and $dist(t)$ are the driver's schedule and the distance he travels at time $t$ respectively. In addition, $start_s$ and $end_s$ are the first pick-up time and last drop-off time of $s_v$.
 
 The profit \fname makes from driver $v$ is the difference between the fares collected from all requests serviced by $v$ and the payment $v$ receives for himself. Subsequently, the total profit (revenue) of the system will be the sum of the profits received from all drivers:
 
-\begin{align*}
-profit_v &= \sum_{r_i \in s_v}fare(r_i) - payment_v\\
+\begin{align}
+\label{eq:profit} 
+profit_v &= \sum_{r_i \in s_v}fare(r_i) - cost_v\\
 revenue &= \sum_{v \in V}profit_v
-\end{align*}
+\end{align}
 
 Now that we have defined a generic pricing model, we can define the \textit{Ride-Sharing} problem as follows:
 
@@ -85,6 +92,13 @@ Given a set of ride requests R and a set of drivers V, the goal of the Ride-Shar
 \end{definition}
 
 \dingedit{Justify that our objective function is different with minimizing the travel cost.} \moedit{If we have space at the end, we can give a simple contrary example to prove this.}
+
+\subsection{Cost Analysis}
+
+\begin{itemize}
+\item Prove the problem is NP-Complete
+\item Prove there is no constant $c > 0$ such that an online algorithm is $c-competetive$.
+\end{itemize}
 
 %%% TODO: given a rider and the current schedule, calculate the extra profit of inserting a new request.
 

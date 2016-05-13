@@ -1,0 +1,122 @@
+\section{\fname Framework}
+
+In a real-time ride sharing application, the server finds out about a ride and its properties once it receives a request for that ride. At this time, a real-time centralized server has to evaluate the schedule of multiple drivers and decide which driver can best accommodate the new request in its schedule. With a large number of drivers, the scheduling phase soon becomes the bottleneck. In this section we introduce \fname which overcomes this shortcoming by distributing the scheduling process to the drivers themselves. First we explain the auction framework and how the server broadcasts new arriving requests to the drivers. Subsequently, we discuss how each driver generates a bid based on a potential new schedule. We end this section with a discussion on how we can simplify the bid computation process for each driver without sacrificing \fname 's revenue.
+
+\subsection{Request Dispatchment in \fname}
+
+Auction frameworks are simple and allow for a decentralized implementation. For this reason, they have been effectively used for assignment problems \TODO{mohammad}{Provide Refs}. \fname considers drivers as bidders and ride requests as goods. Furthermore, the server plays the role of a central auctioneer in \fname. At a very high level, in \fname, once a new request is received by the server (auctioneer), it presents the request to the drivers (bidders). Each drivers computes a new valid schedule by adding the new request to its current schedule. Based on the new schedule, it generates a bid and submits the bid to the server which represents the profit \fname can make by assigning the request to that driver. The bidding process is performed as a \textit{sealed-bid auction} where drivers simultaneously submit bids and no other driver knows how much the other drivers have bid. The server selects the driver with the highest bid as the winner and matches the request with the driver.
+
+Broadcasting every incoming request to all available drivers incurs a large communication cost on the system. \fname lowers the communication cost by only sending any incoming request to \textit{eligible drivers} that are define as:
+
+\begin{definition} [Eligible Worker]
+An available driver $v$ is said to be eligible for servicing a newly submitted request $r$, if and only if:
+\begin{equation*}
+distance(v, r.s) \leq r.w \times avg\_speed
+\end{equation*}
+\end{definition}
+
+\noindent In other words, an available driver \textit{d} is eligible for servicing request \textit{r}, if it has enough time to reach the pick-up location of \textit{r} within \textit{r}'s waiting time. The server maintains a spatial index on the location of the drivers. With \fname, we use a grid index since (1) the drivers have to send updated locations to the server only if they change cells and (2) the server does not need to know the exact location of the drivers to be able to filter out non-eligible workers. For example, in \textcolor{red}{FIGURE}, any driver in the shaded cells will receive the new request.
+
+\begin{algorithm}
+\caption{ALGORITHM($V, r$)}
+\label{algo:ALGORITHM}
+\begin{algorithmic}[1]
+\REQUIRE $V$ is the set of currently available drivers and $r$ is a new request
+\ENSURE $v \in V$ as the driver which request $r$ should be assigned to
+\STATE $v_{selected} = $ \emph{null}
+\STATE $Bids = \emptyset$
+\FOR{$v \in V_r$} \label{line:loop_start}
+	\STATE $b_v = v$.ComputeBid$(r)$ \label{line:compute}
+	\STATE $Bids \leftarrow  b_v$
+\ENDFOR \label{line:loop_end}
+\STATE $v_{selected} = \argmax_x \left\lbrace b_x \in Bids \right\rbrace$ \label{line:select}
+\RETURN $v_{selected}$
+\end{algorithmic}
+\end{algorithm}
+
+\cref{algo:ALGORITHM} outlines the process of assigning an incoming request $r$. $V_r$ in line \ref{line:loop_start} is the set of eligible drivers for request $r$. Notice that all the iterations of the \textbf{for} loop in \cref{algo:ALGORITHM} (lines \ref{line:loop_start}-\ref{line:loop_end}) run in parallel. The \emph{ComputeBid()} method (line \ref{line:compute}) that each driver executes depends on the bidding rule described in \cref{subsec:bidcomp}. In case of a tie in line \ref{line:select}, the algorithm randomly selects one driver among the ones with the highest bid.
+
+\subsection{Bid Computation}
+\label{subsec:bidcomp}
+
+In \fname, once a driver is notified of a new request, it has to compute a bid. The bid each driver generates reflects the profit the system can make if the request is assigned to that driver. It is important to mention that when discussing the bid computation process for a driver, we are in fact referring to a ride-sharing software on the driver's cell phone. In other words, a ride-sharing application receives the request, generates a bid and submits the bid to the server. Once a diver is assigned a new request, he will be notified with an updated schedule. This means that the human driver's interaction with \fname is limited to configuring his profile on the ride-sharing application\footnote{hereafter, we refer to both the human driver and the software as \textit{driver}.}.
+
+At each point in time, every driver has a schedule $s$. For every request $r_j \in s$, the driver can determine $r_j$'s incurred detour. Subsequently, using \cref{eq:fare,eq:payment,eq:profit} the driver can compute the profit it makes for \fname based on its current schedule, $p_0$. \cref{algo:get_profit} outlines the process of determining the profit each driver can generate based on his current schedule. Each driver $v$ runs this algorithm locally and hence, $v.loc$ (line~\ref{ln:loc}) and $v.g()$ (line~\ref{ln:dprof}) refer to $v$'s current location and profile, respectively. Also, whether $p$ is a pick-up or drop-off point, in \cref{algo:get_proft} $p.req$ refers to the request for which $p$ is one of the end points.
+
+\begin{algorithm}[t]
+\caption{GetProfit($schedule, start$)}
+\label{algo:get_profit}
+\begin{algorithmic}[1]
+\REQUIRE \emph{schedule} is an ordered list of pick-up/drop-off points and \emph{start} is the current time.
+\ENSURE $-\infty$ if the input schedule is not valid, otherwise the $profit$ of the input schedule
+\STATE $time = start$
+\STATE $loc = v.$loc\label{ln:loc}
+\STATE $trip = 0$
+\FOR{$p$ \textbf{in} $schedule$}
+	\STATE $path =$ ShortestPath($loc, p$.loc)
+	\STATE $trip \pluseq$ Distance($path$)
+	\STATE $time \pluseq$ TravelTime($path$)
+	\IF{$p$.type $= start$}
+		\IF{$time > p$.req.req\_time $+ p$.req.w}
+			\RETURN $-\infty$
+		\ENDIF
+		\STATE $pickUp[p$.req$]=trip$
+	\ENDIF
+	\IF{$p$.type $= end$}
+		\STATE $\delta d = trip - pickUp[p$.req$]$
+		\STATE $fare \pluseq p$.f($\delta d$) $\times$ FARE($p$.req.sp)
+		\STATE $cost = v$.g($trip$)\label{ln:dprof}
+	\ENDIF
+\ENDFOR
+\STATE $profit = fare - cost$
+\RETURN $profit$
+\end{algorithmic}
+\end{algorithm}
+
+When a driver is notified with a new request $r$, the first step is to find a potential valid schedule that contains every request in it current schedule, $s$, in addition to $r$. If multiple such schedules exist, it chooses the one which generates maximum profit. In order to find a valid schedule, each driver runs a branch and bound algorithm outlined in \cref{algo:can_schedule}. The algorithm is initially called with $f = \emptyset$, $r = s \cup r$, $bp = -\infty$, $bs = \emptyset$ and $start =$ current time. 
+
+\begin{algorithm}[t]
+\caption{CanSchedule($f, r, bp, bs, start$)}
+\label{algo:can_schedule}
+\begin{algorithmic}[1]
+\REQUIRE \emph{f} and \emph{r} are lists of pick-up/drop-off points that have been added and to be added to a valid schedule, respectively. \emph{bp} and \emph{bs} are the best profit and corresponding schedule observed so far and \emph{start} is the current time.
+\ENSURE $bp, bs$ as the best profit and corresponding schedule for input points is a valid schedule exists. Otherwise $-\infty, \emptyset$
+\IF{$f$.size $+ r$.size $ > v$.n $\times 2$}
+	\RETURN $bp, bs$
+\ENDIF
+\FOR{$p$ \textbf{in} $r$}
+	\STATE $f' = f$
+	\STATE $f'$.add($p$)
+	\STATE $p =$ GetProfit($f', start$)
+	\IF{$p \neq -\infty$ and $p \geq bp$}
+		\STATE $r' = r$
+		\STATE $r'$.remove($p$)
+		\IF{$p$.type $= start$}
+			\STATE $r'$.add($p$.req.end)
+		\ENDIF
+		\IF{$r'$.size $= 0$}
+			\RETURN $p, f'$
+		\ENDIF
+		\STATE $p, s =$ CanSchedule($f', r', bp, bs, start$)
+		\IF{$p > bp$}
+			\STATE $bs = s$
+			\STATE $bp = p$
+		\ENDIF
+	\ENDIF
+\ENDFOR
+\RETURN $bp, bs$
+\end{algorithmic}
+\end{algorithm}
+
+Assuming the profit generated from such schedule is $p_m$, the driver can compute its bid, $b_v$, as the \textit{additional profit} it can make for \fname by servicing $r$. i.e., $b_v = p_m - p_0$. \moedit{Do you think this is clear or do we need more explanation why the bid is the difference between the two?}
+
+\subsection{Payments in \fname}
+
+Once every driver submits his bid, the server selects the driver with the highest bid as the winner and allocates the new request to him. Assuming driver $v$ wins the auction with probability $p_v$, his expected compensation is: 
+
+\begin{equation*}
+E[comp_v] = p_v.Comp_v(win) + (1 - p_v).Comp_v(loose)
+\end{equation*}
+
+Where $Comp_v()$ gives the compensation driver $v$ receives for winning or loosing the auction. Intuitively, in the case of winning, $v$ gets compensated the same amount as $cost_v$ based on which he determined his bid and receives $\$0$ for loosing, i.e., $E[comp_v] = p_v.cost_v$.
+Earlier we mentioned that the human driver has no interaction with \fname with regard to computing and submitting a bid. However, depending on how the human driver customizes his profile $g()$, he can affect his $cost$ computation and consequently, the bid value~\footnote{Hereafter, when we say the driver increases/decreases his cost, we mean he does it indirectly by customizing his profile}. For example, if the driver increases his $cost$ by $\epsilon$ ($\epsilon > 0$), assuming he still wins the auction,  
