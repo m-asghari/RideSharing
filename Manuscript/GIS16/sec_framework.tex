@@ -118,5 +118,22 @@ Once every driver submits his bid, the server selects the driver with the highes
 E[comp_v] = p_v.Comp_v(win) + (1 - p_v).Comp_v(loose)
 \end{equation*}
 
-Where $Comp_v()$ gives the compensation driver $v$ receives for winning or loosing the auction. Intuitively, in the case of winning, $v$ gets compensated the same amount as $cost_v$ based on which he determined his bid and receives $\$0$ for loosing, i.e., $E[comp_v] = p_v.cost_v$.
-Earlier we mentioned that the human driver has no interaction with \fname with regard to computing and submitting a bid. However, depending on how the human driver customizes his profile $g()$, he can affect his $cost$ computation and consequently, the bid value~\footnote{Hereafter, when we say the driver increases/decreases his cost, we mean he does it indirectly by customizing his profile}. For example, if the driver increases his $cost$ by $\epsilon$ ($\epsilon > 0$), assuming he still wins the auction,  
+Where $Comp_v()$ gives the compensation driver $v$ receives for winning or loosing the auction. Intuitively, in the case of winning, $v$ gets compensated the same amount as $cost_v$ based on which he determined his bid and receives $\$0$ for loosing, i.e., $E[comp_v] = p_v.cost_v$. We call this payment model first-price, since the compensation the winner receives is only based on the highest bid.
+
+Earlier we mentioned that the human driver has no interaction with \fname with regard to computing and submitting a bid. However, depending on how the human driver customizes his profile $g()$, he can affect his $cost$ computation and consequently, the bid value~\footnote{Hereafter, when we say the driver increases/decreases his bid, we mean he does it indirectly by customizing his profile}. For example, assume $v_i$ is the winner of the auction with bid $b_i$ and the second highest bid is $b_j$. In theory, if $v_i$ changes his profile such that his bid becomes $b_i - \epsilon (\epsilon < b_i - b_j)$, he will still be the winner of the auction and has gets compensated $\$\epsilon$ more than when his bid was $b_i$. In practice, however, $v_i$ does not know the \textit{actual} value of any other driver's bid. Therefore, for every driver there is a trade-off between lowering the value of the bid and the probability of being the winner. To maximize his compensation, a rational driver makes his bid as close as possible to the \textit{expected} value of the second highest bid. The details of how each driver can compute this expected value is out of the scope of this paper and more details can be found in \cite{Vickery61}.
+
+In order to facilitate the bid computation process for workers, \fname adopts a payment model in which the drivers do not benefit from increasing/decreasing their cost and bid values. The compensation of the winner driver in \fname is computed as:
+
+\begin{equation*}
+comp_i = cost_i + (bid_i - bid_j)
+\end{equation*}
+
+\noindent Where $v_i$ is the driver with the highest bid and $v_j$ is the driver with the second highest bid. Since the compensation depends on not only the highest bid but also the second highest bid, we call it the second-price model. Following we first prove that with the second-price model, each driver can maximize his compensation by configuring their profiles such that it results in the \textit{minimum} cost that is economical for him to participate in the system. Next we show that in the second-price payment model, not only we get the same rider to driver assignments, but also the final revenue of \fname in both model remains the same.
+
+\begin{theorem}
+In the second-price payment model, a driver has no incentive to configure his profiles such that his resulting cost is either lower or higher than his minimum cost.
+\end{theorem}
+
+\begin{theorem}
+Both the first-price and second-price payment model result in the same rider to driver assignment and generate the same revenue.
+\end{theorem}
