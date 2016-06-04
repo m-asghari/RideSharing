@@ -1,6 +1,15 @@
 package edu.usc.infolab.geom;
 
-public class GPSPoint extends Point {
+import edu.usc.infolab.ridesharing.Pair;
+
+public class GPSPoint extends Point {	
+	// default speed (mile/minute)
+	private static double defaultSpeed = 1; //~40 miles per hour
+	
+	public static int TravelTimeInMinutes(Double dist) {
+		return (int)(dist/defaultSpeed);
+	}
+	
 	private double _lat;
 	private double _lng;
 	
@@ -10,6 +19,7 @@ public class GPSPoint extends Point {
 		this._lng = lng;
 	}
 	
+	//TODO(mohammad): make private and use clone
 	public GPSPoint(GPSPoint other) {
 		super(other._lat, other._lng);
 		this._lat = other._lat;
@@ -23,9 +33,15 @@ public class GPSPoint extends Point {
 		this._lng = lng;
 	};
 	
+	public boolean In(double minLat, double maxLat, double minLng, double maxLng) {
+		if (this._lat < minLat || this._lat > maxLat || this._lng < minLng || this._lng > maxLng)
+			return false;
+		return true;
+	}
+	
 	//returned distance is in mile!
 	@Override
-	public double Distance(Point o) {
+	public Pair<Double, Double> Distance(Point o) {
 		GPSPoint other = (GPSPoint)o;
 		double theta = this._lng - other._lng;
 		double dist = 
@@ -34,7 +50,7 @@ public class GPSPoint extends Point {
 		dist = Math.acos(dist);
 		dist = rad2deg(dist);
 		dist = dist * 60 * 1.1515;
-		return dist;
+		return new Pair<Double, Double>(dist, dist/defaultSpeed);
 	}
 	
     /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
@@ -52,8 +68,13 @@ public class GPSPoint extends Point {
     }
 
 	@Override
-	public Point clone() {
+	public GPSPoint clone() {
 		return new GPSPoint(this);
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("lng: %.6f, lat: %.6f", this._lng, this._lat);
 	}
 
 }

@@ -3,6 +3,7 @@ package edu.usc.infolab.ridesharing.kinetictree;
 import java.util.ArrayList;
 
 import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.ridesharing.Pair;
 
 
 public class KTNode {
@@ -58,7 +59,7 @@ public class KTNode {
 		//activePickedUp = new ArrayList<KTRequest>(activePickedUp);
 	}
 	
-	public double Distance(KTNode other) {
+	public Pair<Double, Double> Distance(KTNode other) {
 		return this.loc.Distance(other.loc);
 	}
 	

@@ -1,22 +1,19 @@
 package edu.usc.infolab.ridesharing.algorithms;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 
-import edu.usc.infolab.geom.Point;
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 
-public abstract class Algorithm<P extends Point, R extends Request<P>, D extends Driver<P, R>> {
-	private Time currentTime;
+public abstract class Algorithm<R extends Request, D extends Driver<R>> {
+	protected Time currentTime;
 	private int advanceTimeInterval;
 	
 	public ArrayList<D> activeDrivers;
 	public ArrayList<R> activeRequests;
-	
 	
 	public Algorithm(Time startTime, int ati) {
 		currentTime = (Time)startTime.clone();
@@ -27,19 +24,26 @@ public abstract class Algorithm<P extends Point, R extends Request<P>, D extends
 	
 	public void Run(ArrayList<R> requests, ArrayList<D> drivers) {
 		ArrayList<R> remainingRequests = new ArrayList<R>(requests);
-		ArrayList<D> remainingDrivers = new ArrayList<D>(drivers);
-		
-		while (remainingRequests.size() > 0) {
+		//ArrayList<D> remainingDrivers = new ArrayList<D>(drivers);
+		//ArrayList<R> busyRequests = new ArrayList<R>();
+		int reqCount = 0;
+		while (activeRequests.size() > 0 || remainingRequests.size() > 0) {
 			//Add newly activated drivers
-			while (remainingDrivers.get(0).start.compareTo(currentTime) <= 0) {
+			/*while (!remainingDrivers.isEmpty() && remainingDrivers.get(0).start.compareTo(currentTime) <= 0) {
 				activeDrivers.add(remainingDrivers.remove(0));
-			}
+			}*/
 			
-			while (remainingRequests.get(0).requestTime.compareTo(currentTime) <= 0) {
+			while (!remainingRequests.isEmpty() && remainingRequests.get(0).requestTime.compareTo(currentTime) <= 0) {
+				
+				while (totalDriversAvailability() < preferredTotalDriversAvailability) {
+					activeDrivers.add(GetNewDriver());
+				}
+				
 				R r = remainingRequests.get(0);
-				if (ProcessRequest(r) == Status.ASSIGNED) {
+				if (ProcessRequest(r, currentTime) == Status.ASSIGNED) {
 					activeRequests.add(r);
 				}
+				System.out.println(String.format("Processed Request %d", reqCount++));
 				remainingRequests.remove(r);
 			}
 			
@@ -47,15 +51,30 @@ public abstract class Algorithm<P extends Point, R extends Request<P>, D extends
 				D driver = it.next();
 				
 				// What the driver has to do in current frame
+				ArrayList<R> doneRequests = driver.UpdateLocation(1, currentTime);
+				for (R r : doneRequests) {
+					activeRequests.remove(r);
+				}
 								
-				if (driver.end.compareTo(currentTime) > 0) {
+				if (driver.end.compareTo(currentTime) < 0) {
 					it.remove();
 				}
 			}
 			
-			currentTime.Add(Calendar.MILLISECOND, advanceTimeInterval);
+			currentTime.Add(advanceTimeInterval);
 		}
 	}
 	
-	public abstract Status ProcessRequest(Request<P> r);
+	private int preferredTotalDriversAvailability = 2000;
+	private int totalDriversAvailability() {
+		int availability = 0;
+		for (D d : activeDrivers) {
+			availability += (d.maxPassenger - (d.acceptedRequests.size() + d.onBoardRequests.size()));
+		}
+		return availability;
+	}
+	
+	public abstract Status ProcessRequest(R r, Time time);
+	
+	protected abstract D GetNewDriver();
 }

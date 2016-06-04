@@ -34,8 +34,8 @@ public class KineticTree {
 	}
 	
 	public KTTrip InsertRequest(KTRequest r) {
-		KTNode rSrc = new KTNode(r.source, Type.Source, r);
-		KTNode rDst = new KTNode(r.destination, Type.Destination, r);
+		KTNode rSrc = new KTNode(r.source.point, Type.Source, r);
+		KTNode rDst = new KTNode(r.destination.point, Type.Destination, r);
 		ArrayList<KTNode> rPoints = new ArrayList<KTNode>();
 		rPoints.add(rSrc);
 		rPoints.add(rDst);
@@ -53,12 +53,12 @@ public class KineticTree {
 	
 	private boolean InsertNodes(KTNode node, ArrayList<KTNode> points, double depth) {
 		KTNode newNode = points.get(0);
-		if (!Feasible(node, newNode, depth + node.loc.Distance(newNode.loc))) {
+		if (!Feasible(node, newNode, depth + node.loc.Distance(newNode.loc).First)) {
 			return false;
 		}
 		boolean fail = true;
 		for (KTNode n : node.next) {
-			double detour = node.Distance(newNode) + newNode.Distance(n) - node.Distance(n);
+			double detour = node.Distance(newNode).First + newNode.Distance(n).First - node.Distance(n).First;
 			if (CopyNode(newNode, n, detour)) {
 				fail = false;
 			}
@@ -66,12 +66,12 @@ public class KineticTree {
 		if (!fail && points.size() > 1) {
 			ArrayList<KTNode> newPoints = new ArrayList<KTNode>(points);
 			newPoints.remove(0);
-			if (!InsertNodes(newNode, newPoints, -1 * points.get(0).Distance(points.get(1))))
+			if (!InsertNodes(newNode, newPoints, -1 * points.get(0).Distance(points.get(1)).First))
 				fail = true;
 		}
 		for (Iterator<KTNode> it = node.next.iterator(); it.hasNext();) {
 			KTNode n = it.next();
-			if (!InsertNodes(n, points, depth + node.Distance(n))) {
+			if (!InsertNodes(n, points, depth + node.Distance(n).First)) {
 				it.remove();
 			}
 		}
@@ -163,7 +163,7 @@ public class KineticTree {
 		}
 		double maxChildDelta = Double.MIN_VALUE;
 		for (KTNode child : node.next) {
-			double newDelta = ComputeDelta(child, depth + node.Distance(child), distanceSinceRequest, distanceSincePickUp);
+			double newDelta = ComputeDelta(child, depth + node.Distance(child).First, distanceSinceRequest, distanceSincePickUp);
 			if (newDelta > maxChildDelta) {
 				maxChildDelta = newDelta;
 			}
