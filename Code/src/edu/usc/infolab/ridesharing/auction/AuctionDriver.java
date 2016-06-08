@@ -3,6 +3,8 @@ package edu.usc.infolab.ridesharing.auction;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.activity.InvalidActivityException;
+
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
@@ -17,7 +19,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 	protected boolean _getPaid;
 	protected double _paidTravelledDistance;
 	
-	private Bid lastBid;
+	private ProfitCostSchedule lastPCS;
 	
 	public AuctionDriver(GPSPoint initialLoc, Time start, Time end) {
 		super(initialLoc, start, end);
@@ -25,16 +27,65 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 		_paidTravelledDistance = 0;
 		collectedFare = 0.;
 		income = 0.;
-		lastBid = null;
+		lastPCS = null;
 	}
 	
-	public Bid ComputeBid(AuctionRequest r, Time time) {
+	public AuctionDriver(String[] args) {
+		super(args);
+		try {
+			if (args.length < 6) {
+				throw new InvalidActivityException("Not Enough Arguments for AuctionDriver.");
+			}
+			this._paidTravelledDistance = Double.parseDouble(args[3]);
+			this.collectedFare = Double.parseDouble(args[4]);
+			this.income = Double.parseDouble(args[5]);
+		} catch (InvalidActivityException iae) {
+			iae.printStackTrace();
+		}
+	}
+	
+	public Bid ComputeBid(AuctionRequest request, Time time) {
 		if (this.acceptedRequests.size() + this.onBoardRequests.size() >= this.maxPassenger)
 			return Bid.WorstBid();
 		ProfitCostSchedule currentPCS = GetProfitAndCost(this._schedule, time);
-		if (currentPCS.profit < 0) {
-			GetProfitAndCost(this._schedule, time);
+		ProfitCostSchedule bestPCS = LaunchFindBestPCS(request, time);
+		if (bestPCS.profit < currentPCS.profit) {
+			return Bid.WorstBid();
 		}
+		double extraProfit = bestPCS.profit - currentPCS.profit;
+		double extraCost = bestPCS.cost - currentPCS.cost;
+		Bid bid = new Bid(this, bestPCS.schedule, extraProfit, extraCost);
+		bid.distToPickup = this.loc.Distance(request.source.point).First;
+		request.stats.acceptableBids++;
+		this.lastPCS = new ProfitCostSchedule(extraProfit, extraCost, bestPCS.schedule);
+		return bid;
+	}
+	
+	public ProfitCostSchedule CanService(AuctionRequest request, Time time) {
+		if (this.acceptedRequests.size() + this.onBoardRequests.size() >= this.maxPassenger) {
+			return ProfitCostSchedule.WorstPCS();
+		}
+		ProfitCostSchedule currentPCS = GetProfitAndCost(this._schedule, time);
+		ProfitCostSchedule bestPCS = LaunchFindBestPCS(request, time);
+		if (bestPCS.schedule.size() <= currentPCS.schedule.size() || bestPCS.profit < currentPCS.profit) {
+			return ProfitCostSchedule.WorstPCS();
+		}
+		CheckSchedule(bestPCS.schedule);
+		double extraProfit = bestPCS.profit - currentPCS.profit;
+		double extraCost = bestPCS.cost - currentPCS.cost;
+		this.lastPCS = new ProfitCostSchedule(extraProfit, extraCost, bestPCS.schedule); 
+		return lastPCS;
+	}
+	
+	private void CheckSchedule(ArrayList<GPSNode> newSchedule) {
+		for (GPSNode node : this._schedule) {
+			if (!newSchedule.contains(node)) {
+				System.out.println("Something's Wrong");
+			}
+		}
+	}
+	
+	private ProfitCostSchedule LaunchFindBestPCS(AuctionRequest request, Time time) {
 		ArrayList<GPSNode> fixedNodes = new ArrayList<GPSNode>();
 		ArrayList<GPSNode> remainingNodes = new ArrayList<GPSNode>();
 		// Only add source node of requests that haven't been picked up to insure the source node
@@ -46,19 +97,9 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 		for (AuctionRequest req : this.onBoardRequests) {
 			remainingNodes.add(req.destination);
 		}
-		remainingNodes.add(r.source);
+		remainingNodes.add(request.source);
 		ProfitCostSchedule bestPCS = ProfitCostSchedule.WorstPCS();
-		bestPCS = FindBestPCS(fixedNodes, remainingNodes, bestPCS, time);
-		if (bestPCS.profit < currentPCS.profit) {
-			return Bid.WorstBid();
-		}
-		double extraProfit = bestPCS.profit - currentPCS.profit;
-		double extraCost = bestPCS.cost - currentPCS.cost;
-		Bid bid = new Bid(this, bestPCS.schedule, extraProfit, extraCost);
-		bid.distToPickup = this.loc.Distance(r.source.point).First;
-		r.stats.acceptableBids++;
-		this.lastBid = bid;
-		return bid;
+		return FindBestPCS(fixedNodes, remainingNodes, bestPCS, time);
 	}
 
 	/*
@@ -77,11 +118,6 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 					remainingCopy.add((GPSNode)n.request.destination);
 				}
 				if (remainingCopy.isEmpty()) {
-					if (pcs.profit < -10000) {
-						if (pcs.profit > bestPCS.profit) {
-							System.out.println("String");
-						}
-					}
 					return new ProfitCostSchedule(pcs.profit, pcs.cost, fixedCopy);
 				}
 				ProfitCostSchedule newPCS = FindBestPCS(fixedCopy, remainingCopy, bestPCS, time);
@@ -151,10 +187,10 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 	}
 
 	@Override
-	public void AddRequest(AuctionRequest r) {
-		this._schedule = new ArrayList<GPSNode>(lastBid.schedule);
-		this.acceptedRequests.add(r);
-	}
+	public void AddRequest(AuctionRequest request) {
+		this._schedule = new ArrayList<GPSNode>(lastPCS.schedule);
+		this.acceptedRequests.add(request);
+	}	
 	
 	@Override
 	protected ArrayList<AuctionRequest> NewPointUpdates(Time time) {
@@ -185,7 +221,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 	public String PrintShortResults() {
 		StringBuilder results = new StringBuilder();
 		results.append(super.PrintShortResults());
-		results.append(String.format("%.2f,%.2f,%.2f", 
+		results.append(String.format("%.2f,%.2f,%.2f,", 
 				_paidTravelledDistance, collectedFare, income));		
 		return results.toString();
 	}

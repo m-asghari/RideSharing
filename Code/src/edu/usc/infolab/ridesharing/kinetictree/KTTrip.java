@@ -2,84 +2,111 @@ package edu.usc.infolab.ridesharing.kinetictree;
 
 import java.util.ArrayList;
 
-import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.geom.GPSNode;
 
 public class KTTrip implements Comparable<KTTrip>{
-	private ArrayList<KTNode> _nodes;
+	public ArrayList<KTNode> nodes;
 	private double _length;
 	
 	public KTTrip() {
-		_nodes = new ArrayList<KTNode>();
+		nodes = new ArrayList<KTNode>();
 		_length = 0;
 	}
 	
 	protected KTTrip(KTTrip other) {
-		this._nodes = new ArrayList<KTNode>(other._nodes);
+		this.nodes = new ArrayList<KTNode>(other.nodes);
 		this._length = other._length;
 	}
 	
 	public void AddNode(KTNode node) {
-		if (!_nodes.isEmpty()) {
-			_length += _nodes.get(_nodes.size()-1).Distance(node).First;
+		if (!nodes.isEmpty()) {
+			_length += nodes.get(nodes.size()-1).distance(node).First;
 		}
-		_nodes.add(node);
+		nodes.add(node);
+	}
+	
+	public void AddToFirst(KTNode node) {
+		nodes.add(0, node);
+		if (nodes.size() > 1) {
+			_length += node.distance(nodes.get(1)).First;
+		}
 	}
 	
 	public KTNode RemoveFirst() {
-		if (_nodes.isEmpty()) {
+		if (nodes.isEmpty()) {
 			return null;
 		}
-		if (_nodes.size() <= 2) {
+		if (nodes.size() <= 2) {
 			_length = 0;
 		} else {
-			_length -= _nodes.get(0).Distance(_nodes.get(1)).First;
+			_length -= nodes.get(0).distance(nodes.get(1)).First;
 		}
-		return _nodes.remove(0);	
+		return nodes.remove(0);	
 	}
 	
 	public KTNode RemoveLast() {
-		if (_nodes.isEmpty()) {
+		if (nodes.isEmpty()) {
 			return null;
 		}
-		int size = _nodes.size();
+		int size = nodes.size();
 		if (size <= 2) {
 			_length = 0;
 		} else {
-			_length = _nodes.get(size - 1).Distance(_nodes.get(size - 2)).First;
+			_length = nodes.get(size - 1).distance(nodes.get(size - 2)).First;
 		}
-		return _nodes.remove(size - 1);
+		return nodes.remove(size - 1);
 	}
 
 	public KTNode Get(int index) {
-		return _nodes.get(index);
+		return nodes.get(index);
 	}
 	
 	public double Length() {
 		return _length;
 	}
 	
-	public ArrayList<GPSPoint> GetPoints() {
-		ArrayList<GPSPoint> points = new ArrayList<GPSPoint>();
-		for (KTNode n : _nodes) {
-			points.add(new GPSPoint(n.loc));
+	public ArrayList<GPSNode> GetNodes() {
+		ArrayList<GPSNode> retNodes = new ArrayList<GPSNode>();
+		for (KTNode n : nodes) {
+			retNodes.add(new GPSNode(n.point, n.type, n.request));
 		}
-		return points;
+		retNodes.remove(0);
+		return retNodes;
 	}
 	
 	public KTTrip clone() {
 		return new KTTrip(this);
 	}
+	
+	public void UpdateRoot() {
+		nodes.remove(0);
+	}
 
 	@Override
 	public int compareTo(KTTrip other) {
-		if (this._nodes.size() == other._nodes.size()) {
+		if (this.nodes.size() == other.nodes.size()) {
 			if (this._length < other._length)
 				return -1;
 			if (this._length > other._length)
 				return 1;
 			return 0;
 		}
-		return -1 * (this._nodes.size() - other._nodes.size());
+		return -1 * (this.nodes.size() - other.nodes.size());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof KTTrip)) {
+			return false;
+		}
+		KTTrip other = (KTTrip)obj;
+		if (this.nodes.size() != other.nodes.size())
+			return false;
+		for (int i = 0; i < this.nodes.size(); i++) {
+			if (!nodes.get(i).equals(other.nodes.get(i)))
+				return false;
+		}
+		return true;
 	}
 
 }

@@ -45,7 +45,22 @@ public class GPSNode{
 	
 	@Override
 	public String toString() {
-		return String.format("Request %d %s point", request.id, type.toString());
+		if (type == Type.root) {
+			return "Root";
+		}
+		String ch = "?";
+		switch (type) {
+		case source:
+			ch = "s";
+			break;
+		case destination:
+			ch = "d";
+			break;
+		case root:
+			ch = "?";
+			break;
+		}
+		return String.format("%s%d", ch, request.id);
 	}
 	
 	

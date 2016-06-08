@@ -1,5 +1,7 @@
 package edu.usc.infolab.ridesharing.auction;
 
+import javax.activity.InvalidActivityException;
+
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
@@ -17,6 +19,21 @@ public class AuctionRequest extends Request {
 		defaultFare = AuctionAlgorithm.FARE(optDistance, optTime);
 		finalFare = -1;
 	}
+	
+	public AuctionRequest(String[] args) {
+		super(args);
+		try {
+			if (args.length < 23) {
+				throw new InvalidActivityException("Not enough arguments for AuctionRequest.");
+			}
+			this.defaultFare = Double.parseDouble(args[20]);
+			this.finalFare = Double.parseDouble(args[21]);
+			this.serverProfit = Double.parseDouble(args[22]);
+			
+		} catch (InvalidActivityException iae) {
+			iae.printStackTrace();
+		}
+	}
 
 	public Double profile(Double detour) {
 		if (detour.compareTo(60.) < 0)
@@ -33,7 +50,7 @@ public class AuctionRequest extends Request {
 	public String PrintShortResults() {
 		StringBuilder results = new StringBuilder();
 		results.append(super.PrintShortResults());
-		results.append(String.format("%.2f,%.2f,%.2f",
+		results.append(String.format("%.2f,%.2f,%.2f,",
 				defaultFare, finalFare, serverProfit));
 		return results.toString();
 	}

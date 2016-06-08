@@ -52,6 +52,10 @@ public class Time implements Comparable<Time>{
 	public Time clone(){
 		return new Time(this);
 	}
+	
+	public int SubtractMillis(Time t) {
+		return (int)(this._cal.getTimeInMillis() - t._cal.getTimeInMillis());
+	}
 
 	public int Subtract(Time t) {
 		return this.getTimeInMinutes() - t.getTimeInMinutes();

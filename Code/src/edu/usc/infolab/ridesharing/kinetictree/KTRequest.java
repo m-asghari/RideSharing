@@ -1,14 +1,19 @@
 package edu.usc.infolab.ridesharing.kinetictree;
 
+import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Request;
+import edu.usc.infolab.ridesharing.Time;
 
 public class KTRequest extends Request {
-	int maxWaitingTime; //seconds -> speed: 1 unit of length per second
-	double serviceConstraint;
+	public double serviceConstraint;
+	
+	public KTRequest(GPSPoint source, GPSPoint destination, Time requestTime, int maxWaitTime) {
+		super(source, destination, requestTime, maxWaitTime);
+		this.serviceConstraint = 0.9;
+	}
 	
 	protected KTRequest(KTRequest other) {
 		super(other);
-		this.maxWaitingTime = other.maxWaitingTime;
 		this.serviceConstraint = other.serviceConstraint;
 	}
 	

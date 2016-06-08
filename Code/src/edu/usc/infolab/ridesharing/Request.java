@@ -1,5 +1,9 @@
 package edu.usc.infolab.ridesharing;
 
+import java.text.ParseException;
+
+import javax.activity.InvalidActivityException;
+
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
@@ -12,15 +16,15 @@ public class Request implements Comparable<Request>{
 		
 		private AssignmentStat(AssignmentStat other) {
 			this.assigned = other.assigned;
-			this.bidComputationTime = other.bidComputationTime;
-			this.selectWinnerTime = other.selectWinnerTime;
+			this.schedulingTime = other.schedulingTime;
+			this.assignmentTime = other.assignmentTime;
 			this.potentialDrivers = other.potentialDrivers;
 			this.acceptableBids = other.acceptableBids;
 		}
 		
-		public boolean assigned;
-		public int bidComputationTime;
-		public int selectWinnerTime;
+		public int assigned;
+		public int schedulingTime;
+		public int assignmentTime;
 		public int potentialDrivers;
 		public int acceptableBids;
 		
@@ -71,6 +75,40 @@ public class Request implements Comparable<Request>{
 		this.detour = -1;
 		this.actualTime = -1;
 		this.actualDistance = -1;
+	}
+	
+	public Request(String[] args) {
+		try {
+			if (args.length < 20) {
+				throw new InvalidActivityException("Not enough arguments for Request.");
+			}
+		
+			this.id = Integer.parseInt(args[0]);
+			this.stats = new AssignmentStat();
+			this.stats.assigned = Integer.parseInt(args[1]);
+			this.stats.schedulingTime = Integer.parseInt(args[2]);
+			this.stats.assignmentTime = Integer.parseInt(args[3]);
+			this.stats.potentialDrivers = Integer.parseInt(args[4]);
+			this.stats.acceptableBids = Integer.parseInt(args[5]);
+			this.source = new GPSNode();//args[6] source
+			this.destination = new GPSNode();//args[7] destination
+			this.requestTime = new Time(Time.sdf.parse(args[8]));
+			this.maxWaitTime = Integer.parseInt(args[9]);
+			this.latestPickUpTime = new Time(Time.sdf.parse(args[10]));
+			this.optTime = Integer.parseInt(args[11]);
+			this.optDistance = Double.parseDouble(args[12]);
+			this.pickUpTime = new Time(Time.sdf.parse(args[13]));
+			this.pickUpDistance = Double.parseDouble(args[14]);
+			this.dropOffTime = new Time(Time.sdf.parse(args[15]));
+			this.dropOffDistance = Double.parseDouble(args[16]);
+			this.detour = Double.parseDouble(args[17]);
+			this.actualTime = Integer.parseInt(args[18]);
+			this.actualDistance = Double.parseDouble(args[19]);
+		} catch (ParseException pe) {
+			pe.printStackTrace();			
+		} catch (InvalidActivityException iae) {
+			iae.printStackTrace();
+		}
 	}
 	
 	protected Request(Request other) {
@@ -130,17 +168,24 @@ public class Request implements Comparable<Request>{
 		return false;		
 	}
 	
-	//id,stats.assigned,stats.bidTime,stats.selectTime,stats.potentialDrivers,stats.acceptableBids,source,destination,rTime,maxW,latestPickUpTime,optTime,OptDist,pickUpTime,pickUpDistance,dropOffTime,dropOffDistance,detour,actualTime,actualDistance
+	//id,stats.assigned,stats.scheduleTime,stats.assignTime,stats.potentialDrivers,stats.acceptableBids,source,destination,rTime,maxW,latestPickUpTime,optTime,OptDist,pickUpTime,pickUpDistance,dropOffTime,dropOffDistance,detour,actualTime,actualDistance
 	public String PrintShortResults() {
 		StringBuilder results = new StringBuilder();
-		results.append(String.format("%d,%s,%d,%d,%d,%d,%s,%s,%s,%d,%s,%d,%.2f,%s,%.2f,%s,%.f,%.2f,%d,%.2f",
+		results.append(String.format("%d,"
+				+ "%d,%d,%d,%d,%d,"
+				+ "%s,%s,"
+				+ "%s,%d,%s,"
+				+ "%d,%.2f,"
+				+ "%s,%.2f,"
+				+ "%s,%.2f,"
+				+ "%.2f,%d,%.2f,",
 				id, 
-				stats.assigned, stats.bidComputationTime, stats.selectWinnerTime, stats.potentialDrivers, stats.acceptableBids, 
+				stats.assigned, stats.schedulingTime, stats.assignmentTime, stats.potentialDrivers, stats.acceptableBids, 
 				source.toString(), destination.toString(), 
-				requestTime.toString(), maxWaitTime, latestPickUpTime.toString(), 
+				Time.sdf.format(requestTime.GetTime()), maxWaitTime, Time.sdf.format(latestPickUpTime.GetTime()), 
 				optTime, optDistance, 
-				pickUpTime.toString(), pickUpDistance,
-				dropOffTime.toString(),	dropOffDistance,
+				Time.sdf.format(pickUpTime.GetTime()), pickUpDistance,
+				Time.sdf.format(dropOffTime.GetTime()),	dropOffDistance,
 				detour, actualTime, actualDistance));
 		return results.toString();
 	}
@@ -148,7 +193,7 @@ public class Request implements Comparable<Request>{
 	public String PrintLongResults() {
 		StringBuilder results = new StringBuilder();
 		results.append(String.format("id:%d\n"
-				+ "Assigned: %s, Bid Time: %d, Select Time: %d, #Potential Drivers: %d, #Acceptable Bids: %d\n"
+				+ "Assigned: %d, Scheduling Time: %d, Assignment Time: %d, #Potential Drivers: %d, #Acceptable Bids: %d\n"
 				+ "Source: %s, Destination: %s\n"
 				+ "Request Time: %s, Max Wait Time: %d, Latest PickUp Time: %s\n"
 				+ "Opt Time: %d, Opt Distance: %.2f\n"
@@ -156,7 +201,7 @@ public class Request implements Comparable<Request>{
 				+ "DropOff Time: %s, DropOff Distance: %.f\n"
 				+ "Detour: %.2f, Actual Time: %d, Actual Distance%.2f\n",
 				id, 
-				stats.assigned, stats.bidComputationTime, stats.selectWinnerTime, stats.potentialDrivers, stats.acceptableBids, 
+				stats.assigned, stats.schedulingTime, stats.assignmentTime, stats.potentialDrivers, stats.acceptableBids, 
 				source.toString(), destination.toString(), 
 				requestTime.toString(), maxWaitTime, latestPickUpTime.toString(), 
 				optTime, optDistance, 

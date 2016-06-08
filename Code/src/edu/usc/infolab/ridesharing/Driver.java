@@ -2,6 +2,8 @@ package edu.usc.infolab.ridesharing;
 
 import java.util.ArrayList;
 
+import javax.activity.InvalidActivityException;
+
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSPoint;
 
@@ -35,6 +37,19 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 		maxPassenger = 5;
 	}
 	
+	public Driver(String[] args) {
+		try {
+			if (args.length < 3) {
+				throw new InvalidActivityException("Not Enough Arguments for Driver.");
+			}
+			this.id = Integer.parseInt(args[0]);
+			//args[1] servicedRequest.size()
+			this._travelledDistance = Double.parseDouble(args[2]);
+		} catch (InvalidActivityException iae) {
+			iae.printStackTrace();
+		}
+	}
+	
 	public ArrayList<R> UpdateLocation(double length, Time time) {
 		ArrayList<R> finishedRequests = new ArrayList<R>();
 		if (_schedule.isEmpty()) 
@@ -62,7 +77,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 
 	public String PrintShortResults() {
 		StringBuilder results = new StringBuilder();
-		results.append(String.format("%d,%d,%.2f", 
+		results.append(String.format("%d,%d,%.2f,", 
 				id, servicedRequests.size(), _travelledDistance));		
 		return results.toString();
 	}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Time;
@@ -25,20 +26,50 @@ public class KTDriver extends Driver<KTRequest> {
 	public Double InsertRequest(KTRequest request) {
 		KTTrip bestTrip = _ktree.InsertRequest(request);
 		if (bestTrip != null)
-			return bestTrip.Length() + loc.Distance(bestTrip.Get(0).loc).First;
+			return bestTrip.Length() + loc.Distance(bestTrip.Get(0).point).First;
 		else
 			return null;
 	}
 	
 	@Override
 	public void AddRequest(KTRequest r) {
+		this.acceptedRequests.add(r);
 		_ktree.AddMostRecentRequest();
-		_distanceSinceRequest.put(r.id, 0.);
-		_ktree.UpdateDeltas(_distanceSinceRequest, _distanceSincePickUp);
 		_currentTrip = _ktree.FindBestTrip();
-		//TODO(mohammad): un-comment next line and fix the error. KTNode should inherit from Node<> and ...
-		//_schedule = _currentTrip.GetPoints();
+		_distanceSinceRequest.put(r.id, 0.);
+		_ktree.UpdateDeltas(
+				new HashMap<Integer, Double>(_distanceSinceRequest),
+				new HashMap<Integer, Double>(_distanceSincePickUp));
+		_schedule = new ArrayList<GPSNode>(_currentTrip.GetNodes());
 	}
+	
+	/*private void Check2() {
+		if (_currentTrip == null) {
+			return;
+		}
+		for (int i = 0; i < _currentTrip.nodes.size() - 1; i++) {
+			if (!_currentTrip.Get(i).next.contains(_currentTrip.Get(i+1))) {
+				System.out.println("Check2 Went Wrong");
+				_ktree.FindBestTrip();
+			}			
+		}
+	}
+	
+	private void Check() {
+		KTNode currentTreeNode = _ktree._root;
+		if (_currentTrip == null)
+			return;
+		if (!_currentTrip.Get(0).equals(currentTreeNode)) {
+			System.out.println("Check Went Wrong");
+		}
+		for (int i = 1; i < _currentTrip.nodes.size(); i++) {
+			if (!currentTreeNode.next.contains(_currentTrip.Get(i))) {
+				System.out.println("Check Went Wrong");
+			}
+			int index = currentTreeNode.next.indexOf(_currentTrip.Get(i));
+			currentTreeNode = currentTreeNode.next.get(index);
+		}
+	}*/
 	
 	@Override
 	protected void UpdateTravelledDistance(double length) {
@@ -54,21 +85,27 @@ public class KTDriver extends Driver<KTRequest> {
 	@Override
 	protected ArrayList<KTRequest> NewPointUpdates(Time time) {
 		ArrayList<KTRequest> finishedRequests = new ArrayList<KTRequest>();
-		_schedule.remove(0);
-		KTNode node = _currentTrip.RemoveFirst();
-		_ktree.SetRoot(node);
+		KTNode node = _currentTrip.Get(1);
+		KTRequest request = (KTRequest)node.request;
 		switch (node.type) {
-			case Source:
+			case source:
 				_distanceSincePickUp.put(node.request.id, 0.);
 				_distanceSinceRequest.remove(node.request.id);
+				this.acceptedRequests.remove(request);
+				this.onBoardRequests.add(request);
 				break;
-			case Destination:
+			case destination:
 				_distanceSincePickUp.remove(node.request.id);
-				finishedRequests.add(node.request);
+				this.onBoardRequests.remove(request);
+				this.servicedRequests.add(request);
+				finishedRequests.add(request);
 				break;
-			case Root:
+			case root:
 				break;
 		}
+		_ktree.SetRoot(node);
+		_currentTrip.UpdateRoot();
+		_schedule.remove(0);
 		return finishedRequests;
 	}
 }

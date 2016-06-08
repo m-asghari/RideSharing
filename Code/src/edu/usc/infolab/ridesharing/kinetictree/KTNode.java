@@ -2,21 +2,13 @@ package edu.usc.infolab.ridesharing.kinetictree;
 
 import java.util.ArrayList;
 
+import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSPoint;
-import edu.usc.infolab.ridesharing.Pair;
 
 
-public class KTNode {
-	public enum Type {
-		Root,
-		Source,
-		Destination
-	}
+public class KTNode extends GPSNode{
 	
-	public GPSPoint loc;
 	public ArrayList<KTNode> next;
-	public Type type;
-	public KTRequest request;
 	
 	//public ArrayList<KTRequest> allActive;
 	//public ArrayList<KTRequest> activeRequested;
@@ -28,14 +20,13 @@ public class KTNode {
 	public double Delta;
 	
 	public KTNode() {
+		super();
 		Initialize();
 	}
 	
-	public KTNode(GPSPoint l, Type t, KTRequest r) {
+	public KTNode(GPSPoint point, Type type, KTRequest request) {
+		super(point, type, request);
 		Initialize();
-		this.loc = (GPSPoint)l.clone();
-		this.type = t;
-		this.request = r;
 	}
 	
 	private void Initialize() {
@@ -50,17 +41,18 @@ public class KTNode {
 	}
 	
 	protected KTNode(KTNode other) {
-		this.loc = (GPSPoint)other.loc.clone();
-		this.next = new ArrayList<KTNode>(other.next);
+		this.point = (GPSPoint)other.point.clone();
+		this.next = new ArrayList<KTNode>();
+		for (KTNode otherNode : other.next) {
+			this.next.add(otherNode.clone());
+		}
 		this.type = other.type;
-		this.request = other.request;
+		this.request = (other.type == Type.root) ? null : other.request;
+		this.delta = other.delta;
+		this.Delta = other.Delta;
 		//allActive = new ArrayList<KTRequest>(other.allActive);
 		//activeRequested = new ArrayList<KTRequest>(other.activeRequested);
 		//activePickedUp = new ArrayList<KTRequest>(activePickedUp);
-	}
-	
-	public Pair<Double, Double> Distance(KTNode other) {
-		return this.loc.Distance(other.loc);
 	}
 	
 	public KTNode clone(){

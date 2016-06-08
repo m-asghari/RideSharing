@@ -8,9 +8,9 @@ import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.auction.Bid;
 
-public class SecondPriceAuctionAlgorithm extends AuctionAlgorithm {
+public class FirstPriceAuctionAlgorithm extends AuctionAlgorithm {
 
-	public SecondPriceAuctionAlgorithm(Time startTime, int ati) {
+	public FirstPriceAuctionAlgorithm(Time startTime, int ati) {
 		super(startTime, ati);
 	}
 
@@ -27,19 +27,14 @@ public class SecondPriceAuctionAlgorithm extends AuctionAlgorithm {
 			return null;
 		}
 		AuctionDriver winner = bids.get(lastIndex).driver;
-		if (winner == null) {
-			System.out.println("Why??");
-		}
-		double secondHighestBid = 0;
-		if (bids.size() > 1 && bids.get(lastIndex - 1).value > 0)
-			secondHighestBid = bids.get(lastIndex - 1).value;
-		this.profit += secondHighestBid;
-		r.serverProfit = secondHighestBid;
+		r.serverProfit = bids.get(lastIndex).value;
+		this.profit += r.serverProfit;
 		return winner;
 	}
-	
+
 	@Override
 	protected String GetName() {
-		return "SPA";
+		return "FPA";
 	}
+
 }
