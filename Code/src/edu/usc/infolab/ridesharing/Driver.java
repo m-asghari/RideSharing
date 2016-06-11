@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.activity.InvalidActivityException;
 
 import edu.usc.infolab.geom.GPSNode;
+import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
 
 public abstract class Driver<R extends Request> implements Comparable<Driver<R>>{
@@ -18,7 +19,13 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 	
 	public int id;
 	
-	protected double _travelledDistance;
+	public double travelledDistance;
+	
+	public double collectedFare;
+	public double income;
+	
+	protected boolean _getPaid;
+	protected double _paidTravelledDistance;
 	
 	public Time start;
 	public Time end;
@@ -33,18 +40,26 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 		this.onBoardRequests = new ArrayList<R>();
 		this.servicedRequests = new ArrayList<R>();
 		this._schedule = new ArrayList<GPSNode>();
-		_travelledDistance = 0;
-		maxPassenger = 5;
+		this.travelledDistance = 0;
+		this.maxPassenger = 5;
+		this._getPaid = false;
+		this._paidTravelledDistance = 0;
+		this.collectedFare = 0;
+		this.income = 0;
 	}
 	
 	public Driver(String[] args) {
 		try {
-			if (args.length < 3) {
+			if (args.length < 7) {
 				throw new InvalidActivityException("Not Enough Arguments for Driver.");
 			}
 			this.id = Integer.parseInt(args[0]);
 			//args[1] servicedRequest.size()
-			this._travelledDistance = Double.parseDouble(args[2]);
+			this.travelledDistance = Double.parseDouble(args[2]);
+			this._getPaid = Boolean.parseBoolean(args[3]);
+			this._paidTravelledDistance = Double.parseDouble(args[4]);
+			this.collectedFare = Double.parseDouble(args[5]);
+			this.income = Double.parseDouble(args[6]);
 		} catch (InvalidActivityException iae) {
 			iae.printStackTrace();
 		}
@@ -77,16 +92,21 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 
 	public String PrintShortResults() {
 		StringBuilder results = new StringBuilder();
-		results.append(String.format("%d,%d,%.2f,", 
-				id, servicedRequests.size(), _travelledDistance));		
+		results.append(String.format("%d,%d,%.2f,%s,%.2f,%.2f,%.2f,", 
+				id, servicedRequests.size(), travelledDistance,
+				Boolean.toString(_getPaid), _paidTravelledDistance,
+				collectedFare, income));		
 		return results.toString();
 	}
 	
 	public String PrintLongResults() {
 		StringBuilder results = new StringBuilder();
 		results.append(String.format("id: %d\n"
-				+ "Serviced Requests: %d, Travelled Distance: %.2f\n", 
-				id, servicedRequests.size(), _travelledDistance));		
+				+ "Serviced Requests: %d\n"
+				+ "Travelled Distance: %.2f, Paid Travelled Distance: %.2f\n"
+				+ "Collected Fare: %.2f, Income: %.2f\n", 
+				id, servicedRequests.size(), travelledDistance,
+				_paidTravelledDistance, collectedFare, income));		
 		return results.toString();
 	}
 	
@@ -105,7 +125,10 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 	}
 	
 	protected void UpdateTravelledDistance(double length) {
-		this._travelledDistance += length;
+		this.travelledDistance += length;
+		if (_getPaid) {
+			this._paidTravelledDistance += length;
+		}
 	}
 	
 	/*
@@ -113,7 +136,52 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 	 * a driver reaches a new point on it's schedule goes
 	 * here.
 	 */
-	protected abstract ArrayList<R> NewPointUpdates(Time time);
+	protected ArrayList<R> NewPointUpdates(Time time) {
+		ArrayList<R> finishedRequests = new ArrayList<R>();
+		GPSNode currentNode = _schedule.remove(0);
+		@SuppressWarnings("unchecked")
+		R request = (R)currentNode.request;
+		if (currentNode.type == Type.source) {
+			PickUpUpdates(request, time);
+		}
+		if (currentNode.type == Type.destination) {
+			DropOffUpdates(request, time);
+			finishedRequests.add(request);
+		}
+		return finishedRequests;
+	}
+	
+	protected void PickUpUpdates(R request, Time time) {
+		request.pickUpTime.SetTime(time);
+		request.pickUpDistance = travelledDistance;
+		this._getPaid = true;
+		this.acceptedRequests.remove(request);
+		this.onBoardRequests.add(request);
+	}
+	
+	protected void DropOffUpdates(R request, Time time) {
+		request.dropOffTime.SetTime(time);
+		request.dropOffDistance = travelledDistance;
+		request.actualDistance = travelledDistance - request.pickUpDistance;
+		request.detour = request.actualDistance - request.optDistance;
+		request.actualTime = time.Subtract(request.pickUpTime);
+		request.finalFare = request.profile(request.detour) * request.defaultFare;
+		this.onBoardRequests.remove(request);
+		this.servicedRequests.add(request);
+		if (this._schedule.isEmpty()) {
+			_getPaid = false;
+		}
+		this.collectedFare += request.finalFare;
+		this.income = GetIncome(request);
+	}
+	
+	protected double GetIncome(R request) {
+		return GetCost(_paidTravelledDistance, null);
+	}
+
+	protected double GetCost(Double dist, Double time) {
+		return 1 * dist;
+	}
 	
 	public abstract void AddRequest(R r);
 	

@@ -8,8 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Pair;
@@ -21,20 +19,42 @@ import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 public class ResultGenerator {
 	
 	public static <R extends Request, D extends Driver<R>> String ShortSummary(ArrayList<R> requests, ArrayList<D> drivers) {
-		StringBuilder summary = new StringBuilder();
-		HashMap<Integer, Integer> serviceCountMap = new HashMap<Integer, Integer>();
-		for (D d : drivers) {
-			Integer key = d.servicedRequests.size();
-			Integer newValue = 1;
-			if (serviceCountMap.containsKey(key)) {
-				newValue += serviceCountMap.get(key);
+		int totalRequests = requests.size();
+		int assignedRequests = 0;
+		int usedDrivers = 0;
+		double totalCollectedFare = 0;
+		double totalPaidFare = 0;
+		double totalIncome = 0;
+		double serverProfit = 0;
+		double totalTravelledDistance = 0;
+		for (D driver : drivers) {
+			if (!driver.servicedRequests.isEmpty()) {
+				usedDrivers++;
+				totalCollectedFare += driver.collectedFare;
+				totalIncome += driver.income;
+				totalTravelledDistance += driver.travelledDistance;
 			}
-			serviceCountMap.put(key, newValue);
 		}
-		for (Entry<Integer, Integer> e : serviceCountMap.entrySet()) {
-			summary.append(String.format("Serviced: %d,  Count: %d\n", e.getKey(), e.getValue()));
+		for (R request : requests) {
+			if (request.stats.assigned == 1) {
+				assignedRequests++;
+				totalPaidFare += request.finalFare;
+			}
+			if (request instanceof AuctionRequest) {
+				AuctionRequest r = (AuctionRequest)request;
+				serverProfit += r.serverProfit;
+			}
 		}
-		return summary.toString();
+		return new StringBuilder()
+			.append(String.format("Total Requests: %d\n", totalRequests))
+			.append(String.format("Assigned Requests: %d\n", assignedRequests))
+			.append(String.format("Used Drivers: %d\n", usedDrivers))
+			.append(String.format("Total Collected Fare: %.2f\n", totalCollectedFare))
+			.append(String.format("Total Paid Fare: %.2f\n", totalPaidFare))
+			.append(String.format("Total Income: %.2f\n", totalIncome))
+			.append(String.format("Server Profit: %.2f and %.2f\n", totalCollectedFare - totalIncome, serverProfit))
+			.append(String.format("Total Travelled Distance: %.2f\n", totalTravelledDistance))
+			.toString();
 	}
 	
 	public static <R extends Request, D extends Driver<R>> void SaveData(String name, ArrayList<R> requests, ArrayList<D> drivers) {

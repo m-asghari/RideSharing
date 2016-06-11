@@ -84,28 +84,22 @@ public class KTDriver extends Driver<KTRequest> {
 	
 	@Override
 	protected ArrayList<KTRequest> NewPointUpdates(Time time) {
-		ArrayList<KTRequest> finishedRequests = new ArrayList<KTRequest>();
-		KTNode node = _currentTrip.Get(1);
-		KTRequest request = (KTRequest)node.request;
-		switch (node.type) {
-			case source:
-				_distanceSincePickUp.put(node.request.id, 0.);
-				_distanceSinceRequest.remove(node.request.id);
-				this.acceptedRequests.remove(request);
-				this.onBoardRequests.add(request);
-				break;
-			case destination:
-				_distanceSincePickUp.remove(node.request.id);
-				this.onBoardRequests.remove(request);
-				this.servicedRequests.add(request);
-				finishedRequests.add(request);
-				break;
-			case root:
-				break;
-		}
-		_ktree.SetRoot(node);
+		ArrayList<KTRequest> finishedRequests = super.NewPointUpdates(time);
+		_ktree.SetRoot(_currentTrip.Get(1));
 		_currentTrip.UpdateRoot();
-		_schedule.remove(0);
 		return finishedRequests;
+	}
+	
+	@Override
+	protected void PickUpUpdates(KTRequest request, Time time) {
+		super.PickUpUpdates(request, time);
+		_distanceSincePickUp.put(request.id, 0.);
+		_distanceSinceRequest.remove(request.id);
+	}
+	
+	@Override
+	protected void DropOffUpdates(KTRequest request, Time time) {
+		super.DropOffUpdates(request, time);
+		_distanceSincePickUp.remove(request.id);
 	}
 }

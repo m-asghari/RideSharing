@@ -7,6 +7,7 @@ import javax.activity.InvalidActivityException;
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.ridesharing.algorithms.AuctionAlgorithm;
 
 public class Request implements Comparable<Request>{
 	private static int reqCtr = 0;
@@ -54,7 +55,10 @@ public class Request implements Comparable<Request>{
 	
 	public double detour;
 	public int actualTime;
-	public double actualDistance;	
+	public double actualDistance;
+	
+	public double defaultFare;
+	public double finalFare;
 	
 	public Request(GPSPoint source, GPSPoint dest, Time requestTime, int maxWaitTime) {
 		this.id = reqCtr++;
@@ -75,11 +79,13 @@ public class Request implements Comparable<Request>{
 		this.detour = -1;
 		this.actualTime = -1;
 		this.actualDistance = -1;
+		this.defaultFare = AuctionAlgorithm.FARE(optDistance, optTime);
+		this.finalFare = -1;
 	}
 	
 	public Request(String[] args) {
 		try {
-			if (args.length < 20) {
+			if (args.length < 22) {
 				throw new InvalidActivityException("Not enough arguments for Request.");
 			}
 		
@@ -104,6 +110,8 @@ public class Request implements Comparable<Request>{
 			this.detour = Double.parseDouble(args[17]);
 			this.actualTime = Integer.parseInt(args[18]);
 			this.actualDistance = Double.parseDouble(args[19]);
+			this.defaultFare = Double.parseDouble(args[20]);
+			this.finalFare = Double.parseDouble(args[21]);
 		} catch (ParseException pe) {
 			pe.printStackTrace();			
 		} catch (InvalidActivityException iae) {
@@ -130,7 +138,7 @@ public class Request implements Comparable<Request>{
 	}
 	
 	public void PickUp(double distance, Time time) {
-		this.pickUpTime.SetTime(time);;
+		this.pickUpTime.SetTime(time);
 		this.pickUpDistance = distance;		
 	}
 	
@@ -140,6 +148,13 @@ public class Request implements Comparable<Request>{
 		this.actualDistance = distance - this.pickUpDistance;
 		this.detour = this.actualDistance - this.optDistance;
 		this.actualTime = time.Subtract(this.pickUpTime);
+		this.finalFare = this.profile(this.detour) * this.defaultFare;
+	}
+	
+	public Double profile(Double detour) {
+		if (detour.compareTo(60.) < 0)
+			return 1. - (0.00025 * Math.pow(detour, 2));
+		return 0.1;
 	}
 	
 	/*
@@ -178,7 +193,8 @@ public class Request implements Comparable<Request>{
 				+ "%d,%.2f,"
 				+ "%s,%.2f,"
 				+ "%s,%.2f,"
-				+ "%.2f,%d,%.2f,",
+				+ "%.2f,%d,%.2f,"
+				+ "%.2f,%.2f,",
 				id, 
 				stats.assigned, stats.schedulingTime, stats.assignmentTime, stats.potentialDrivers, stats.acceptableBids, 
 				source.toString(), destination.toString(), 
@@ -186,7 +202,8 @@ public class Request implements Comparable<Request>{
 				optTime, optDistance, 
 				Time.sdf.format(pickUpTime.GetTime()), pickUpDistance,
 				Time.sdf.format(dropOffTime.GetTime()),	dropOffDistance,
-				detour, actualTime, actualDistance));
+				detour, actualTime, actualDistance,
+				defaultFare, finalFare));
 		return results.toString();
 	}
 	
@@ -199,7 +216,8 @@ public class Request implements Comparable<Request>{
 				+ "Opt Time: %d, Opt Distance: %.2f\n"
 				+ "PickUp Time: %s, PickUp Distance: %.2f\n"
 				+ "DropOff Time: %s, DropOff Distance: %.f\n"
-				+ "Detour: %.2f, Actual Time: %d, Actual Distance%.2f\n",
+				+ "Detour: %.2f, Actual Time: %d, Actual Distance%.2f\n"
+				+ "Default Fare: %.2f, Final Fare: %.2f\n",
 				id, 
 				stats.assigned, stats.schedulingTime, stats.assignmentTime, stats.potentialDrivers, stats.acceptableBids, 
 				source.toString(), destination.toString(), 
@@ -207,7 +225,8 @@ public class Request implements Comparable<Request>{
 				optTime, optDistance, 
 				pickUpTime.toString(), pickUpDistance,
 				dropOffTime.toString(),	dropOffDistance,
-				detour, actualTime, actualDistance));
+				detour, actualTime, actualDistance,
+				defaultFare, finalFare));
 		return results.toString();
 	}
 	

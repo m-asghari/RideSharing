@@ -3,8 +3,6 @@ package edu.usc.infolab.ridesharing.auction;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.activity.InvalidActivityException;
-
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
@@ -13,37 +11,17 @@ import edu.usc.infolab.ridesharing.Pair;
 import edu.usc.infolab.ridesharing.Time;
 
 public class AuctionDriver extends Driver<AuctionRequest> {
-	public Double collectedFare;
-	public Double income;
-	
-	protected boolean _getPaid;
-	protected double _paidTravelledDistance;
-	
 	private ProfitCostSchedule lastPCS;
 	
 	public AuctionDriver(GPSPoint initialLoc, Time start, Time end) {
 		super(initialLoc, start, end);
-		_getPaid = false;
-		_paidTravelledDistance = 0;
-		collectedFare = 0.;
-		income = 0.;
 		lastPCS = null;
 	}
 	
 	public AuctionDriver(String[] args) {
 		super(args);
-		try {
-			if (args.length < 6) {
-				throw new InvalidActivityException("Not Enough Arguments for AuctionDriver.");
-			}
-			this._paidTravelledDistance = Double.parseDouble(args[3]);
-			this.collectedFare = Double.parseDouble(args[4]);
-			this.income = Double.parseDouble(args[5]);
-		} catch (InvalidActivityException iae) {
-			iae.printStackTrace();
-		}
 	}
-	
+
 	public Bid ComputeBid(AuctionRequest request, Time time) {
 		if (this.acceptedRequests.size() + this.onBoardRequests.size() >= this.maxPassenger)
 			return Bid.WorstBid();
@@ -134,7 +112,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 		Double cost = this.GetCost(_paidTravelledDistance, 0.);
 		Time time = start.clone();
 		GPSPoint loc = this.loc;
-		Double dist = _travelledDistance;
+		Double dist = travelledDistance;
 		if (schedule.isEmpty()) {
 			return new ProfitCostSchedule(fare - cost, cost, schedule);
 		}
@@ -166,7 +144,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 						((pickUpDist.get(request) != null) ? pickUpDist.get(request) : request.pickUpDistance);
 				Double detour = tripDist - request.optDistance;
 				fare += request.profile(detour) * request.defaultFare;
-				cost = this.GetCost(_paidTravelledDistance + (dist - (_travelledDistance + initTrip.First)), 
+				cost = this.GetCost(_paidTravelledDistance + (dist - (travelledDistance + initTrip.First)), 
 						(double)time.Subtract(start) - initTrip.Second); 
 			}
 		}
@@ -174,64 +152,15 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 		return new ProfitCostSchedule(profit, cost, schedule);
 	}
 	
-	private Double GetCost(Double dist, Double time) {
-		return 1 * dist;
-	}
-	
 	@Override
-	protected void UpdateTravelledDistance(double length) {
-		super.UpdateTravelledDistance(length);
-		if (_getPaid) {
-			this._paidTravelledDistance += length;
-		}
+	protected double GetIncome(AuctionRequest request) {
+		return this.income + (request.finalFare - request.serverProfit);
 	}
 
 	@Override
 	public void AddRequest(AuctionRequest request) {
 		this._schedule = new ArrayList<GPSNode>(lastPCS.schedule);
 		this.acceptedRequests.add(request);
-	}	
-	
-	@Override
-	protected ArrayList<AuctionRequest> NewPointUpdates(Time time) {
-		ArrayList<AuctionRequest> finishedRequests = new ArrayList<AuctionRequest>();
-		GPSNode currentNode = _schedule.remove(0);
-		AuctionRequest request = (AuctionRequest)currentNode.request;
-		if (currentNode.type == Type.source) {
-			request.PickUp(this._travelledDistance, time);
-			this._getPaid = true;
-			this.acceptedRequests.remove(request);
-			this.onBoardRequests.add(request);
-		}
-		if (currentNode.type == Type.destination) {
-			request.DropOff(_travelledDistance, time);
-			this.collectedFare += request.finalFare;
-			this.income += request.finalFare - request.serverProfit;
-			this.onBoardRequests.remove(request);
-			this.servicedRequests.add(request);
-			if (this._schedule.isEmpty()) {
-				_getPaid = false;
-			}
-			finishedRequests.add(request);
-		}
-		return finishedRequests;
-	}
-	
-
-	public String PrintShortResults() {
-		StringBuilder results = new StringBuilder();
-		results.append(super.PrintShortResults());
-		results.append(String.format("%.2f,%.2f,%.2f,", 
-				_paidTravelledDistance, collectedFare, income));		
-		return results.toString();
-	}
-	
-	public String PrintLongResults() {
-		StringBuilder results = new StringBuilder();
-		results.append(super.PrintLongResults());
-		results.append(String.format("Paid Travelled Distance: %.2f, Collected Fare: %.2f, Income: %.2f\n", 
-				_paidTravelledDistance, collectedFare, income));		
-		return results.toString();
 	}
 }
 

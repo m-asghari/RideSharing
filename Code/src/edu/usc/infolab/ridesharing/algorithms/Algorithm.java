@@ -27,16 +27,23 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 		ArrayList<R> remainingRequests = new ArrayList<R>(requests);
 		ArrayList<D> allDrivers = new ArrayList<D>(drivers);
 		int reqCount = 0;
+		while (totalDriversAvailability() < preferredTotalDriversAvailability) {
+			for (int i = 0; i < 100; i++) {
+				D driver = GetNewDriver();
+				activeDrivers.add(driver);
+				allDrivers.add(driver);
+			}
+		}
 		while (activeRequests.size() > 0 || remainingRequests.size() > 0) {
 			while (!remainingRequests.isEmpty() && remainingRequests.get(0).requestTime.compareTo(currentTime) <= 0) {
 				
-				while (totalDriversAvailability() < preferredTotalDriversAvailability) {
-					for (int i = 0; i < 100; i++) {
+				/*while (totalDriversAvailability() < preferredTotalDriversAvailability) {
+					for (int i = 0; i < 1; i++) {
 						D driver = GetNewDriver();
 						activeDrivers.add(driver);
 						allDrivers.add(driver);
 					}
-				}
+				}*/
 				
 				R r = remainingRequests.get(0);
 				if (ProcessRequest(r, currentTime) == Status.ASSIGNED) {
@@ -66,7 +73,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 			currentTime.Add(advanceTimeInterval);
 		}
 		ResultGenerator.SaveData(GetName(), requests, allDrivers);
-		System.out.println(ResultGenerator.ShortSummary(remainingRequests, allDrivers));
+		System.out.println(ResultGenerator.ShortSummary(requests, allDrivers));
 	}
 	
 	protected ArrayList<D> GetPotentialDrivers(R r) {
@@ -84,7 +91,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 		return potentialDrivers;
 	}
 	
-	private int preferredTotalDriversAvailability = 5000;
+	private int preferredTotalDriversAvailability = 10;
 	private int totalDriversAvailability() {
 		int availability = 0;
 		for (D d : activeDrivers) {

@@ -27,9 +27,6 @@ public class SecondPriceAuctionAlgorithm extends AuctionAlgorithm {
 			return null;
 		}
 		AuctionDriver winner = bids.get(lastIndex).driver;
-		if (winner == null) {
-			System.out.println("Why??");
-		}
 		double secondHighestBid = 0;
 		if (bids.size() > 1 && bids.get(lastIndex - 1).value > 0)
 			secondHighestBid = bids.get(lastIndex - 1).value;
