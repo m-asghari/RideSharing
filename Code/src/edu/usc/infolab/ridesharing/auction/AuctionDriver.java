@@ -33,7 +33,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 		double extraProfit = bestPCS.profit - currentPCS.profit;
 		double extraCost = bestPCS.cost - currentPCS.cost;
 		Bid bid = new Bid(this, bestPCS.schedule, extraProfit, extraCost);
-		bid.distToPickup = this.loc.Distance(request.source.point).First;
+		bid.distToPickup = this.loc.DistanceInMilesAndMillis(request.source.point).First;
 		request.stats.acceptableBids++;
 		this.lastPCS = new ProfitCostSchedule(extraProfit, extraCost, bestPCS.schedule);
 		return bid;
@@ -48,19 +48,10 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 		if (bestPCS.schedule.size() <= currentPCS.schedule.size() || bestPCS.profit < currentPCS.profit) {
 			return ProfitCostSchedule.WorstPCS();
 		}
-		CheckSchedule(bestPCS.schedule);
 		double extraProfit = bestPCS.profit - currentPCS.profit;
 		double extraCost = bestPCS.cost - currentPCS.cost;
 		this.lastPCS = new ProfitCostSchedule(extraProfit, extraCost, bestPCS.schedule); 
 		return lastPCS;
-	}
-	
-	private void CheckSchedule(ArrayList<GPSNode> newSchedule) {
-		for (GPSNode node : this._schedule) {
-			if (!newSchedule.contains(node)) {
-				System.out.println("Something's Wrong");
-			}
-		}
 	}
 	
 	private ProfitCostSchedule LaunchFindBestPCS(AuctionRequest request, Time time) {
@@ -108,24 +99,24 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 	}
 
 	private ProfitCostSchedule GetProfitAndCost(ArrayList<GPSNode> schedule, Time start) {
-		Double fare = this.collectedFare;
-		Double cost = this.GetCost(_paidTravelledDistance, 0.);
+		double fare = this.collectedFare;
+		double cost = this.GetCost(_paidTravelledDistance, 0.);
 		Time time = start.clone();
 		GPSPoint loc = this.loc;
-		Double dist = travelledDistance;
+		double dist = travelledDistance;
 		if (schedule.isEmpty()) {
 			return new ProfitCostSchedule(fare - cost, cost, schedule);
 		}
 		HashMap<AuctionRequest, Time> pickUpTimes = new HashMap<AuctionRequest, Time>();
 		HashMap<AuctionRequest, Double> pickUpDist = new HashMap<AuctionRequest, Double>();
 		
-		Pair<Double, Double> initTrip = loc.Distance(schedule.get(0).point);
+		Pair<Double, Double> initTrip = loc.DistanceInMilesAndMillis(schedule.get(0).point);
 		if (this.onBoardRequests.size() > 0) {
 			initTrip = new Pair<Double, Double>(0., 0.);
 		}
 		for (GPSNode n : schedule) {
-			Pair<Double, Double> trip = loc.Distance(n.point);
-			time.Add(trip.Second.intValue());
+			Pair<Double, Double> trip = loc.DistanceInMilesAndMillis(n.point);
+			time.AddMillis(trip.Second.intValue());
 			dist += trip.First;
 			loc = n.point;
 			AuctionRequest request = (AuctionRequest)n.request;
@@ -138,29 +129,47 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 			}
 			if (n.type == Type.destination) {
 				@SuppressWarnings("unused")
-				int tripTime = time.Subtract(
+				int tripTime = time.SubtractInMinutes(
 						(pickUpTimes.get(request) != null) ? pickUpTimes.get(request) : request.pickUpTime);
-				Double tripDist = dist - 
+				double tripDist = dist - 
 						((pickUpDist.get(request) != null) ? pickUpDist.get(request) : request.pickUpDistance);
-				Double detour = tripDist - request.optDistance;
+				double detour = tripDist - request.optDistance;
 				fare += request.profile(detour) * request.defaultFare;
 				cost = this.GetCost(_paidTravelledDistance + (dist - (travelledDistance + initTrip.First)), 
-						(double)time.Subtract(start) - initTrip.Second); 
+						(double)time.SubtractInMillis(start) - initTrip.Second); 
 			}
 		}
-		Double profit = fare - cost;
+		double profit = fare - cost;
 		return new ProfitCostSchedule(profit, cost, schedule);
 	}
 	
 	@Override
-	protected double GetIncome(AuctionRequest request) {
+	protected ArrayList<AuctionRequest> NewPointUpdates(Time time) {
+		Check(time);
+		ArrayList<AuctionRequest> finishedRequests = super.NewPointUpdates(time);
+		Check(time);
+		return finishedRequests;
+	}
+	
+	@Override
+	protected double GetIncome(AuctionRequest request, Time time) {
+		Check(time);
 		return this.income + (request.finalFare - request.serverProfit);
 	}
 
 	@Override
-	public void AddRequest(AuctionRequest request) {
+	public void AddRequest(AuctionRequest request, Time time) {
+		Check(time);
 		this._schedule = new ArrayList<GPSNode>(lastPCS.schedule);
+		Check(time);
 		this.acceptedRequests.add(request);
+	}
+	
+	@Override
+	public void Check(Time time) {
+		if (this._schedule.isEmpty())
+			return;
+		GetProfitAndCost(this._schedule, time);
 	}
 }
 

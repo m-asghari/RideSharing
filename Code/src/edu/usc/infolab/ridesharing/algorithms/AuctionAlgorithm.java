@@ -34,7 +34,7 @@ public abstract class AuctionAlgorithm extends Algorithm<AuctionRequest, Auction
 			Time start = new Time();
 			bids.add(d.ComputeBid(r, time));
 			Time end = new Time();
-			int bidTimeMillis = end.SubtractMillis(start);
+			int bidTimeMillis = end.SubtractInMillis(start);
 			if (bidTimeMillis > maxBidComputation) {
 				maxBidComputation = bidTimeMillis;
 			}
@@ -44,11 +44,11 @@ public abstract class AuctionAlgorithm extends Algorithm<AuctionRequest, Auction
 		Time start = new Time();
 		AuctionDriver selectedDriver = SelectWinner(r, bids);
 		Time end = new Time();
-		r.stats.assignmentTime = end.SubtractMillis(start);
+		r.stats.assignmentTime = end.SubtractInMillis(start);
 		if (selectedDriver == null) {
 			return Status.NOT_ASSIGNED;
 		}
-		selectedDriver.AddRequest(r);
+		selectedDriver.AddRequest(r, time);
 		return Status.ASSIGNED;
 	}
 	

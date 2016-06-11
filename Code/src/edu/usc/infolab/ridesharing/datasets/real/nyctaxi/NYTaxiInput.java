@@ -16,9 +16,9 @@ import edu.usc.infolab.ridesharing.datasets.Input;
 
 
 public class NYTaxiInput<R extends Request, D extends Driver<R>> extends Input<R, D> {
-	protected static final String filterStart = "2013-05-12 00:00:00";
-	protected static final String filterEnd = "2013-05-12 23:59:59";
-	protected static final int maxWaitTime = 60;
+	protected static final String filterStart = "2013-09-19 00:00:00";
+	protected static final String filterEnd = "2013-09-19 23:59:59";
+	protected static final int maxWaitTime = 15;
 	protected static Double minTripLength = 10.0;
 	
 	protected static final double maxLat = 41.0;

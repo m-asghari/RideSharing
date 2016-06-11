@@ -20,7 +20,7 @@ public class KTTrip implements Comparable<KTTrip>{
 	
 	public void AddNode(KTNode node) {
 		if (!nodes.isEmpty()) {
-			_length += nodes.get(nodes.size()-1).distance(node).First;
+			_length += nodes.get(nodes.size()-1).DistanceInMilesAndMillis(node).First;
 		}
 		nodes.add(node);
 	}
@@ -28,7 +28,7 @@ public class KTTrip implements Comparable<KTTrip>{
 	public void AddToFirst(KTNode node) {
 		nodes.add(0, node);
 		if (nodes.size() > 1) {
-			_length += node.distance(nodes.get(1)).First;
+			_length += node.DistanceInMilesAndMillis(nodes.get(1)).First;
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class KTTrip implements Comparable<KTTrip>{
 		if (nodes.size() <= 2) {
 			_length = 0;
 		} else {
-			_length -= nodes.get(0).distance(nodes.get(1)).First;
+			_length -= nodes.get(0).DistanceInMilesAndMillis(nodes.get(1)).First;
 		}
 		return nodes.remove(0);	
 	}
@@ -52,7 +52,7 @@ public class KTTrip implements Comparable<KTTrip>{
 		if (size <= 2) {
 			_length = 0;
 		} else {
-			_length = nodes.get(size - 1).distance(nodes.get(size - 2)).First;
+			_length = nodes.get(size - 1).DistanceInMilesAndMillis(nodes.get(size - 2)).First;
 		}
 		return nodes.remove(size - 1);
 	}

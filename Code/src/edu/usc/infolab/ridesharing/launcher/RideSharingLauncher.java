@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.algorithms.KineticTreeAlgorithm;
+import edu.usc.infolab.ridesharing.algorithms.NearestNeighborAlgorithm;
 import edu.usc.infolab.ridesharing.algorithms.SecondPriceAuctionAlgorithm;
+import edu.usc.infolab.ridesharing.algorithms.SecondPriceAuctionWithReservedValueAlgorithm;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.AuctionInput;
@@ -24,7 +26,20 @@ public class RideSharingLauncher {
 		
 		SecondPriceAuctionAlgorithm spaAlgo = new SecondPriceAuctionAlgorithm(startTime, 1);
 		spaAlgo.Run(auctionRequests, auctionDrivers);
+
+		auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+		auctionDrivers = new ArrayList<AuctionDriver>();
+		startTime = auctionRequests.get(0).requestTime.clone();
 		
+		SecondPriceAuctionWithReservedValueAlgorithm sparvAlgo = new SecondPriceAuctionWithReservedValueAlgorithm(startTime, 1);
+		sparvAlgo.Run(auctionRequests, auctionDrivers);
+		
+		auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+		auctionDrivers = new ArrayList<AuctionDriver>();
+		startTime = auctionRequests.get(0).requestTime.clone();
+		
+		NearestNeighborAlgorithm nnAlgo = new NearestNeighborAlgorithm(startTime, 1);
+		nnAlgo.Run(auctionRequests, auctionDrivers);
 		
 		ArrayList<KTRequest> ktRequests = KTInput.GenerateRequests(requestsFile);
 		ArrayList<KTDriver> ktDrivers = new ArrayList<KTDriver>();

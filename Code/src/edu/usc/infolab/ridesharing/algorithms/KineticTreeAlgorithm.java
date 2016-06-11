@@ -39,9 +39,9 @@ public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
 		if (selectedDriver == null) {
 			return Status.NOT_ASSIGNED;
 		}
-		selectedDriver.AddRequest(r);
+		selectedDriver.AddRequest(r, time);
 		Time end = new Time();
-		r.stats.schedulingTime = end.SubtractMillis(start);
+		r.stats.schedulingTime = end.SubtractInMillis(start);
 		return Status.ASSIGNED;
 	}
 

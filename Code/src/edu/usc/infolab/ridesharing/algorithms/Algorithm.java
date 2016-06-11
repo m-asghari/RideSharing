@@ -60,7 +60,9 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 			for (Iterator<D> it = activeDrivers.iterator(); it.hasNext();) {
 				D driver = it.next();
 				
+				driver.Check(currentTime);
 				ArrayList<R> doneRequests = driver.UpdateLocation(1, currentTime);
+				driver.Check(currentTime);
 				for (R r : doneRequests) {
 					activeRequests.remove(r);
 				}
@@ -70,7 +72,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 				}
 			}
 			
-			currentTime.Add(advanceTimeInterval);
+			currentTime.AddMinutes(advanceTimeInterval);
 		}
 		ResultGenerator.SaveData(GetName(), requests, allDrivers);
 		System.out.println(ResultGenerator.ShortSummary(requests, allDrivers));
@@ -81,9 +83,9 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 		for (D driver : this.activeDrivers) {
 			if (driver.acceptedRequests.size() + driver.onBoardRequests.size() >= driver.maxPassenger)
 				continue;
-			Double time = driver.loc.Distance(r.source.point).Second;
+			Double time = driver.loc.DistanceInMilesAndMillis(r.source.point).Second;
 			Time eat = currentTime.clone();
-			eat.Add(time.intValue());
+			eat.AddMillis(time.intValue());
 			if (eat.compareTo(r.latestPickUpTime) <= 0) {
 				potentialDrivers.add(driver);
 			}

@@ -34,8 +34,8 @@ public class GPSNode{
 	 * Return a pair of <Distance, Time> for the distance and travel time
 	 * of the shortest path between this and p.
 	 */
-	public Pair<Double, Double> distance(GPSNode other) {
-		return this.point.Distance(other.point);
+	public Pair<Double, Double> DistanceInMilesAndMillis(GPSNode other) {
+		return this.point.DistanceInMilesAndMillis(other.point);
 	}
 	
 	@Override

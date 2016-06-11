@@ -26,13 +26,13 @@ public class KTDriver extends Driver<KTRequest> {
 	public Double InsertRequest(KTRequest request) {
 		KTTrip bestTrip = _ktree.InsertRequest(request);
 		if (bestTrip != null)
-			return bestTrip.Length() + loc.Distance(bestTrip.Get(0).point).First;
+			return bestTrip.Length() + loc.DistanceInMilesAndMillis(bestTrip.Get(0).point).First;
 		else
 			return null;
 	}
 	
 	@Override
-	public void AddRequest(KTRequest r) {
+	public void AddRequest(KTRequest r, Time time) {
 		this.acceptedRequests.add(r);
 		_ktree.AddMostRecentRequest();
 		_currentTrip = _ktree.FindBestTrip();

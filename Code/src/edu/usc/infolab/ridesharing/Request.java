@@ -68,8 +68,8 @@ public class Request implements Comparable<Request>{
 		this.requestTime = requestTime.clone();
 		this.maxWaitTime = maxWaitTime;
 		this.latestPickUpTime = requestTime.clone();
-		this.latestPickUpTime.Add(maxWaitTime);
-		Pair<Double, Double> shortestPath = ShortestPath(this.source.point, this.destination.point); 
+		this.latestPickUpTime.AddMinutes(maxWaitTime);
+		Pair<Double, Double> shortestPath = ShortestPathInMilesAndMinutes(this.source.point, this.destination.point); 
 		this.optDistance = shortestPath.First;
 		this.optTime = shortestPath.Second.intValue();
 		this.pickUpTime = new Time();
@@ -147,7 +147,7 @@ public class Request implements Comparable<Request>{
 		this.dropOffDistance = distance;
 		this.actualDistance = distance - this.pickUpDistance;
 		this.detour = this.actualDistance - this.optDistance;
-		this.actualTime = time.Subtract(this.pickUpTime);
+		this.actualTime = time.SubtractInMinutes(this.pickUpTime);
 		this.finalFare = this.profile(this.detour) * this.defaultFare;
 	}
 	
@@ -161,8 +161,9 @@ public class Request implements Comparable<Request>{
 	 * Depending on the type of P it can either be the Euclidean distance or
 	 * the shortest path on road network.
 	 */
-	private Pair<Double, Double> ShortestPath(GPSPoint s,GPSPoint d) {
-		return s.Distance(d);
+	private Pair<Double, Double> ShortestPathInMilesAndMinutes(GPSPoint s,GPSPoint d) {
+		Pair<Double, Double> milesAndMillis = s.DistanceInMilesAndMillis(d);
+		return new Pair<Double, Double>(milesAndMillis.First, milesAndMillis.Second/Time.MillisInMinute);
 	}
 	
 	public Request clone() {

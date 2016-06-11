@@ -70,7 +70,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 		if (_schedule.isEmpty()) 
 			return finishedRequests;
 		GPSNode dest = _schedule.get(0);
-		double dist = loc.Distance(dest.point).First;
+		double dist = loc.DistanceInMilesAndMillis(dest.point).First;
 		if (dist > length) {
 			MoveTowards(dest.point, length);
 			UpdateTravelledDistance(length);
@@ -80,7 +80,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 			UpdateTravelledDistance(dist);
 			finishedRequests = NewPointUpdates(time);
 			Time newTime = time.clone();
-			newTime.Add(GPSPoint.TravelTimeInMinutes(dist));
+			newTime.AddMillis(GPSPoint.TravelTimeInMillis(dist));
 			
 			if (_schedule.size() > 0) {
 				finishedRequests.addAll(UpdateLocation(length - dist, newTime));
@@ -164,7 +164,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 		request.dropOffDistance = travelledDistance;
 		request.actualDistance = travelledDistance - request.pickUpDistance;
 		request.detour = request.actualDistance - request.optDistance;
-		request.actualTime = time.Subtract(request.pickUpTime);
+		request.actualTime = time.SubtractInMinutes(request.pickUpTime);
 		request.finalFare = request.profile(request.detour) * request.defaultFare;
 		this.onBoardRequests.remove(request);
 		this.servicedRequests.add(request);
@@ -172,21 +172,24 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 			_getPaid = false;
 		}
 		this.collectedFare += request.finalFare;
-		this.income = GetIncome(request);
+		this.income = GetIncome(request, time);
 	}
 	
-	protected double GetIncome(R request) {
+	protected double GetIncome(R request, Time time) {
 		return GetCost(_paidTravelledDistance, null);
 	}
 
+	// if time provided, will be in millisecods
 	protected double GetCost(Double dist, Double time) {
 		return 1 * dist;
 	}
 	
-	public abstract void AddRequest(R r);
+	public abstract void AddRequest(R r, Time time);
 	
 	@Override
 	public int compareTo(Driver<R> o) {
 		return this.start.compareTo(o.start);
 	}
+	
+	public void Check(Time time) {}
 }
