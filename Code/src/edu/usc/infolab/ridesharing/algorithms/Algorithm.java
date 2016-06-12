@@ -11,13 +11,14 @@ import edu.usc.infolab.ridesharing.launcher.ResultGenerator;
 
 public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 	protected Time currentTime;
-	private int advanceTimeInterval;
+	// Ding: vary this in the experiment
+	private int advanceTimeInterval; 
 	
 	public ArrayList<D> activeDrivers;
 	public ArrayList<R> activeRequests;
 	
 	public Algorithm(Time startTime, int ati) {
-		currentTime = (Time)startTime.clone();
+		currentTime = (Time) startTime.clone();
 		advanceTimeInterval = ati;
 		activeDrivers = new ArrayList<D>();
 		activeRequests = new ArrayList<R>();
@@ -34,18 +35,24 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 				allDrivers.add(driver);
 			}
 		}
+
+		// maintain two lists of request
 		while (activeRequests.size() > 0 || remainingRequests.size() > 0) {
-			while (!remainingRequests.isEmpty() && remainingRequests.get(0).requestTime.compareTo(currentTime) <= 0) {
-				
-				/*while (totalDriversAvailability() < preferredTotalDriversAvailability) {
+		    // process each unexpired requests till the current time
+			while (!remainingRequests.isEmpty() && remainingRequests.get(0).requestTime.compareTo(currentTime) <= 0) {				
+				/*              
+				 * add drivers into the simulation if it is less than the predefined number
+				 * while (totalDriversAvailability() < preferredTotalDriversAvailability) {
 					for (int i = 0; i < 1; i++) {
 						D driver = GetNewDriver();
 						activeDrivers.add(driver);
 						allDrivers.add(driver);
 					}
-				}*/
+				}
+				*/
 				
 				R r = remainingRequests.get(0);
+				// process the request with different strategies, second price, first price, nearest neighbor, kinect tree strategy
 				if (ProcessRequest(r, currentTime) == Status.ASSIGNED) {
 					r.stats.assigned = 1;
 					activeRequests.add(r);
@@ -57,21 +64,26 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 				remainingRequests.remove(r);
 			}
 			
+			// update drivers' locations
 			for (Iterator<D> it = activeDrivers.iterator(); it.hasNext();) {
 				D driver = it.next();
 				
 				driver.Check(currentTime);
+				// All driver proceed 1 mile further?
+				// Ding: Why not using ati here?? 
 				ArrayList<R> doneRequests = driver.UpdateLocation(1, currentTime);
 				driver.Check(currentTime);
 				for (R r : doneRequests) {
 					activeRequests.remove(r);
 				}
-								
+				
+				// remove the current driver if the driver's schedule is empty
 				if (driver.end.compareTo(currentTime) < 0 && driver.onBoardRequests.size() == 0 && driver.acceptedRequests.size() == 0) {
 					it.remove();
 				}
 			}
 			
+			// Ding: advance the current time in minutes, varying this parameter
 			currentTime.AddMinutes(advanceTimeInterval);
 		}
 		ResultGenerator.SaveData(GetName(), requests, allDrivers);
@@ -83,9 +95,13 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 		for (D driver : this.activeDrivers) {
 			if (driver.acceptedRequests.size() + driver.onBoardRequests.size() >= driver.maxPassenger)
 				continue;
+			
+			// the time from driver's location to the request's source point
 			Double time = driver.loc.DistanceInMilesAndMillis(r.source.point).Second;
 			Time eat = currentTime.clone();
 			eat.AddMillis(time.intValue());
+
+            //  cannot arrive before the maximal waiting time
 			if (eat.compareTo(r.latestPickUpTime) <= 0) {
 				potentialDrivers.add(driver);
 			}
@@ -94,6 +110,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 	}
 	
 	private int preferredTotalDriversAvailability = 10;
+
 	private int totalDriversAvailability() {
 		int availability = 0;
 		for (D d : activeDrivers) {

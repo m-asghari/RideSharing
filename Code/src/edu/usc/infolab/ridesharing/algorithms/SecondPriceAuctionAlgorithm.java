@@ -26,8 +26,10 @@ public class SecondPriceAuctionAlgorithm extends AuctionAlgorithm {
 		if (bids.get(lastIndex).value == 0 && bids.get(lastIndex).schedule.size() == 0) {
 			return null;
 		}
+		// winner is the last driver with highest bid
 		AuctionDriver winner = bids.get(lastIndex).driver;
 		double secondHighestBid = 0;
+		// using the second highest bid as the profit
 		if (bids.size() > 1 && bids.get(lastIndex - 1).value > 0)
 			secondHighestBid = bids.get(lastIndex - 1).value;
 		this.profit += secondHighestBid;

@@ -44,6 +44,7 @@ public class Request implements Comparable<Request>{
 	public int maxWaitTime;
 	public Time latestPickUpTime;	
 	
+	// optTime and optDistance based on the shortest path between src and dest
 	public int optTime;
 	public double optDistance;
 	
