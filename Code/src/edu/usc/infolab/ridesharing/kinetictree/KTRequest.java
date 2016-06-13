@@ -9,7 +9,7 @@ public class KTRequest extends Request {
 	
 	public KTRequest(GPSPoint source, GPSPoint destination, Time requestTime, int maxWaitTime) {
 		super(source, destination, requestTime, maxWaitTime);
-		this.serviceConstraint = 0.9;
+		this.serviceConstraint = 10000;
 	}
 	
 	protected KTRequest(KTRequest other) {

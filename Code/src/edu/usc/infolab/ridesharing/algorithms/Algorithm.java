@@ -28,7 +28,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 		ArrayList<D> allDrivers = new ArrayList<D>(drivers);
 		int reqCount = 0;
 		while (totalDriversAvailability() < preferredTotalDriversAvailability) {
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 500; i++) {
 				D driver = GetNewDriver();
 				activeDrivers.add(driver);
 				allDrivers.add(driver);
@@ -51,7 +51,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 					activeRequests.add(r);
 				}
 				reqCount++;
-				if (reqCount % 100 == 0) {
+				if (reqCount % 5000 == 0) {
 					System.out.println(String.format("Processed %d requests.", reqCount));
 				}
 				remainingRequests.remove(r);

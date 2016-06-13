@@ -24,12 +24,12 @@ public class RideSharingLauncher {
 		ArrayList<AuctionDriver> auctionDrivers = new ArrayList<AuctionDriver>();
 		Time startTime = auctionRequests.get(0).requestTime.clone();
 		
-		SecondPriceAuctionAlgorithm spaAlgo = new SecondPriceAuctionAlgorithm(startTime, 1);
-		spaAlgo.Run(auctionRequests, auctionDrivers);
+		//SecondPriceAuctionAlgorithm spaAlgo = new SecondPriceAuctionAlgorithm(startTime, 1);
+		//spaAlgo.Run(auctionRequests, auctionDrivers);
 
-		auctionRequests = AuctionInput.GenerateRequests(requestsFile);
-		auctionDrivers = new ArrayList<AuctionDriver>();
-		startTime = auctionRequests.get(0).requestTime.clone();
+		//auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+		//auctionDrivers = new ArrayList<AuctionDriver>();
+		//startTime = auctionRequests.get(0).requestTime.clone();
 		
 		SecondPriceAuctionWithReservedValueAlgorithm sparvAlgo = new SecondPriceAuctionWithReservedValueAlgorithm(startTime, 1);
 		sparvAlgo.Run(auctionRequests, auctionDrivers);

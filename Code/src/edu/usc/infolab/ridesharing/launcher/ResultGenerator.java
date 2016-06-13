@@ -27,6 +27,7 @@ public class ResultGenerator {
 		double totalIncome = 0;
 		double serverProfit = 0;
 		double totalTravelledDistance = 0;
+		double avgResponseTime = 0;
 		for (D driver : drivers) {
 			if (!driver.servicedRequests.isEmpty()) {
 				usedDrivers++;
@@ -39,6 +40,8 @@ public class ResultGenerator {
 			if (request.stats.assigned == 1) {
 				assignedRequests++;
 				totalPaidFare += request.finalFare;
+				avgResponseTime += request.stats.assignmentTime;
+				avgResponseTime += request.stats.schedulingTime;
 			}
 			if (request instanceof AuctionRequest) {
 				AuctionRequest r = (AuctionRequest)request;
@@ -54,6 +57,7 @@ public class ResultGenerator {
 			.append(String.format("Total Income: %.2f\n", totalIncome))
 			.append(String.format("Server Profit: %.2f and %.2f\n", totalCollectedFare - totalIncome, serverProfit))
 			.append(String.format("Total Travelled Distance: %.2f\n", totalTravelledDistance))
+			.append(String.format("Response Time: %.2f\n", avgResponseTime/assignedRequests))
 			.toString();
 	}
 	

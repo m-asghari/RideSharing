@@ -55,6 +55,9 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 	}
 	
 	private ProfitCostSchedule LaunchFindBestPCS(AuctionRequest request, Time time) {
+		if (this._schedule.size() > 6) {
+			return InsertRequest(request, time);
+		}
 		ArrayList<GPSNode> fixedNodes = new ArrayList<GPSNode>();
 		ArrayList<GPSNode> remainingNodes = new ArrayList<GPSNode>();
 		// Only add source node of requests that haven't been picked up to insure the source node
@@ -69,6 +72,23 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 		remainingNodes.add(request.source);
 		ProfitCostSchedule bestPCS = ProfitCostSchedule.WorstPCS();
 		return FindBestPCS(fixedNodes, remainingNodes, bestPCS, time);
+	}
+	
+	private ProfitCostSchedule InsertRequest(AuctionRequest request, Time time) {
+		ProfitCostSchedule bestPCS = ProfitCostSchedule.WorstPCS();
+		for (int i = 0; i < this._schedule.size(); i++) {
+			ArrayList<GPSNode> newSchedule1 = new ArrayList<GPSNode>(this._schedule);
+			newSchedule1.add(i, request.source);
+			for (int j = i+1; j < newSchedule1.size(); j++) {
+				ArrayList<GPSNode> newSchedule2 = new ArrayList<GPSNode>(newSchedule1);
+				newSchedule2.add(j, request.destination);
+				ProfitCostSchedule pcs = GetProfitAndCost(newSchedule2, time);
+				if (!pcs.schedule.isEmpty() && pcs.profit > bestPCS.profit) {
+					bestPCS = pcs;
+				}
+			}
+		}
+		return bestPCS;
 	}
 
 	/*
