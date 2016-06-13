@@ -20,6 +20,7 @@ public class Bid implements Comparable<Bid>{
 		this.distToPickup = Utils.Max_Double;
 	}
 	
+	// with maximal cost, minus infinity cost
 	public static Bid WorstBid() {
 		return new Bid(null, new ArrayList<GPSNode>(), Utils.Min_Double, Utils.Max_Double);
 	}

@@ -11,6 +11,7 @@ import edu.usc.infolab.geom.GPSPoint;
 public abstract class Driver<R extends Request> implements Comparable<Driver<R>>{
 	private static int driverCtr = 0;
 	
+	// loc???
 	public GPSPoint loc;
 	public ArrayList<R> acceptedRequests;
 	public ArrayList<R> onBoardRequests;
@@ -65,16 +66,25 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 		}
 	}
 	
+	/**
+	 * update the location of driver
+	 * this update should based on ATI, but not length
+	 * @param length
+	 * @param time
+	 * @return
+	 */
 	public ArrayList<R> UpdateLocation(double length, Time time) {
 		ArrayList<R> finishedRequests = new ArrayList<R>();
 		if (_schedule.isEmpty()) 
 			return finishedRequests;
 		GPSNode dest = _schedule.get(0);
 		double dist = loc.DistanceInMilesAndMillis(dest.point).First;
+        // the request has finished
 		if (dist > length) {
 			MoveTowards(dest.point, length);
 			UpdateTravelledDistance(length);
 		} else {
+		    //
 			this.loc.Set(dest.point);
 			
 			UpdateTravelledDistance(dist);
