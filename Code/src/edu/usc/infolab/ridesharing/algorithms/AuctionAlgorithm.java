@@ -17,7 +17,7 @@ public abstract class AuctionAlgorithm extends Algorithm<AuctionRequest, Auction
 	 * 
 	 * @param distance
 	 * @param time
-	 * @return
+	 * @return default fare
 	 */
 	public static Double FARE(Double distance, int time) {
 		return 5 + (2. * distance);

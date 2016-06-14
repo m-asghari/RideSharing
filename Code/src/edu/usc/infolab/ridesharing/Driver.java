@@ -1,12 +1,12 @@
 package edu.usc.infolab.ridesharing;
 
-import java.util.ArrayList;
-
-import javax.activity.InvalidActivityException;
-
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
+
+import java.util.ArrayList;
+
+import javax.activity.InvalidActivityException;
 
 public abstract class Driver<R extends Request> implements Comparable<Driver<R>>{
 	private static int driverCtr = 0;
@@ -42,7 +42,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 		this.servicedRequests = new ArrayList<R>();
 		this._schedule = new ArrayList<GPSNode>();
 		this.travelledDistance = 0;
-		this.maxPassenger = 5;
+		this.maxPassenger = Utils.MaxPassengers;
 		this._getPaid = false;
 		this._paidTravelledDistance = 0;
 		this.collectedFare = 0;
@@ -71,7 +71,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 	 * this update should based on ATI, but not length
 	 * @param length
 	 * @param time
-	 * @return
+	 * @return requests that finished with this location update
 	 */
 	public ArrayList<R> UpdateLocation(double length, Time time) {
 		ArrayList<R> finishedRequests = new ArrayList<R>();
@@ -185,12 +185,14 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 		this.income = GetIncome(request, time);
 	}
 	
-	protected double GetIncome(R request, Time time) {
+	protected double GetIncome(
+	    @SuppressWarnings("unused") R request, 
+	    @SuppressWarnings("unused") Time time) {
 		return GetCost(_paidTravelledDistance, null);
 	}
 
 	// if time provided, will be in millisecods
-	protected double GetCost(Double dist, Double time) {
+	protected double GetCost(Double dist, @SuppressWarnings("unused") Double time) {
 		return 1 * dist;
 	}
 	
@@ -201,5 +203,5 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 		return this.start.compareTo(o.start);
 	}
 	
-	public void Check(Time time) {}
+	public void Check(@SuppressWarnings("unused") Time time) {}
 }

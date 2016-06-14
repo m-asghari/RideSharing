@@ -1,13 +1,13 @@
 package edu.usc.infolab.ridesharing.algorithms;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.launcher.ResultGenerator;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 	protected Time currentTime;
@@ -18,29 +18,25 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 	public ArrayList<R> activeRequests;
 	
 	public Algorithm(Time startTime, int ati) {
-		currentTime = (Time) startTime.clone();
+		currentTime = startTime.clone();
 		advanceTimeInterval = ati;
 		activeDrivers = new ArrayList<D>();
 		activeRequests = new ArrayList<R>();
 	}
 	
-	public void Run(ArrayList<R> requests, ArrayList<D> drivers) {
+	public String Run(ArrayList<R> requests, ArrayList<D> drivers) {
 		ArrayList<R> remainingRequests = new ArrayList<R>(requests);
+		activeDrivers = new ArrayList<>(drivers);
 		ArrayList<D> allDrivers = new ArrayList<D>(drivers);
 		int reqCount = 0;
-		while (totalDriversAvailability() < preferredTotalDriversAvailability) {
-			for (int i = 0; i < 500; i++) {
-				D driver = GetNewDriver();
-				activeDrivers.add(driver);
-				allDrivers.add(driver);
-			}
-		}
 
 		// maintain two lists of request
 		while (activeRequests.size() > 0 || remainingRequests.size() > 0) {
 		    // process each unexpired requests till the current time
 			while (!remainingRequests.isEmpty() && remainingRequests.get(0).requestTime.compareTo(currentTime) <= 0) {				
-				/*              
+				
+			  
+			    /*              
 				 * add drivers into the simulation if it is less than the predefined number
 				 * while (totalDriversAvailability() < preferredTotalDriversAvailability) {
 					for (int i = 0; i < 1; i++) {
@@ -87,7 +83,8 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 			currentTime.AddMinutes(advanceTimeInterval);
 		}
 		ResultGenerator.SaveData(GetName(), requests, allDrivers);
-		System.out.println(ResultGenerator.ShortSummary(requests, allDrivers));
+		System.out.println(ResultGenerator.Summary(requests, allDrivers));
+		return ResultGenerator.ShortSummary(requests, allDrivers);
 	}
 	
 	protected ArrayList<D> GetPotentialDrivers(R r) {
@@ -109,9 +106,11 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 		return potentialDrivers;
 	}
 	
-	private int preferredTotalDriversAvailability = 10;
+	@SuppressWarnings("unused")
+  private int preferredTotalDriversAvailability = 10;
 
-	private int totalDriversAvailability() {
+	@SuppressWarnings("unused")
+  private int totalDriversAvailability() {
 		int availability = 0;
 		for (D d : activeDrivers) {
 			availability += (d.maxPassenger - (d.acceptedRequests.size() + d.onBoardRequests.size()));
@@ -123,5 +122,5 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 	
 	protected abstract D GetNewDriver();
 	
-	protected abstract String GetName();
+	public abstract String GetName();
 }

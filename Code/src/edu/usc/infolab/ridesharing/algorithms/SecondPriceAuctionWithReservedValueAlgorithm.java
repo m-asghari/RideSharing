@@ -33,7 +33,7 @@ public class SecondPriceAuctionWithReservedValueAlgorithm extends AuctionAlgorit
 	}
 
 	@Override
-	protected String GetName() {
+	public String GetName() {
 		return "SPARV";
 	}
 

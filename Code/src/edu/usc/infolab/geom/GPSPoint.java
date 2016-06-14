@@ -33,7 +33,7 @@ public class GPSPoint {
     public void Update(double lat, double lng) {
         this._lat = lat;
         this._lng = lng;
-    };
+    }
     
     public void Set(GPSPoint p) {
         this.Update(p._lat, p._lng);
@@ -90,7 +90,7 @@ public class GPSPoint {
     
     @Override
     public String toString() {
-        return String.format("lng: %.6f, lat: %.6f", this._lng, this._lat);
+        return String.format("%f,%f", this._lat, this._lng);
     }
 
 }

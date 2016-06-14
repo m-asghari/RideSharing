@@ -5,4 +5,8 @@ public class Utils {
 	public static Double Min_Double = -1. * Integer.MAX_VALUE;
 	public static Integer Max_Integer = Integer.MAX_VALUE;
 	public static Integer Min_Integer = Integer.MIN_VALUE;
+	
+	public static Integer MaxWaitTime = 5;
+	public static Integer NumberOfVehicles = 50;
+	public static Integer MaxPassengers = 3;
 }

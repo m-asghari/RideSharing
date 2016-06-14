@@ -1,5 +1,11 @@
 package edu.usc.infolab.ridesharing.datasets.real.nyctaxi;
 
+import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.ridesharing.Time;
+import edu.usc.infolab.ridesharing.Utils;
+import edu.usc.infolab.ridesharing.kinetictree.KTDriver;
+import edu.usc.infolab.ridesharing.kinetictree.KTRequest;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,17 +14,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import edu.usc.infolab.geom.GPSPoint;
-import edu.usc.infolab.ridesharing.Time;
-import edu.usc.infolab.ridesharing.kinetictree.KTDriver;
-import edu.usc.infolab.ridesharing.kinetictree.KTRequest;
-
 public class KTInput extends NYTaxiInput<KTRequest, KTDriver> {	
 	/*
 	 * Format of files should be:
 	 * pickUp_DateTime, dropOff_DataTime, passenger_count, tripTime_Seconds, tripDistance, pickUp_lng, pickUp_lat, dropOff_lng, dropOff_lat
 	 */
 	public static ArrayList<KTRequest> GenerateRequests(File inFile) {
+	  maxWaitTime = Utils.MaxWaitTime;
 		ArrayList<KTRequest> requests = new ArrayList<KTRequest>();
 		try {
 			FileReader fr = new FileReader(inFile);
@@ -48,6 +50,33 @@ public class KTInput extends NYTaxiInput<KTRequest, KTDriver> {
 		Collections.sort(requests);
 		return requests;
 	}
+	
+	public static ArrayList<KTDriver> GenerateDrivers(File inFile, int size) {
+      ArrayList<KTDriver> drivers = new ArrayList<KTDriver>();
+      int driverCtr = 0;
+      try {
+        FileReader fr = new FileReader(inFile);
+        BufferedReader br = new BufferedReader(fr);
+        
+        String line = "";
+        while (driverCtr < size && (line = br.readLine()) != null) {
+          String[] fields = line.split(",");
+          GPSPoint initLoc = new GPSPoint(Double.parseDouble(fields[0]), Double.parseDouble(fields[1]));
+          Time start = new Time(Time.sdf.parse(fields[2]));
+          Time end = new Time(Time.sdf.parse(fields[3]));
+          drivers.add(new KTDriver(initLoc, start, end));
+          driverCtr++;
+        }
+        br.close();
+        fr.close();
+      } catch (ParseException pe) {
+        pe.printStackTrace();
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+      Collections.sort(drivers);
+      return drivers;
+    }
 	
 	public static KTDriver GetNewDriver() {
 		try {

@@ -51,7 +51,7 @@ public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
 	}
 	
 	@Override
-	protected String GetName() {
+	public String GetName() {
 		return "KTA";
 	}
 

@@ -10,6 +10,7 @@ import java.util.Collections;
 
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Time;
+import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 
@@ -19,6 +20,7 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 	 * pickUp_DateTime, dropOff_DataTime, passenger_count, tripTime_Seconds, tripDistance, pickUp_lng, pickUp_lat, dropOff_lng, dropOff_lat
 	 */
 	public static ArrayList<AuctionRequest> GenerateRequests(File inFile) {
+	  maxWaitTime = Utils.MaxWaitTime;
 		ArrayList<AuctionRequest> requests = new ArrayList<AuctionRequest>();
 		try {
 			FileReader fr = new FileReader(inFile);
@@ -49,13 +51,31 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 		return requests;
 	}
 	
-	public static ArrayList<AuctionDriver> GenerateDrivers(int size) {
-		ArrayList<AuctionDriver> drivers = new ArrayList<AuctionDriver>();
-		for (int d = 0; d < size; d++) {
-			drivers.add(GetNewDriver());
-		}
-		Collections.sort(drivers);
-		return drivers;
+	public static ArrayList<AuctionDriver> GenerateDrivers(File inFile, int size) {
+	  ArrayList<AuctionDriver> drivers = new ArrayList<AuctionDriver>();
+	  int driverCtr = 0;
+	  try {
+	    FileReader fr = new FileReader(inFile);
+	    BufferedReader br = new BufferedReader(fr);
+	    
+	    String line = "";
+	    while (driverCtr < size && (line = br.readLine()) != null) {
+	      String[] fields = line.split(",");
+	      GPSPoint initLoc = new GPSPoint(Double.parseDouble(fields[0]), Double.parseDouble(fields[1]));
+	      Time start = new Time(Time.sdf.parse(fields[2]));
+	      Time end = new Time(Time.sdf.parse(fields[3]));
+	      drivers.add(new AuctionDriver(initLoc, start, end));
+	      driverCtr++;
+	    }
+	    br.close();
+	    fr.close();
+      } catch (ParseException pe) {
+        pe.printStackTrace();
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+	  Collections.sort(drivers);
+	  return drivers;
 	}
 	
 	public static AuctionDriver GetNewDriver() {

@@ -18,7 +18,7 @@ import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 
 public class ResultGenerator {
 	
-	public static <R extends Request, D extends Driver<R>> String ShortSummary(ArrayList<R> requests, ArrayList<D> drivers) {
+	public static <R extends Request, D extends Driver<R>> String Summary(ArrayList<R> requests, ArrayList<D> drivers) {
 		int totalRequests = requests.size();
 		int assignedRequests = 0;
 		int usedDrivers = 0;
@@ -60,6 +60,32 @@ public class ResultGenerator {
 			.append(String.format("Response Time: %.2f\n", avgResponseTime/assignedRequests))
 			.toString();
 	}
+	
+	public static <R extends Request, D extends Driver<R>> String ShortSummary(ArrayList<R> requests, ArrayList<D> drivers) {
+      int totalRequests = requests.size();
+      int assignedRequests = 0;
+      int usedDrivers = 0;
+      double totalCollectedFare = 0;
+      double totalIncome = 0;
+      double avgResponseTime = 0;
+      for (D driver : drivers) {
+          if (!driver.servicedRequests.isEmpty()) {
+              usedDrivers++;
+              totalCollectedFare += driver.collectedFare;
+              totalIncome += driver.income;
+          }
+      }
+      for (R request : requests) {
+          if (request.stats.assigned == 1) {
+              assignedRequests++;
+              avgResponseTime += request.stats.assignmentTime;
+              avgResponseTime += request.stats.schedulingTime;
+          }
+      }
+      return String.format("%d,%d,%d,%.2f,%.2f\n",
+          totalRequests, assignedRequests, usedDrivers, totalCollectedFare - totalIncome,
+          avgResponseTime/assignedRequests); 
+  }
 	
 	public static <R extends Request, D extends Driver<R>> void SaveData(String name, ArrayList<R> requests, ArrayList<D> drivers) {
 		try {

@@ -38,7 +38,7 @@ public class SecondPriceAuctionAlgorithm extends AuctionAlgorithm {
 	}
 	
 	@Override
-	protected String GetName() {
+	public String GetName() {
 		return "SPA";
 	}
 }

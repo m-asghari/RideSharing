@@ -1,24 +1,25 @@
 package edu.usc.infolab.ridesharing.datasets.real.nyctaxi;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.util.Random;
-
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.datasets.Input;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.Random;
+
 
 public class NYTaxiInput<R extends Request, D extends Driver<R>> extends Input<R, D> {
 	protected static final String filterStart = "2013-09-19 00:00:00";
 	protected static final String filterEnd = "2013-09-19 23:59:59";
-	protected static final int maxWaitTime = 60;
+	protected static int maxWaitTime;
 	protected static Double minTripLength = 10.0;
 	
 	protected static final double maxLat = 41.0;
@@ -63,6 +64,7 @@ public class NYTaxiInput<R extends Request, D extends Driver<R>> extends Input<R
 		return true;
 	}*/
 	
+	@SuppressWarnings("unused")
 	private static void FilterData(File dir) {
 		try {
 			Time start = new Time(Time.sdf.parse(filterStart));
@@ -122,9 +124,32 @@ public class NYTaxiInput<R extends Request, D extends Driver<R>> extends Input<R
 		return new GPSPoint(lat, lng);
 	}
 	
+	@SuppressWarnings("unused")
+	private static void GenerateInputDrivers(File dir, int size) {
+	  try {
+	    File oFile = new File(dir,
+	        String.format("drivers_%s.csv",filterStart.substring(0, 10).replace("-", "_")));
+	    if (!oFile.getParentFile().exists()) {
+	      oFile.getParentFile().mkdir();
+	    }
+	    FileWriter fw = new FileWriter(oFile);
+	    BufferedWriter bw = new BufferedWriter(fw);
+    
+	    for (int d = 0; d < size; d++) {
+	      GPSPoint initialLoc = NewRandomPoint();
+	      bw.write(String.format("%s,%s,%s\n", initialLoc.toString(), filterStart, filterEnd));
+	    }
+	    bw.close();
+	    fw.close();
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+	  
+	}
+	
 	public static void main(String[] args) {
-		//String file = "../Data/NYCTaxiDataset/Trips/Filtered/trips_2013_05_12.csv";
-		String file = "../Data/NYCTaxiDataset/Trips";
-		FilterData(new File(file));
+		String file = "../Data/NYCTaxiDataset/Taxis";
+		//FilterData(new File(file));
+		GenerateInputDrivers(new File(file), 1500);
 	}
 }
