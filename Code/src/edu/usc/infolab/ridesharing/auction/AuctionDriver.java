@@ -1,14 +1,15 @@
 package edu.usc.infolab.ridesharing.auction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Pair;
 import edu.usc.infolab.ridesharing.Time;
+import edu.usc.infolab.ridesharing.Utils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AuctionDriver extends Driver<AuctionRequest> {
   private ProfitCostSchedule lastPCS;
@@ -134,7 +135,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
    * @param start
    * @return the profit and cost of input schedule
    */
-  private ProfitCostSchedule GetProfitAndCost(
+  protected ProfitCostSchedule GetProfitAndCost(
       ArrayList<GPSNode> schedule, Time start, boolean currentSchedule) {
     double fare = this.collectedFare;
     double cost = this.GetCost(_paidTravelledDistance, 0.);
@@ -175,6 +176,8 @@ public class AuctionDriver extends Driver<AuctionRequest> {
                     ? pickUpDist.get(request)
                     : request.pickUpDistance);
         double detour = tripDist - request.optDistance;
+        if (!currentSchedule && !Utils.IsAcceptableDetour(detour, request.optDistance))
+          return ProfitCostSchedule.WorstPCS();
         fare += request.profile(detour) * request.defaultFare;
         cost =
             this.GetCost(
@@ -188,18 +191,12 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 
   @Override
   protected ArrayList<AuctionRequest> NewPointUpdates(Time time) {
-    Check(time);
     ArrayList<AuctionRequest> finishedRequests = super.NewPointUpdates(time);
-    Check(time);
     return finishedRequests;
   }
 
   @Override
   protected double GetIncome(AuctionRequest request, Time time) {
-    Check(time);
-    if (this.income + (request.finalFare - request.serverProfit) < -10000) {
-      System.out.println("Wait Here");
-    }
     return this.income + (request.finalFare - request.serverProfit);
   }
 

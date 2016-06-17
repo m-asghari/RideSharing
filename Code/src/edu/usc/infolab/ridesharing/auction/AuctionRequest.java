@@ -33,6 +33,7 @@ public class AuctionRequest extends Request {
         super.DropOff(distance, time);
     }
     
+    @Override
     public String PrintShortResults() {
         StringBuilder results = new StringBuilder();
         results.append(super.PrintShortResults());
@@ -40,6 +41,7 @@ public class AuctionRequest extends Request {
         return results.toString();
     }
     
+    @Override
     public String PrintLongResults() {
         StringBuilder results = new StringBuilder();
         results.append(super.PrintLongResults());

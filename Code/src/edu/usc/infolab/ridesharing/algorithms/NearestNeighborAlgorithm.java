@@ -1,14 +1,13 @@
 package edu.usc.infolab.ridesharing.algorithms;
 
-import java.util.ArrayList;
-
 import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.auction.ProfitCostSchedule;
-import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.AuctionInput;
+
+import java.util.ArrayList;
 
 public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionDriver> {
   public Double profit;
@@ -23,10 +22,10 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     profit = 0.;
   }
 
-  @Override
-  protected AuctionDriver GetNewDriver() {
-    return AuctionInput.GetNewDriver();
-  }
+  //@Override
+  //protected AuctionDriver GetNewDriver() {
+  //  return AuctionInput.GetNewDriver();
+  //}
 
   @Override
   public String GetName() {

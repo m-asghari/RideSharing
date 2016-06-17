@@ -24,20 +24,25 @@ public class RideSharingLauncher {
 
 	public static void main(String[] args) {
 		File requestsFile = new File("../Data/trips_2013_05_12.csv");
-		File driversFile = new File("../Data/drivers_2013_05_12.csv");
-		StringBuilder summaries = new StringBuilder();		
+		File driversFile = new File("../Data/drivers_from_reqs_2013_05_12.csv");
+		StringBuilder summaries = new StringBuilder();
 		
-		/*Utils.MaxWaitTime = 30;
+		// Create Results Directory
+		if (!Utils.resultsDir.exists()) {
+		  Utils.resultsDir.mkdir();
+		}
+		
+		/*Utils.MaxWaitTime = 3;
 		Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
-		RunNearestNeighbor(requestsFile, driversFile);*/
+		RunAlgorithms(requestsFile, driversFile);*/
 		
 		
-		int[] maxWaitTimes = new int[]{5, 10, 15, 20, 30, 60};
-        int[] numOfVehicles = new int[]{50, 100, 250, 500, 1000};
+		int[] maxWaitTimes = new int[]{3, 5, 10, 15, 20, 30};
+        int[] numOfVehicles = new int[]{500, 1000, 2500, 5000, 10000};
         int[] numOfPassengers = new int[]{3, 4, 5, 6, 7};
         
-		Utils.NumberOfVehicles = 500;
+		Utils.NumberOfVehicles = 2000;
 		Utils.MaxPassengers = 4;
 		for (int maxWaitTime : maxWaitTimes) {
 		  Utils.MaxWaitTime = maxWaitTime;
@@ -47,7 +52,7 @@ public class RideSharingLauncher {
 		  summaries.append(RunAlgorithms(requestsFile, driversFile));		  
 		}
 		
-		Utils.MaxWaitTime = 15;
+		Utils.MaxWaitTime = 10;
         Utils.MaxPassengers = 4;
 		for (int numOfVehicle : numOfVehicles) {
 		  Utils.NumberOfVehicles = numOfVehicle;
@@ -57,8 +62,8 @@ public class RideSharingLauncher {
 		  summaries.append(RunAlgorithms(requestsFile, driversFile));
 		}
 		
-		Utils.MaxWaitTime = 15;
-        Utils.NumberOfVehicles = 500;
+		Utils.MaxWaitTime = 10;
+        Utils.NumberOfVehicles = 2000;
         for (int numOfPassenger : numOfPassengers) {
 		  Utils.MaxPassengers = numOfPassenger;
 		  System.out.println(String.format("Starting: "
@@ -97,7 +102,7 @@ public class RideSharingLauncher {
       ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
       Time startTime = auctionRequests.get(0).requestTime.clone();
       
-      SecondPriceAuctionAlgorithm spaAlgo = new SecondPriceAuctionAlgorithm(startTime, 1);
+      SecondPriceAuctionAlgorithm<AuctionDriver> spaAlgo = new SecondPriceAuctionAlgorithm<AuctionDriver>(startTime, 1);
       return String.format("%d,%d,%d,%s,%s\n",
           Utils.MaxWaitTime,
           Utils.NumberOfVehicles,
@@ -111,7 +116,8 @@ public class RideSharingLauncher {
       ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
       Time startTime = auctionRequests.get(0).requestTime.clone();
       
-      SecondPriceAuctionWithReservedValueAlgorithm sparvAlgo = new SecondPriceAuctionWithReservedValueAlgorithm(startTime, 1);
+      SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver> sparvAlgo = 
+          new SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver>(startTime, 1);
       return String.format("%d,%d,%d,%s,%s\n",
           Utils.MaxWaitTime,
           Utils.NumberOfVehicles,

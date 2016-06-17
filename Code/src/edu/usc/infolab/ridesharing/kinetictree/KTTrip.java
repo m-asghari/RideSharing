@@ -74,6 +74,7 @@ public class KTTrip implements Comparable<KTTrip>{
 		return retNodes;
 	}
 	
+	@Override
 	public KTTrip clone() {
 		return new KTTrip(this);
 	}

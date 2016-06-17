@@ -1,16 +1,15 @@
 package edu.usc.infolab.ridesharing.algorithms;
 
-import java.util.ArrayList;
-
 import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.auction.Bid;
-import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.AuctionInput;
 
-public abstract class AuctionAlgorithm extends Algorithm<AuctionRequest, AuctionDriver> {
+import java.util.ArrayList;
+
+public abstract class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<AuctionRequest, D> {
 	public Double profit;
 	
 	/**
@@ -33,7 +32,7 @@ public abstract class AuctionAlgorithm extends Algorithm<AuctionRequest, Auction
 	 */
 	@Override
 	public Status ProcessRequest(AuctionRequest r, Time time) {
-		ArrayList<AuctionDriver> potentialDrivers = GetPotentialDrivers(r);
+		ArrayList<D> potentialDrivers = GetPotentialDrivers(r);
 		r.stats.potentialDrivers = potentialDrivers.size();
 		ArrayList<Bid> bids = new ArrayList<Bid>();
 		
@@ -65,10 +64,10 @@ public abstract class AuctionAlgorithm extends Algorithm<AuctionRequest, Auction
 		return Status.ASSIGNED;
 	}
 	
-	@Override
-	protected AuctionDriver GetNewDriver() {
-		return AuctionInput.GetNewDriver();
-	}
+	//@Override
+	//protected D GetNewDriver() {
+	//	return (D)AuctionInput.GetNewDriver();
+	//}
 
 	public abstract AuctionDriver SelectWinner(AuctionRequest r, ArrayList<Bid> bids);
 

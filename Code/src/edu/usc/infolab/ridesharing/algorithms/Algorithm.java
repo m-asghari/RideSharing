@@ -84,6 +84,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 		}
 		ResultGenerator.SaveData(GetName(), requests, allDrivers);
 		System.out.println(ResultGenerator.Summary(requests, allDrivers));
+		//System.out.println(ResultGenerator.FindFailureReasons(requests));
 		return ResultGenerator.ShortSummary(requests, allDrivers);
 	}
 	
@@ -120,7 +121,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 	
 	public abstract Status ProcessRequest(R r, Time time);
 	
-	protected abstract D GetNewDriver();
+	//protected abstract D GetNewDriver();
 	
 	public abstract String GetName();
 }

@@ -24,7 +24,7 @@ public class EuclideanPoint extends Point {
 	public void Update(double x, double y) {
 		super.Update(x,y);
 		_p.setLocation(x, y);
-	};
+	}
 
 	@Override
 	public Pair<Double, Double> Distance(Point o) {

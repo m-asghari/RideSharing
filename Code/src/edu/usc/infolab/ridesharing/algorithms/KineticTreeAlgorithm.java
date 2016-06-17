@@ -1,15 +1,14 @@
 package edu.usc.infolab.ridesharing.algorithms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
-import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.KTInput;
 import edu.usc.infolab.ridesharing.kinetictree.KTDriver;
 import edu.usc.infolab.ridesharing.kinetictree.KTRequest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
 
@@ -45,10 +44,10 @@ public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
 		return Status.ASSIGNED;
 	}
 
-	@Override
-	protected KTDriver GetNewDriver() {
-		return KTInput.GetNewDriver();
-	}
+	//@Override
+	//protected KTDriver GetNewDriver() {
+	//	return KTInput.GetNewDriver();
+	//}
 	
 	@Override
 	public String GetName() {

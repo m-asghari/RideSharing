@@ -8,7 +8,7 @@ import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.auction.Bid;
 
-public class SecondPriceAuctionWithReservedValueAlgorithm extends AuctionAlgorithm {
+public class SecondPriceAuctionWithReservedValueAlgorithm<D extends AuctionDriver> extends AuctionAlgorithm<D> {
 
 	public SecondPriceAuctionWithReservedValueAlgorithm(Time startTime, int ati) {
 		super(startTime, ati);

@@ -53,6 +53,7 @@ public class Time implements Comparable<Time>{
 		return _cal.compareTo(o._cal);
 	}
 	
+	@Override
 	public Time clone(){
 		return new Time(this);
 	}

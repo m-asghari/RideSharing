@@ -41,7 +41,7 @@ public class KTNode extends GPSNode{
 	}
 	
 	protected KTNode(KTNode other) {
-		this.point = (GPSPoint)other.point.clone();
+		this.point = other.point.clone();
 		this.next = new ArrayList<KTNode>();
 		for (KTNode otherNode : other.next) {
 			this.next.add(otherNode.clone());
@@ -55,6 +55,7 @@ public class KTNode extends GPSNode{
 		//activePickedUp = new ArrayList<KTRequest>(activePickedUp);
 	}
 	
+	@Override
 	public KTNode clone(){
 		return new KTNode(this);
 	}

@@ -37,5 +37,6 @@ public abstract class Point {
 	 */
 	public abstract Pair<Double, Double> Distance(Point p);
 	
+	@Override
 	public abstract Point clone();
 }
