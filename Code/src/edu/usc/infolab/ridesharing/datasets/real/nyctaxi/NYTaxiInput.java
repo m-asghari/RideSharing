@@ -4,6 +4,7 @@ import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
+import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.datasets.Input;
 
 import java.io.BufferedReader;
@@ -19,7 +20,7 @@ public class NYTaxiInput<R extends Request, D extends Driver<R>> extends Input<R
   protected static final String filterStart = "2013-09-19 00:00:00";
   protected static final String filterEnd = "2013-09-19 23:59:59";
   protected static int maxWaitTime;
-  protected static Double minTripLength = 5.0;
+  protected static Double minTripLength = 10.0;
 
   protected static final double maxLat = 41.0;
   protected static final double minLat = 40.0;
@@ -74,7 +75,7 @@ public class NYTaxiInput<R extends Request, D extends Driver<R>> extends Input<R
               dir,
               String.format(
                   "/Filtered/trips_%s.csv",
-                  Time.sdf.format(start.GetTime()).substring(0, 10).replace("-", "_")));
+                  Utils.FILE_SYSTEM_SDF.format(start.GetTime()).substring(0, 10)));
       FileWriter fw = new FileWriter(oFile);
       BufferedWriter bw = new BufferedWriter(fw);
 
@@ -149,7 +150,7 @@ public class NYTaxiInput<R extends Request, D extends Driver<R>> extends Input<R
 
       File oFile =
           new File(
-              dir, String.format("drivers_from_reqs_%s.csv", filterStart.substring(0, 10).replace("-", "_")));
+              dir, String.format("drivers_from_reqs_%s.csv", filterStart.substring(0, 10).replace("-", "")));
       if (!oFile.getParentFile().exists()) {
         oFile.getParentFile().mkdir();
       }
@@ -184,7 +185,7 @@ public class NYTaxiInput<R extends Request, D extends Driver<R>> extends Input<R
     try {
       File oFile =
           new File(
-              dir, String.format("drivers_%s.csv", filterStart.substring(0, 10).replace("-", "_")));
+              dir, String.format("drivers_%s.csv", filterStart.substring(0, 10).replace("-", "")));
       if (!oFile.getParentFile().exists()) {
         oFile.getParentFile().mkdir();
       }

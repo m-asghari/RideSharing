@@ -1,6 +1,7 @@
 package edu.usc.infolab.ridesharing;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Utils {
@@ -13,8 +14,11 @@ public class Utils {
 	public static int NumberOfVehicles = 50;
 	public static int MaxPassengers = 3;
 	
-	public static File resultsDir = new File(String.format(
-	    "Results/Run_%s", Time.sdf.format(Calendar.getInstance().getTime())));
+	public static final SimpleDateFormat FILE_SYSTEM_SDF = new SimpleDateFormat(
+			"yyyyMMdd_HHmmss");
+	public static File resultsDir = new File(
+			new File("Results"), 
+			String.format("Run_%s", FILE_SYSTEM_SDF.format(Calendar.getInstance().getTime())).replace(" ", "_").replace(":", "-"));
 	
 	public enum DetourConstraint {
 	  FIXED,

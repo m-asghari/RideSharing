@@ -1,5 +1,12 @@
 package edu.usc.infolab.ridesharing.launcher;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.algorithms.KineticTreeAlgorithm;
@@ -13,13 +20,6 @@ import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.KTInput;
 import edu.usc.infolab.ridesharing.kinetictree.KTDriver;
 import edu.usc.infolab.ridesharing.kinetictree.KTRequest;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-
 public class RideSharingLauncher {
 
 	public static void main(String[] args) {
@@ -32,17 +32,18 @@ public class RideSharingLauncher {
 		  Utils.resultsDir.mkdir();
 		}
 		
-		/*Utils.MaxWaitTime = 3;
-		Utils.NumberOfVehicles = 500;
+		/*Utils.MaxWaitTime = 10;
+		Utils.NumberOfVehicles = 2000;
         Utils.MaxPassengers = 4;
 		RunAlgorithms(requestsFile, driversFile);*/
 		
 		
 		int[] maxWaitTimes = new int[]{3, 5, 10, 15, 20, 30};
-        int[] numOfVehicles = new int[]{500, 1000, 2500, 5000, 10000};
+        //int[] numOfVehicles = new int[]{500, 1000, 2500, 5000, 10000};
+		int[] numOfVehicles = new int[]{250, 500, 1000, 2000, 5000};
         int[] numOfPassengers = new int[]{3, 4, 5, 6, 7};
         
-		Utils.NumberOfVehicles = 2000;
+		Utils.NumberOfVehicles = 1000;
 		Utils.MaxPassengers = 4;
 		for (int maxWaitTime : maxWaitTimes) {
 		  Utils.MaxWaitTime = maxWaitTime;
@@ -63,7 +64,7 @@ public class RideSharingLauncher {
 		}
 		
 		Utils.MaxWaitTime = 10;
-        Utils.NumberOfVehicles = 2000;
+        Utils.NumberOfVehicles = 1000;
         for (int numOfPassenger : numOfPassengers) {
 		  Utils.MaxPassengers = numOfPassenger;
 		  System.out.println(String.format("Starting: "
@@ -76,7 +77,7 @@ public class RideSharingLauncher {
 		System.out.println(finalSummary);
 		try {
 		  File oFile = new File(String.format("Summaries_%s.csv", 
-		      Time.sdf.format(Calendar.getInstance().getTime())));
+		      Utils.FILE_SYSTEM_SDF.format(Calendar.getInstance().getTime())));
 		  FileWriter fw = new FileWriter(oFile);
 		  BufferedWriter bw = new BufferedWriter(fw);
 		  bw.write(finalSummary);
@@ -90,13 +91,14 @@ public class RideSharingLauncher {
 	@SuppressWarnings("unused")
 	private static String RunAlgorithms(File requestsFile, File driversFile) {
 	  StringBuilder summaries = new StringBuilder();
-	  summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
+	  //summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
 	  summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
 	  summaries.append(RunNearestNeighbor(requestsFile, driversFile));
       summaries.append(RunKineticTree(requestsFile, driversFile));          
       return summaries.toString();
 	}
 	
+	@SuppressWarnings("unused")
 	private static String RunSecondPriceAuction(File requestsFile, File driversFile) {
 	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
       ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
