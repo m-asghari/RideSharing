@@ -1,12 +1,16 @@
 package edu.usc.infolab.ridesharing;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.activity.InvalidActivityException;
+
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
-
-import java.util.ArrayList;
-
-import javax.activity.InvalidActivityException;
+import edu.usc.infolab.ridesharing.auction.AuctionRequest;
+import edu.usc.infolab.ridesharing.auction.Bid;
+import edu.usc.infolab.ridesharing.auction.ProfitCostSchedule;
 
 public abstract class Driver<R extends Request> implements Comparable<Driver<R>> {
   protected static final double INCOME_PER_MILE = 1;
@@ -17,7 +21,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
   public ArrayList<R> acceptedRequests;
   public ArrayList<R> onBoardRequests;
   public ArrayList<R> servicedRequests;
-  protected ArrayList<GPSNode> _schedule;
+  public ArrayList<GPSNode> _schedule;
 
   public int id;
 
@@ -26,8 +30,8 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
   public double collectedFare;
   public double income;
 
-  protected boolean _getPaid;
-  protected double _paidTravelledDistance;
+  public boolean _getPaid;
+  public double _paidTravelledDistance;
 
   public Time start;
   public Time end;

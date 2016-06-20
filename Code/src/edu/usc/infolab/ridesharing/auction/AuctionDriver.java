@@ -52,16 +52,12 @@ public class AuctionDriver extends Driver<AuctionRequest> {
     }
     double extraProfit = bestPCS.profit - currentPCS.profit;
     double extraCost = bestPCS.cost - currentPCS.cost;
-    if (extraProfit > 10000) {
-      System.out.println("Something's Fishy");
-      GetProfitAndCost(this._schedule, time, true);
-    }
     this.lastPCS = new ProfitCostSchedule(extraProfit, extraCost, bestPCS.schedule);
     return lastPCS;
   }
 
   private ProfitCostSchedule LaunchFindBestPCS(AuctionRequest request, Time time) {
-    if (this._schedule.size() > 6) {
+    if (this._schedule.size() > 12) {
       return InsertRequest(request, time);
     }
     ArrayList<GPSNode> fixedNodes = new ArrayList<GPSNode>();
@@ -79,13 +75,40 @@ public class AuctionDriver extends Driver<AuctionRequest> {
     ProfitCostSchedule bestPCS = ProfitCostSchedule.WorstPCS();
     return FindBestPCS(fixedNodes, remainingNodes, bestPCS, time);
   }
+  
+  /*private void UpdateSlackTimes(Time time) {
+	  Time nextNodeArrival = time.clone();
+	  nextNodeArrival.AddMillis(
+			  this.loc.DistanceInMilesAndMillis(
+					  this._schedule.get(0).point).Second.intValue());
+	  UpdateSlackTime(this._schedule, nextNodeArrival);
+  }
+  
+  private int UpdateSlackTime(ArrayList<GPSNode> nodes, Time firstNodeArrival) {
+	  if (nodes.size() < 1) {
+		  return;
+	  }
+	  int nextNodeSlackTime = 0;
+	  if (nodes.size() > 1) {
+		  Time nextNodeArrival = firstNodeArrival.clone();
+		  firstNodeArrival.AddMillis(
+				  nodes.get(0).DistanceInMilesAndMillis(nodes.get(1)).Second.intValue());
+		  ArrayList<GPSNode> nextNodes = new ArrayList<GPSNode>(nodes);
+		  nextNodes.remove(0);
+		  nextNodeSlackTime = UpdateSlackTime(nextNodes, nextNodeArrival);		  
+	  }
+	  
+  }*/
 
   private ProfitCostSchedule InsertRequest(AuctionRequest request, Time time) {
-    ProfitCostSchedule bestPCS = ProfitCostSchedule.WorstPCS();
-    for (int i = 0; i < this._schedule.size(); i++) {
+	ProfitCostSchedule bestPCS = ProfitCostSchedule.WorstPCS();
+    for (int i = 0; i <= this._schedule.size(); i++) {
       ArrayList<GPSNode> newSchedule1 = new ArrayList<GPSNode>(this._schedule);
       newSchedule1.add(i, request.source);
-      for (int j = i + 1; j < newSchedule1.size(); j++) {
+      ProfitCostSchedule tempPCS = GetProfitAndCost(newSchedule1, time, false);
+      if (tempPCS.profit <= bestPCS.profit)
+    	  continue;
+      for (int j = i + 1; j <= newSchedule1.size(); j++) {
         ArrayList<GPSNode> newSchedule2 = new ArrayList<GPSNode>(newSchedule1);
         newSchedule2.add(j, request.destination);
         ProfitCostSchedule pcs = GetProfitAndCost(newSchedule2, time, false);

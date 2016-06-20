@@ -7,6 +7,7 @@ import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
+import edu.usc.infolab.ridesharing.auction.Bid;
 import edu.usc.infolab.ridesharing.auction.ProfitCostSchedule;
 
 public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionDriver> {
@@ -37,8 +38,18 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     ArrayList<AuctionDriver> potentialDrivers = GetPotentialDrivers(request);
     request.stats.potentialDrivers = potentialDrivers.size();
 
+    AuctionDriver mostProfitable = null;
+    double maxProfit = Utils.Min_Double;
+    for (AuctionDriver driver : potentialDrivers) {
+    	Bid bid = driver.ComputeBid(request, time);
+    	if (bid.value > 0 && bid.value > maxProfit) {
+    		maxProfit = bid.value;
+    		mostProfitable = bid.driver;
+    	}
+    }
+    
     Time start = new Time();
-    while (!potentialDrivers.isEmpty()) {
+    while (!potentialDrivers.isEmpty()) {    	
     	AuctionDriver nearestDriver = null;
     	double minDistance = Utils.Max_Double;
     	for (AuctionDriver driver : potentialDrivers) {
@@ -56,6 +67,9 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     		this.profit += bestPCS.profit;
     		Time end = new Time();
     		request.stats.assignmentTime = end.SubtractInMillis(start);
+    		if (mostProfitable != null && mostProfitable.id == nearestDriver.id) {
+    			request.stats.mostProfitable = 1;
+    		}
     		return Status.ASSIGNED;
     	}
     	potentialDrivers.remove(nearestDriver);

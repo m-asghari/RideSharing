@@ -1,9 +1,9 @@
 package edu.usc.infolab.ridesharing.algorithms;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import edu.usc.infolab.ridesharing.Time;
+import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.auction.Bid;
@@ -18,16 +18,32 @@ public class SecondPriceAuctionWithReservedValueAlgorithm<D extends AuctionDrive
 	public AuctionDriver SelectWinner(AuctionRequest r, ArrayList<Bid> bids) {
 		if (bids.isEmpty())
 			return null;
-		Collections.sort(bids);
-		int lastIndex = bids.size() - 1;
-		if (bids.get(lastIndex).value < 0) {
+		Bid highestBid = null;
+		@SuppressWarnings("unused")
+		Bid secondHighestBid = null;
+		double highestValue = Utils.Min_Double;
+		double secondHighestValue = Utils.Min_Double;
+		for (Bid bid : bids) {
+			if (bid.value > highestValue) {
+				secondHighestValue = highestValue;
+				secondHighestBid = highestBid;
+				highestValue = bid.value;
+				highestBid = bid;
+			} else if (bid.value > secondHighestValue) {
+				secondHighestValue = bid.value;
+				secondHighestBid = bid;
+			}
+		}
+		if (highestBid == null)
+			return null;
+		if (highestBid.value < 0) {
 			return null;
 		}
-		if (bids.get(lastIndex).value == 0 && bids.get(lastIndex).schedule.size() == 0) {
+		if (highestBid.value == 0 && highestBid.schedule.isEmpty()) {
 			return null;
 		}
-		AuctionDriver winner = bids.get(lastIndex).driver;
-		r.serverProfit = bids.get(lastIndex).value;
+		AuctionDriver winner = highestBid.driver;
+		r.serverProfit = highestBid.value;
 		this.profit += r.serverProfit;
 		return winner;
 	}

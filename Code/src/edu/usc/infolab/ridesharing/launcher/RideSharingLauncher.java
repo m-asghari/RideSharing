@@ -32,18 +32,18 @@ public class RideSharingLauncher {
 		  Utils.resultsDir.mkdir();
 		}
 		
-		/*Utils.MaxWaitTime = 10;
-		Utils.NumberOfVehicles = 2000;
+		/*Utils.MaxWaitTime = 6;
+		Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
-		RunAlgorithms(requestsFile, driversFile);*/
+		RunKineticTree(requestsFile, driversFile);*/
 		
 		
-		int[] maxWaitTimes = new int[]{3, 5, 10, 15, 20, 30};
+		int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
         //int[] numOfVehicles = new int[]{500, 1000, 2500, 5000, 10000};
 		int[] numOfVehicles = new int[]{250, 500, 1000, 2000, 5000};
         int[] numOfPassengers = new int[]{3, 4, 5, 6, 7};
         
-		Utils.NumberOfVehicles = 1000;
+		Utils.NumberOfVehicles = 500;
 		Utils.MaxPassengers = 4;
 		for (int maxWaitTime : maxWaitTimes) {
 		  Utils.MaxWaitTime = maxWaitTime;
@@ -53,7 +53,7 @@ public class RideSharingLauncher {
 		  summaries.append(RunAlgorithms(requestsFile, driversFile));		  
 		}
 		
-		Utils.MaxWaitTime = 10;
+		Utils.MaxWaitTime = 6;
         Utils.MaxPassengers = 4;
 		for (int numOfVehicle : numOfVehicles) {
 		  Utils.NumberOfVehicles = numOfVehicle;
@@ -63,8 +63,8 @@ public class RideSharingLauncher {
 		  summaries.append(RunAlgorithms(requestsFile, driversFile));
 		}
 		
-		Utils.MaxWaitTime = 10;
-        Utils.NumberOfVehicles = 1000;
+		Utils.MaxWaitTime = 6;
+        Utils.NumberOfVehicles = 500;
         for (int numOfPassenger : numOfPassengers) {
 		  Utils.MaxPassengers = numOfPassenger;
 		  System.out.println(String.format("Starting: "

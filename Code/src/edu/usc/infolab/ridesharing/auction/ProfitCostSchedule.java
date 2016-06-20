@@ -8,7 +8,7 @@ import edu.usc.infolab.ridesharing.Utils;
 public class ProfitCostSchedule implements Comparable<ProfitCostSchedule> {
   public double profit;
   public double cost;
-  ArrayList<GPSNode> schedule;
+  public ArrayList<GPSNode> schedule;
 
   public ProfitCostSchedule(double profit, double cost, ArrayList<GPSNode> schedule) {
     this.profit = profit;

@@ -25,6 +25,7 @@ public class ResultGenerator {
 		int totalRequests = requests.size();
 		int assignedRequests = 0;
 		int usedDrivers = 0;
+		int mostProfitable = 0;
 		double totalCollectedFare = 0;
 		double totalPaidFare = 0;
 		double totalIncome = 0;
@@ -42,6 +43,9 @@ public class ResultGenerator {
 		for (R request : requests) {
 			if (request.stats.assigned == 1) {
 				assignedRequests++;
+				if (request.stats.mostProfitable == 1) {
+					mostProfitable++;
+				}
 				totalPaidFare += request.finalFare;
 				avgResponseTime += request.stats.assignmentTime;
 				avgResponseTime += request.stats.schedulingTime;
@@ -55,6 +59,8 @@ public class ResultGenerator {
 				.append(String.format("Total Requests: %d\n", totalRequests))
 				.append(String.format("Assigned Requests: %d\n",
 						assignedRequests))
+				.append(String.format("Most Profitable: %d\n",
+						mostProfitable))
 				.append(String.format("Used Drivers: %d\n", usedDrivers))
 				.append(String.format("Total Collected Fare: %.2f\n",
 						totalCollectedFare))
@@ -73,6 +79,7 @@ public class ResultGenerator {
 		int totalRequests = requests.size();
 		int assignedRequests = 0;
 		int usedDrivers = 0;
+		int mostProfitableDriver = 0;
 		double totalCollectedFare = 0;
 		double totalIncome = 0;
 		double avgResponseTime = 0;
@@ -86,12 +93,15 @@ public class ResultGenerator {
 		for (R request : requests) {
 			if (request.stats.assigned == 1) {
 				assignedRequests++;
+				if (request.stats.mostProfitable == 1) {
+					mostProfitableDriver++;
+				}
 				avgResponseTime += request.stats.assignmentTime;
 				avgResponseTime += request.stats.schedulingTime;
 			}
 		}
-		return String.format("%d,%d,%d,%.2f,%.2f,", totalRequests,
-				assignedRequests, usedDrivers,
+		return String.format("%d,%d,%d,%d,%.2f,%.2f,", totalRequests,
+				assignedRequests, mostProfitableDriver, usedDrivers,
 				totalCollectedFare - totalIncome, avgResponseTime
 						/ assignedRequests);
 	}
