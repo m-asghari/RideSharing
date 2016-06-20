@@ -26,12 +26,14 @@ public class ResultGenerator {
 		int assignedRequests = 0;
 		int usedDrivers = 0;
 		int mostProfitable = 0;
+		int looseMoney = 0;
 		double totalCollectedFare = 0;
 		double totalPaidFare = 0;
 		double totalIncome = 0;
 		double serverProfit = 0;
 		double totalTravelledDistance = 0;
 		double avgResponseTime = 0;
+		double avgProfitDiff = 0;
 		for (D driver : drivers) {
 			if (!driver.servicedRequests.isEmpty()) {
 				usedDrivers++;
@@ -46,7 +48,11 @@ public class ResultGenerator {
 				if (request.stats.mostProfitable == 1) {
 					mostProfitable++;
 				}
+				if (request.stats.looseMoney == 1) {
+				  looseMoney++;
+				}
 				totalPaidFare += request.finalFare;
+				avgProfitDiff += request.stats.profitDiff;
 				avgResponseTime += request.stats.assignmentTime;
 				avgResponseTime += request.stats.schedulingTime;
 			}
@@ -61,6 +67,8 @@ public class ResultGenerator {
 						assignedRequests))
 				.append(String.format("Most Profitable: %d\n",
 						mostProfitable))
+				.append(String.format("Loose Money: %d\n", looseMoney))
+				.append(String.format("Avg Profit Diff: %.2f\n", avgProfitDiff))
 				.append(String.format("Used Drivers: %d\n", usedDrivers))
 				.append(String.format("Total Collected Fare: %.2f\n",
 						totalCollectedFare))
@@ -80,9 +88,11 @@ public class ResultGenerator {
 		int assignedRequests = 0;
 		int usedDrivers = 0;
 		int mostProfitableDriver = 0;
+		int looseMoney = 0;
 		double totalCollectedFare = 0;
 		double totalIncome = 0;
 		double avgResponseTime = 0;
+		double avgProfitDiff = 0;
 		for (D driver : drivers) {
 			if (!driver.servicedRequests.isEmpty()) {
 				usedDrivers++;
@@ -96,12 +106,17 @@ public class ResultGenerator {
 				if (request.stats.mostProfitable == 1) {
 					mostProfitableDriver++;
 				}
+				if (request.stats.looseMoney == 1) {
+				  looseMoney++;
+				}
+				avgProfitDiff += request.stats.profitDiff;
 				avgResponseTime += request.stats.assignmentTime;
 				avgResponseTime += request.stats.schedulingTime;
 			}
 		}
-		return String.format("%d,%d,%d,%d,%.2f,%.2f,", totalRequests,
-				assignedRequests, mostProfitableDriver, usedDrivers,
+		return String.format("%d,%d,%d,%d,%.2f,%d,%.2f,%.2f,", totalRequests,
+				assignedRequests, mostProfitableDriver, looseMoney,
+				avgProfitDiff, usedDrivers,
 				totalCollectedFare - totalIncome, avgResponseTime
 						/ assignedRequests);
 	}

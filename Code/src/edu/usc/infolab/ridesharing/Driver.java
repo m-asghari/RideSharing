@@ -1,20 +1,16 @@
 package edu.usc.infolab.ridesharing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.activity.InvalidActivityException;
-
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
-import edu.usc.infolab.ridesharing.auction.AuctionRequest;
-import edu.usc.infolab.ridesharing.auction.Bid;
-import edu.usc.infolab.ridesharing.auction.ProfitCostSchedule;
+
+import java.util.ArrayList;
+
+import javax.activity.InvalidActivityException;
 
 public abstract class Driver<R extends Request> implements Comparable<Driver<R>> {
   protected static final double INCOME_PER_MILE = 1;
-  private static int driverCtr = 0;
+  public static int driverCtr = 0;
 
   // loc???
   public GPSPoint loc;

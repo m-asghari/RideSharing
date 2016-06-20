@@ -11,11 +11,13 @@ import java.util.HashMap;
 import javax.activity.InvalidActivityException;
 
 public class Request implements Comparable<Request> {
-	private static int reqCtr = 0;
+	public static int reqCtr = 0;
 
 	public class AssignmentStat {
 		public AssignmentStat() {
 			this.mostProfitable = 0;
+			this.looseMoney = 0;
+			this.profitDiff = 0;
 			this.failureReasons = new HashMap<FailureReason, Integer>() {
 				{
 					put(FailureReason.CantCopy, 0);
@@ -32,6 +34,8 @@ public class Request implements Comparable<Request> {
 			this.potentialDrivers = other.potentialDrivers;
 			this.acceptableBids = other.acceptableBids;
 			this.mostProfitable = other.mostProfitable;
+			this.looseMoney = other.looseMoney;
+			this.profitDiff = other.profitDiff;
 			this.failureReasons = new HashMap<FailureReason, Integer>(
 					other.failureReasons);
 		}
@@ -46,6 +50,8 @@ public class Request implements Comparable<Request> {
 		public int potentialDrivers;
 		public int acceptableBids;
 		public int mostProfitable;
+		public int looseMoney;
+		public double profitDiff;
 		public HashMap<FailureReason, Integer> failureReasons;
 
 		@Override

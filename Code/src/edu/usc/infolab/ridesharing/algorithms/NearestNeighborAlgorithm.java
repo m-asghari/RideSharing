@@ -35,22 +35,14 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
 
   @Override
   public Status ProcessRequest(AuctionRequest request, Time time) {
+    Status retStatus = Status.NOT_ASSIGNED;
     ArrayList<AuctionDriver> potentialDrivers = GetPotentialDrivers(request);
     request.stats.potentialDrivers = potentialDrivers.size();
-
-    AuctionDriver mostProfitable = null;
-    double maxProfit = Utils.Min_Double;
-    for (AuctionDriver driver : potentialDrivers) {
-    	Bid bid = driver.ComputeBid(request, time);
-    	if (bid.value > 0 && bid.value > maxProfit) {
-    		maxProfit = bid.value;
-    		mostProfitable = bid.driver;
-    	}
-    }
     
     Time start = new Time();
+    AuctionDriver nearestDriver = null;
     while (!potentialDrivers.isEmpty()) {    	
-    	AuctionDriver nearestDriver = null;
+    	nearestDriver = null;
     	double minDistance = Utils.Max_Double;
     	for (AuctionDriver driver : potentialDrivers) {
     		double distance = driver.loc.DistanceInMilesAndMillis(request.source.point).First;
@@ -67,13 +59,42 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     		this.profit += bestPCS.profit;
     		Time end = new Time();
     		request.stats.assignmentTime = end.SubtractInMillis(start);
-    		if (mostProfitable != null && mostProfitable.id == nearestDriver.id) {
-    			request.stats.mostProfitable = 1;
-    		}
-    		return Status.ASSIGNED;
+    		retStatus = Status.ASSIGNED;
+    		break;
     	}
     	potentialDrivers.remove(nearestDriver);
     }
-    return Status.NOT_ASSIGNED;
+    
+    if (nearestDriver != null) {
+      double nnProfit = 0;
+      AuctionDriver mostProfitable = null;
+      double maxProfit = Utils.Min_Double;
+      double nnDriverProfit = Utils.Min_Double;
+      for (AuctionDriver driver : potentialDrivers) {
+          Bid bid = driver.ComputeBid(request, time);
+          if (bid.value > 0 && bid.value > maxProfit) {
+              maxProfit = bid.value;
+              mostProfitable = bid.driver;
+          }
+          if (driver.id == nearestDriver.id) {
+            nnProfit = bid.value;
+          }        
+      }
+      if (mostProfitable != null) {
+        if (mostProfitable.id == nearestDriver.id) {
+          request.stats.mostProfitable = 1;
+        }
+        if (nnProfit < 0) {
+          request.stats.looseMoney = 1;
+        }
+        if (nnProfit > 0) {
+          request.stats.profitDiff = maxProfit - nnProfit;
+        }
+        
+      }
+      
+    }
+    
+    return retStatus;
   }
 }

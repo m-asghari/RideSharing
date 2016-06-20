@@ -1,12 +1,5 @@
 package edu.usc.infolab.ridesharing.launcher;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.algorithms.KineticTreeAlgorithm;
@@ -19,6 +12,13 @@ import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.AuctionInput;
 import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.KTInput;
 import edu.usc.infolab.ridesharing.kinetictree.KTDriver;
 import edu.usc.infolab.ridesharing.kinetictree.KTRequest;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class RideSharingLauncher {
 

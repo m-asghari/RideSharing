@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.ridesharing.Driver;
+import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
@@ -20,6 +22,7 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 	 * pickUp_DateTime, dropOff_DataTime, passenger_count, tripTime_Seconds, tripDistance, pickUp_lng, pickUp_lat, dropOff_lng, dropOff_lat
 	 */
 	public static ArrayList<AuctionRequest> GenerateRequests(File inFile) {
+	  Request.reqCtr = 0;
 	  maxWaitTime = Utils.MaxWaitTime;
 		ArrayList<AuctionRequest> requests = new ArrayList<AuctionRequest>();
 		try {
@@ -54,6 +57,7 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 	}
 	
 	public static ArrayList<AuctionDriver> GenerateDrivers(File inFile, int size) {
+	  Driver.driverCtr = 0;
 	  ArrayList<AuctionDriver> drivers = new ArrayList<AuctionDriver>();
 	  int driverCtr = 0;
 	  try {

@@ -23,19 +23,7 @@ public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
 	@Override
 	public Status ProcessRequest(KTRequest r, Time time) {
 		ArrayList<KTDriver> potentialDrivers = GetPotentialDrivers(r);
-		r.stats.potentialDrivers = potentialDrivers.size();
-		
-		AuctionDriver mostProfitable = null;
-		double maxProfit = Utils.Min_Double;
-		for (KTDriver d : potentialDrivers) {
-			AuctionDriver auctionDriver = GetAuctionDriver(d);
-			Bid bid = auctionDriver.ComputeBid(GetAuctionRequest(r), time);
-			if (bid.value > 0 && bid.value > maxProfit) {
-				maxProfit = bid.value;
-				mostProfitable = bid.driver;
-			}
-		}
-		
+		r.stats.potentialDrivers = potentialDrivers.size();		
 		
 		HashMap<KTDriver, Double> insertCosts = new HashMap<KTDriver, Double>();
 		Time start = new Time();
@@ -57,8 +45,31 @@ public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
 		selectedDriver.AddRequest(r, time);
 		Time end = new Time();
 		r.stats.schedulingTime = end.SubtractInMillis(start);
-		if (mostProfitable != null && mostProfitable.id == selectedDriver.id) {
-			r.stats.mostProfitable = 1;
+		
+		AuctionDriver mostProfitable = null;
+        double maxProfit = Utils.Min_Double;
+        double ktProfit = 0;
+        for (KTDriver d : potentialDrivers) {
+            AuctionDriver auctionDriver = GetAuctionDriver(d);
+            Bid bid = auctionDriver.ComputeBid(GetAuctionRequest(r), time);
+            if (bid.value > 0 && bid.value > maxProfit) {
+                maxProfit = bid.value;
+                mostProfitable = bid.driver;
+            }
+            if (d.id == selectedDriver.id) {
+              ktProfit = bid.value;
+            }
+        }
+		if (mostProfitable != null) {
+		  if (mostProfitable.id == selectedDriver.id) {
+		    r.stats.mostProfitable = 1;
+		  }
+		  if (ktProfit < 0) {
+		    r.stats.looseMoney = 1;
+		  }
+		  if (ktProfit > 0) {
+		    r.stats.profitDiff = maxProfit - ktProfit;
+		  }
 		}
 		return Status.ASSIGNED;
 	}

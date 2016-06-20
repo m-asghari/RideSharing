@@ -1,6 +1,8 @@
 package edu.usc.infolab.ridesharing.datasets.real.nyctaxi;
 
 import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.ridesharing.Driver;
+import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.kinetictree.KTDriver;
@@ -20,6 +22,7 @@ public class KTInput extends NYTaxiInput<KTRequest, KTDriver> {
 	 * pickUp_DateTime, dropOff_DataTime, passenger_count, tripTime_Seconds, tripDistance, pickUp_lng, pickUp_lat, dropOff_lng, dropOff_lat
 	 */
 	public static ArrayList<KTRequest> GenerateRequests(File inFile) {
+	  Request.reqCtr = 0;
 	  maxWaitTime = Utils.MaxWaitTime;
 		ArrayList<KTRequest> requests = new ArrayList<KTRequest>();
 		try {
@@ -54,6 +57,7 @@ public class KTInput extends NYTaxiInput<KTRequest, KTDriver> {
 	}
 	
 	public static ArrayList<KTDriver> GenerateDrivers(File inFile, int size) {
+	  Driver.driverCtr = 0;
       ArrayList<KTDriver> drivers = new ArrayList<KTDriver>();
       int driverCtr = 0;
       try {
