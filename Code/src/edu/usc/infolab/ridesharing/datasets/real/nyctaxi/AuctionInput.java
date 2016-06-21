@@ -1,13 +1,5 @@
 package edu.usc.infolab.ridesharing.datasets.real.nyctaxi;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Request;
@@ -15,6 +7,15 @@ import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
+import edu.usc.infolab.ridesharing.auction.ShortestPathDriver;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 	/*
@@ -83,6 +84,34 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 	  Collections.sort(drivers);
 	  return drivers;
 	}
+	
+	public static ArrayList<ShortestPathDriver> GenerateShortestPathDrivers(File inFile, int size) {
+      Driver.driverCtr = 0;
+      ArrayList<ShortestPathDriver> drivers = new ArrayList<ShortestPathDriver>();
+      int driverCtr = 0;
+      try {
+        FileReader fr = new FileReader(inFile);
+        BufferedReader br = new BufferedReader(fr);
+        
+        String line = "";
+        while (driverCtr < size && (line = br.readLine()) != null) {
+          String[] fields = line.split(",");
+          GPSPoint initLoc = new GPSPoint(Double.parseDouble(fields[0]), Double.parseDouble(fields[1]));
+          Time start = new Time(Time.sdf.parse(fields[2]));
+          Time end = new Time(Time.sdf.parse(fields[3]));
+          drivers.add(new ShortestPathDriver(initLoc, start, end));
+          driverCtr++;
+        }
+        br.close();
+        fr.close();
+      } catch (ParseException pe) {
+        pe.printStackTrace();
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+      Collections.sort(drivers);
+      return drivers;
+    }
 	
 	public static AuctionDriver GetNewDriver() {
 		try {

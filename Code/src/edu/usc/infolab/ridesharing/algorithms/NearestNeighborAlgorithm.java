@@ -11,12 +11,7 @@ import edu.usc.infolab.ridesharing.auction.Bid;
 import edu.usc.infolab.ridesharing.auction.ProfitCostSchedule;
 
 public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionDriver> {
-  public Double profit;
-
-  // time should be in minutes
-  public static Double FARE(Double distance, int time) {
-    return 2. * distance;
-  }
+  public double profit;
 
   public NearestNeighborAlgorithm(Time startTime, int ati) {
     super(startTime, ati);
@@ -41,6 +36,7 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     
     Time start = new Time();
     AuctionDriver nearestDriver = null;
+    double nnProfit = 0;
     while (!potentialDrivers.isEmpty()) {    	
     	nearestDriver = null;
     	double minDistance = Utils.Max_Double;
@@ -57,6 +53,7 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     		nearestDriver.AddRequest(request, time);
     		request.serverProfit = bestPCS.profit;
     		this.profit += bestPCS.profit;
+    		nnProfit = bestPCS.profit;
     		Time end = new Time();
     		request.stats.assignmentTime = end.SubtractInMillis(start);
     		retStatus = Status.ASSIGNED;
@@ -66,18 +63,16 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     }
     
     if (nearestDriver != null) {
-      double nnProfit = 0;
       AuctionDriver mostProfitable = null;
       double maxProfit = Utils.Min_Double;
-      double nnDriverProfit = Utils.Min_Double;
       for (AuctionDriver driver : potentialDrivers) {
           Bid bid = driver.ComputeBid(request, time);
+          if (driver.id == nearestDriver.id) {
+            continue;
+          }
           if (bid.value > 0 && bid.value > maxProfit) {
               maxProfit = bid.value;
               mostProfitable = bid.driver;
-          }
-          if (driver.id == nearestDriver.id) {
-            nnProfit = bid.value;
           }        
       }
       if (mostProfitable != null) {

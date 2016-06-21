@@ -22,7 +22,7 @@ public class TShareModelAuctionDriver extends AuctionDriver {
   }
   
   @Override
-  protected ProfitCostSchedule GetProfitAndCost(
+  public ProfitCostSchedule GetProfitAndCost(
       ArrayList<GPSNode> schedule, Time start, boolean currentSchedule) {
     double fare = this.collectedFare;
     double cost = this.income;

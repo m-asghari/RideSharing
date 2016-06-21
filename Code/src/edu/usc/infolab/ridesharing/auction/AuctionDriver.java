@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AuctionDriver extends Driver<AuctionRequest> {
-  private ProfitCostSchedule lastPCS;
+  protected ProfitCostSchedule lastPCS;
 
   public AuctionDriver(GPSPoint initialLoc, Time start, Time end) {
     super(initialLoc, start, end);
@@ -56,7 +56,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
     return lastPCS;
   }
 
-  private ProfitCostSchedule LaunchFindBestPCS(AuctionRequest request, Time time) {
+  protected ProfitCostSchedule LaunchFindBestPCS(AuctionRequest request, Time time) {
     if (this._schedule.size() > 12) {
       return InsertRequest(request, time);
     }
@@ -75,32 +75,8 @@ public class AuctionDriver extends Driver<AuctionRequest> {
     ProfitCostSchedule bestPCS = ProfitCostSchedule.WorstPCS();
     return FindBestPCS(fixedNodes, remainingNodes, bestPCS, time);
   }
-  
-  /*private void UpdateSlackTimes(Time time) {
-	  Time nextNodeArrival = time.clone();
-	  nextNodeArrival.AddMillis(
-			  this.loc.DistanceInMilesAndMillis(
-					  this._schedule.get(0).point).Second.intValue());
-	  UpdateSlackTime(this._schedule, nextNodeArrival);
-  }
-  
-  private int UpdateSlackTime(ArrayList<GPSNode> nodes, Time firstNodeArrival) {
-	  if (nodes.size() < 1) {
-		  return;
-	  }
-	  int nextNodeSlackTime = 0;
-	  if (nodes.size() > 1) {
-		  Time nextNodeArrival = firstNodeArrival.clone();
-		  firstNodeArrival.AddMillis(
-				  nodes.get(0).DistanceInMilesAndMillis(nodes.get(1)).Second.intValue());
-		  ArrayList<GPSNode> nextNodes = new ArrayList<GPSNode>(nodes);
-		  nextNodes.remove(0);
-		  nextNodeSlackTime = UpdateSlackTime(nextNodes, nextNodeArrival);		  
-	  }
-	  
-  }*/
 
-  private ProfitCostSchedule InsertRequest(AuctionRequest request, Time time) {
+  protected ProfitCostSchedule InsertRequest(AuctionRequest request, Time time) {
 	ProfitCostSchedule bestPCS = ProfitCostSchedule.WorstPCS();
     for (int i = 0; i <= this._schedule.size(); i++) {
       ArrayList<GPSNode> newSchedule1 = new ArrayList<GPSNode>(this._schedule);
@@ -123,7 +99,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
   /**
    * find the optimal costs, branch and bound algorithms
    */
-  private ProfitCostSchedule FindBestPCS(
+  protected ProfitCostSchedule FindBestPCS(
       ArrayList<GPSNode> fixed,
       ArrayList<GPSNode> remaining,
       ProfitCostSchedule bestPCS,
@@ -158,7 +134,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
    * @param start
    * @return the profit and cost of input schedule
    */
-  protected ProfitCostSchedule GetProfitAndCost(
+  public ProfitCostSchedule GetProfitAndCost(
       ArrayList<GPSNode> schedule, Time start, boolean currentSchedule) {
     double fare = this.collectedFare;
     double cost = this.GetCost(_paidTravelledDistance, 0.);

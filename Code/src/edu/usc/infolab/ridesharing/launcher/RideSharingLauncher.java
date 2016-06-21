@@ -6,8 +6,10 @@ import edu.usc.infolab.ridesharing.algorithms.KineticTreeAlgorithm;
 import edu.usc.infolab.ridesharing.algorithms.NearestNeighborAlgorithm;
 import edu.usc.infolab.ridesharing.algorithms.SecondPriceAuctionAlgorithm;
 import edu.usc.infolab.ridesharing.algorithms.SecondPriceAuctionWithReservedValueAlgorithm;
+import edu.usc.infolab.ridesharing.algorithms.ShortestPathAlgorithm;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
+import edu.usc.infolab.ridesharing.auction.ShortestPathDriver;
 import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.AuctionInput;
 import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.KTInput;
 import edu.usc.infolab.ridesharing.kinetictree.KTDriver;
@@ -32,16 +34,17 @@ public class RideSharingLauncher {
 		  Utils.resultsDir.mkdir();
 		}
 		
-		/*Utils.MaxWaitTime = 6;
+		Utils.MaxWaitTime = 6;
 		Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
-		RunKineticTree(requestsFile, driversFile);*/
+		RunAlgorithms(requestsFile, driversFile);
+        //RunShortestPath(requestsFile, driversFile);
 		
 		
-		int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
+		/*int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
         //int[] numOfVehicles = new int[]{500, 1000, 2500, 5000, 10000};
 		int[] numOfVehicles = new int[]{250, 500, 1000, 2000, 5000};
-        int[] numOfPassengers = new int[]{3, 4, 5, 6, 7};
+        int[] numOfPassengers = new int[]{2, 3, 4, 5, 6};
         
 		Utils.NumberOfVehicles = 500;
 		Utils.MaxPassengers = 4;
@@ -71,7 +74,7 @@ public class RideSharingLauncher {
               + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
               Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
 		  summaries.append(RunAlgorithms(requestsFile, driversFile));
-		}
+		}*/
         
         String finalSummary = summaries.toString();
 		System.out.println(finalSummary);
@@ -94,6 +97,7 @@ public class RideSharingLauncher {
 	  //summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
 	  summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
 	  summaries.append(RunNearestNeighbor(requestsFile, driversFile));
+	  summaries.append(RunShortestPath(requestsFile, driversFile));
       summaries.append(RunKineticTree(requestsFile, driversFile));          
       return summaries.toString();
 	}
@@ -154,6 +158,21 @@ public class RideSharingLauncher {
           Utils.NumberOfVehicles,
           Utils.MaxPassengers,ktAlgo.GetName(),
           ktAlgo.Run(ktRequests, ktDrivers));
+	}
+	
+	private static String RunShortestPath(File requestsFile, File driversFile) {
+	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+	  ArrayList<ShortestPathDriver> shortestPathDrivers = 
+	      AuctionInput.GenerateShortestPathDrivers(driversFile, Utils.NumberOfVehicles);
+      Time startTime = auctionRequests.get(0).requestTime.clone();
+      
+      ShortestPathAlgorithm spAlgo = new ShortestPathAlgorithm(startTime, 1);
+      return String.format("%d,%d,%d,%s,%s\n",
+          Utils.MaxWaitTime,
+          Utils.NumberOfVehicles,
+          Utils.MaxPassengers,
+          spAlgo.GetName(),
+          spAlgo.Run(auctionRequests, shortestPathDrivers)); 
 	}
 
 }
