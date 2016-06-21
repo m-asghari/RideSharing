@@ -4,12 +4,10 @@ import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Driver;
-import edu.usc.infolab.ridesharing.Pair;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AuctionDriver extends Driver<AuctionRequest> {
   protected ProfitCostSchedule lastPCS;
@@ -26,7 +24,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
   public Bid ComputeBid(AuctionRequest request, Time time) {
     if (this.acceptedRequests.size() + this.onBoardRequests.size() >= this.maxPassenger)
       return Bid.WorstBid();
-    ProfitCostSchedule currentPCS = GetProfitAndCost(this._schedule, time, true);
+    ProfitCostSchedule currentPCS = Utils.PRICING_MODEL.GetProfitAndCost(this, this._schedule, time, true);
     ProfitCostSchedule bestPCS = LaunchFindBestPCS(request, time);
     if (bestPCS.profit < currentPCS.profit) {
       return Bid.WorstBid();
@@ -44,7 +42,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
     if (this.acceptedRequests.size() + this.onBoardRequests.size() >= this.maxPassenger) {
       return ProfitCostSchedule.WorstPCS();
     }
-    ProfitCostSchedule currentPCS = GetProfitAndCost(this._schedule, time, true);
+    ProfitCostSchedule currentPCS = Utils.PRICING_MODEL.GetProfitAndCost(this, this._schedule, time, true);
     ProfitCostSchedule bestPCS = LaunchFindBestPCS(request, time);
     if (bestPCS.schedule.size() <= currentPCS.schedule.size()
         || bestPCS.profit < currentPCS.profit) {
@@ -81,13 +79,13 @@ public class AuctionDriver extends Driver<AuctionRequest> {
     for (int i = 0; i <= this._schedule.size(); i++) {
       ArrayList<GPSNode> newSchedule1 = new ArrayList<GPSNode>(this._schedule);
       newSchedule1.add(i, request.source);
-      ProfitCostSchedule tempPCS = GetProfitAndCost(newSchedule1, time, false);
+      ProfitCostSchedule tempPCS = Utils.PRICING_MODEL.GetProfitAndCost(this, newSchedule1, time, false);
       if (tempPCS.profit <= bestPCS.profit)
     	  continue;
       for (int j = i + 1; j <= newSchedule1.size(); j++) {
         ArrayList<GPSNode> newSchedule2 = new ArrayList<GPSNode>(newSchedule1);
         newSchedule2.add(j, request.destination);
-        ProfitCostSchedule pcs = GetProfitAndCost(newSchedule2, time, false);
+        ProfitCostSchedule pcs = Utils.PRICING_MODEL.GetProfitAndCost(this, newSchedule2, time, false);
         if (!pcs.schedule.isEmpty() && pcs.profit > bestPCS.profit) {
           bestPCS = pcs;
         }
@@ -107,7 +105,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
     for (GPSNode n : remaining) {
       ArrayList<GPSNode> fixedCopy = new ArrayList<GPSNode>(fixed);
       fixedCopy.add(n);
-      ProfitCostSchedule pcs = GetProfitAndCost(fixedCopy, time, false);
+      ProfitCostSchedule pcs = Utils.PRICING_MODEL.GetProfitAndCost(this, fixedCopy, time, false);
 
       if (pcs.profit > bestPCS.profit) {
         ArrayList<GPSNode> remainingCopy = new ArrayList<GPSNode>(remaining);
@@ -125,67 +123,6 @@ public class AuctionDriver extends Driver<AuctionRequest> {
       }
     }
     return bestPCS;
-  }
-
-  /**
-   * get the profit of current schedule
-   *
-   * @param schedule
-   * @param start
-   * @return the profit and cost of input schedule
-   */
-  public ProfitCostSchedule GetProfitAndCost(
-      ArrayList<GPSNode> schedule, Time start, boolean currentSchedule) {
-    double fare = this.collectedFare;
-    double cost = this.GetCost(_paidTravelledDistance, 0.);
-    Time time = start.clone();
-    GPSPoint loc = this.loc;
-    double dist = travelledDistance;
-    if (schedule.isEmpty()) {
-      return new ProfitCostSchedule(fare - cost, cost, schedule);
-    }
-    HashMap<AuctionRequest, Time> pickUpTimes = new HashMap<AuctionRequest, Time>();
-    HashMap<AuctionRequest, Double> pickUpDist = new HashMap<AuctionRequest, Double>();
-
-    Pair<Double, Double> initTrip = loc.DistanceInMilesAndMillis(schedule.get(0).point);
-    if (this.onBoardRequests.size() > 0) {
-      initTrip = new Pair<Double, Double>(0., 0.);
-    }
-    for (GPSNode n : schedule) {
-      Pair<Double, Double> trip = loc.DistanceInMilesAndMillis(n.point);
-      time.AddMillis(trip.Second.intValue());
-      dist += trip.First;
-      loc = n.point;
-      AuctionRequest request = (AuctionRequest) n.request;
-      if (n.type == Type.source) {
-        if (!currentSchedule && time.compareTo(request.latestPickUpTime) > 0) {
-          return ProfitCostSchedule.WorstPCS();
-        }
-        pickUpTimes.put(request, time.clone());
-        pickUpDist.put(request, dist);
-      }
-      if (n.type == Type.destination) {
-        @SuppressWarnings("unused")
-        int tripTime =
-            time.SubtractInMinutes(
-                (pickUpTimes.get(request) != null) ? pickUpTimes.get(request) : request.pickUpTime);
-        double tripDist =
-            dist
-                - ((pickUpDist.get(request) != null)
-                    ? pickUpDist.get(request)
-                    : request.pickUpDistance);
-        double detour = tripDist - request.optDistance;
-        if (!currentSchedule && !Utils.IsAcceptableDetour(detour, request.optDistance))
-          return ProfitCostSchedule.WorstPCS();
-        fare += request.profile(detour) * request.defaultFare;
-        cost =
-            this.GetCost(
-                _paidTravelledDistance + (dist - (travelledDistance + initTrip.First)),
-                time.SubtractInMillis(start) - initTrip.Second);
-      }
-    }
-    double profit = fare - cost;
-    return new ProfitCostSchedule(profit, cost, schedule);
   }
 
   @Override
@@ -209,9 +146,5 @@ public class AuctionDriver extends Driver<AuctionRequest> {
 
   @Override
   public void Check(Time time) {
-    if (this._schedule.isEmpty()) return;
-    if (this.income < -1000) {
-      GetProfitAndCost(this._schedule, time, true);
-    }
   }
 }

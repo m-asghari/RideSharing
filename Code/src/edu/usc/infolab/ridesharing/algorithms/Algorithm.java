@@ -17,7 +17,8 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
    * @return default fare
    */
     public static Double FARE(Double distance, int time) {
-        return 5 + (2. * distance);
+        //return 5 + (2. * distance);
+      return 1.25 * distance;
     }
   
     protected Time currentTime;

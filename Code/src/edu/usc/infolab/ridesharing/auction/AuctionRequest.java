@@ -29,11 +29,6 @@ public class AuctionRequest extends Request {
     }
     
     @Override
-    public void DropOff(double distance, Time time) {
-        super.DropOff(distance, time);
-    }
-    
-    @Override
     public String PrintShortResults() {
         StringBuilder results = new StringBuilder();
         results.append(super.PrintShortResults());

@@ -86,6 +86,8 @@ public class Request implements Comparable<Request> {
 
 	public double defaultFare;
 	public double finalFare;
+	
+	public double perDistanceFare;
 
 	public Request(GPSPoint source, GPSPoint dest, Time requestTime,
 			int maxWaitTime) {
@@ -110,6 +112,7 @@ public class Request implements Comparable<Request> {
 		this.actualDistance = -1;
 		this.defaultFare = Algorithm.FARE(optDistance, optTime);
 		this.finalFare = -1;
+		this.perDistanceFare = 0;
 	}
 
 	public Request(String[] args) {
@@ -142,6 +145,7 @@ public class Request implements Comparable<Request> {
 			this.actualDistance = Double.parseDouble(args[19]);
 			this.defaultFare = Double.parseDouble(args[20]);
 			this.finalFare = Double.parseDouble(args[21]);
+			//this.otherFare
 		} catch (ParseException pe) {
 			pe.printStackTrace();
 		} catch (InvalidActivityException iae) {
@@ -165,6 +169,7 @@ public class Request implements Comparable<Request> {
 		this.dropOffDistance = other.dropOffDistance;
 		this.actualTime = other.actualTime;
 		this.actualDistance = other.actualDistance;
+		this.perDistanceFare = other.perDistanceFare;
 	}
 
 	public void PickUp(double distance, Time time) {
@@ -218,21 +223,27 @@ public class Request implements Comparable<Request> {
 		return false;
 	}
 
-	// id,stats.assigned,stats.scheduleTime,stats.assignTime,stats.potentialDrivers,stats.acceptableBids,source,destination,rTime,maxW,latestPickUpTime,optTime,OptDist,pickUpTime,pickUpDistance,dropOffTime,dropOffDistance,detour,actualTime,actualDistance
+	// id,stats.assigned,stats.scheduleTime,stats.assignTime,stats.potentialDrivers,stats.acceptableBids,source,destination,rTime,maxW,latestPickUpTime,optTime,OptDist,pickUpTime,pickUpDistance,dropOffTime,dropOffDistance,detour,actualTime,actualDistance,default fare, final fare, other fare
 	public String PrintShortResults() {
 		StringBuilder results = new StringBuilder();
-		results.append(String.format("%d," + "%d,%d,%d,%d,%d," + "%s,%s,"
-				+ "%s,%d,%s," + "%d,%.2f," + "%s,%.2f," + "%s,%.2f,"
-				+ "%.2f,%d,%.2f," + "%.2f,%.2f,", id, stats.assigned,
-				stats.schedulingTime, stats.assignmentTime,
-				stats.potentialDrivers, stats.acceptableBids,
-				source.toString(), destination.toString(),
-				Time.sdf.format(requestTime.GetTime()), maxWaitTime,
-				Time.sdf.format(latestPickUpTime.GetTime()), optTime,
-				optDistance, Time.sdf.format(pickUpTime.GetTime()),
-				pickUpDistance, Time.sdf.format(dropOffTime.GetTime()),
-				dropOffDistance, detour, actualTime, actualDistance,
-				defaultFare, finalFare));
+		results.append(String.format("%d,"
+		    + "%d,%d,%d,%d,%d,"
+		    + "%s,%s,"
+			+ "%s,%d,%s," 
+		    + "%d,%.2f," 
+			+ "%s,%.2f," 
+		    + "%s,%.2f,"
+			+ "%.2f,%d,%.2f," 
+		    + "%.2f,%.2f,%.2f,", 
+		    id, 
+		    stats.assigned,	stats.schedulingTime, stats.assignmentTime, stats.potentialDrivers, stats.acceptableBids,
+			source.toString(), destination.toString(),
+			Time.sdf.format(requestTime.GetTime()), maxWaitTime, Time.sdf.format(latestPickUpTime.GetTime()),
+			optTime, optDistance, 
+			Time.sdf.format(pickUpTime.GetTime()), pickUpDistance, 
+			Time.sdf.format(dropOffTime.GetTime()),	dropOffDistance, 
+			detour, actualTime, actualDistance,
+			defaultFare, finalFare, perDistanceFare));
 		return results.toString();
 	}
 

@@ -28,9 +28,12 @@ public class ResultGenerator {
 		int mostProfitable = 0;
 		int looseMoney = 0;
 		double totalCollectedFare = 0;
+		double totalCollectedOtherFare = 0;
 		double totalPaidFare = 0;
+		double totalPaidOtherFare = 0;
 		double totalIncome = 0;
 		double serverProfit = 0;
+		double serverOtherProfit = 0;
 		double totalTravelledDistance = 0;
 		double avgResponseTime = 0;
 		double avgProfitDiff = 0;
@@ -38,6 +41,7 @@ public class ResultGenerator {
 			if (!driver.servicedRequests.isEmpty()) {
 				usedDrivers++;
 				totalCollectedFare += driver.collectedFare;
+				totalCollectedOtherFare += driver.perDistanceIncome;
 				totalIncome += driver.income;
 				totalTravelledDistance += driver.travelledDistance;
 			}
@@ -52,6 +56,7 @@ public class ResultGenerator {
 				  looseMoney++;
 				}
 				totalPaidFare += request.finalFare;
+				totalPaidOtherFare += request.perDistanceFare;
 				avgProfitDiff += request.stats.profitDiff;
 				avgResponseTime += request.stats.assignmentTime;
 				avgResponseTime += request.stats.schedulingTime;
@@ -59,6 +64,7 @@ public class ResultGenerator {
 			if (request instanceof AuctionRequest) {
 				AuctionRequest r = (AuctionRequest) request;
 				serverProfit += r.serverProfit;
+				serverOtherProfit += r.serverProfit;
 			}
 		}
 		return new StringBuilder()
@@ -72,10 +78,15 @@ public class ResultGenerator {
 				.append(String.format("Used Drivers: %d\n", usedDrivers))
 				.append(String.format("Total Collected Fare: %.2f\n",
 						totalCollectedFare))
+				.append(String.format("Total Collected Other Fare: %.2f\n",
+				    totalCollectedOtherFare))
 				.append(String.format("Total Paid Fare: %.2f\n", totalPaidFare))
+				.append(String.format("Total Paid Other Fare: %.2f\n", totalPaidOtherFare))
 				.append(String.format("Total Income: %.2f\n", totalIncome))
 				.append(String.format("Server Profit: %.2f and %.2f\n",
 						totalCollectedFare - totalIncome, serverProfit))
+				.append(String.format("Server Other Profit: %.2f and %.2f\n", 
+				    0.2 * totalCollectedOtherFare, serverOtherProfit))
 				.append(String.format("Total Travelled Distance: %.2f\n",
 						totalTravelledDistance))
 				.append(String.format("Response Time: %.2f\n", avgResponseTime
@@ -89,6 +100,7 @@ public class ResultGenerator {
 		int usedDrivers = 0;
 		int mostProfitableDriver = 0;
 		int looseMoney = 0;
+		int unfairRiders = 0;
 		double totalCollectedFare = 0;
 		double totalIncome = 0;
 		double avgResponseTime = 0;
@@ -109,14 +121,17 @@ public class ResultGenerator {
 				if (request.stats.looseMoney == 1) {
 				  looseMoney++;
 				}
+				if (request.finalFare > request.defaultFare) {
+				  unfairRiders++;
+				}
 				avgProfitDiff += request.stats.profitDiff;
 				avgResponseTime += request.stats.assignmentTime;
 				avgResponseTime += request.stats.schedulingTime;
 			}
 		}
-		return String.format("%d,%d,%d,%d,%.2f,%d,%.2f,%.2f,", totalRequests,
+		return String.format("%d,%d,%d,%d,%.2f,%d,%d,%.2f,%.2f,", totalRequests,
 				assignedRequests, mostProfitableDriver, looseMoney,
-				avgProfitDiff, usedDrivers,
+				avgProfitDiff, unfairRiders, usedDrivers,
 				totalCollectedFare - totalIncome, avgResponseTime
 						/ assignedRequests);
 	}

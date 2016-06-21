@@ -34,16 +34,14 @@ public class RideSharingLauncher {
 		  Utils.resultsDir.mkdir();
 		}
 		
-		Utils.MaxWaitTime = 6;
+		/*Utils.MaxWaitTime = 6;
 		Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
-		RunAlgorithms(requestsFile, driversFile);
-        //RunShortestPath(requestsFile, driversFile);
+		RunAlgorithms(requestsFile, driversFile);*/
 		
 		
-		/*int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
-        //int[] numOfVehicles = new int[]{500, 1000, 2500, 5000, 10000};
-		int[] numOfVehicles = new int[]{250, 500, 1000, 2000, 5000};
+		int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
+        int[] numOfVehicles = new int[]{250, 500, 1000, 2000, 5000};
         int[] numOfPassengers = new int[]{2, 3, 4, 5, 6};
         
 		Utils.NumberOfVehicles = 500;
@@ -74,7 +72,7 @@ public class RideSharingLauncher {
               + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
               Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
 		  summaries.append(RunAlgorithms(requestsFile, driversFile));
-		}*/
+		}
         
         String finalSummary = summaries.toString();
 		System.out.println(finalSummary);

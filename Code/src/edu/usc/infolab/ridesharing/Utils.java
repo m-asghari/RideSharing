@@ -1,5 +1,8 @@
 package edu.usc.infolab.ridesharing;
 
+import edu.usc.infolab.ridesharing.pricing.PerDistanceModel;
+import edu.usc.infolab.ridesharing.pricing.PricingModel;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,4 +46,6 @@ public class Utils {
 	  return false;
 	}
 	
+	public static PricingModel PRICING_MODEL = PerDistanceModel.getInstance();
+	//public static PricingModel PRICING_MODEL = DetourCompensatingModel.getInstance();	
 }

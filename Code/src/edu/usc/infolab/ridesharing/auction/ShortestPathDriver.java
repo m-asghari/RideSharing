@@ -137,9 +137,9 @@ public class ShortestPathDriver extends AuctionDriver {
   
   @Override
   public void AddRequest(AuctionRequest request, Time time) {
-    ProfitCostSchedule beforPCS = GetProfitAndCost(_schedule, time, true);
+    ProfitCostSchedule beforPCS = Utils.PRICING_MODEL.GetProfitAndCost(this, _schedule, time, true);
     super.AddRequest(request,time);
-    ProfitCostSchedule afterPCS = GetProfitAndCost(_schedule, time, true);
+    ProfitCostSchedule afterPCS = Utils.PRICING_MODEL.GetProfitAndCost(this, _schedule, time, true);
     request.serverProfit = (afterPCS.profit - beforPCS.profit);    
   }
 }

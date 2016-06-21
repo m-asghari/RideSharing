@@ -3,6 +3,7 @@ package edu.usc.infolab.ridesharing;
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.ridesharing.pricing.PerDistanceModel;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,8 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
 
   public double collectedFare;
   public double income;
+  
+  public double perDistanceIncome;
 
   public boolean _getPaid;
   public double _paidTravelledDistance;
@@ -48,6 +51,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
     this._paidTravelledDistance = 0;
     this.collectedFare = 0;
     this.income = 0;
+    this.perDistanceIncome = 0;
   }
 
   public Driver(String[] args) {
@@ -62,6 +66,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
       this._paidTravelledDistance = Double.parseDouble(args[4]);
       this.collectedFare = Double.parseDouble(args[5]);
       this.income = Double.parseDouble(args[6]);
+      //otherIncome
     } catch (InvalidActivityException iae) {
       iae.printStackTrace();
     }
@@ -103,14 +108,15 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
     StringBuilder results = new StringBuilder();
     results.append(
         String.format(
-            "%d,%d,%.2f,%s,%.2f,%.2f,%.2f,",
+            "%d,%d,%.2f,%s,%.2f,%.2f,%.2f,%.2f,",
             id,
             servicedRequests.size(),
             travelledDistance,
             Boolean.toString(_getPaid),
             _paidTravelledDistance,
             collectedFare,
-            income));
+            income,
+            perDistanceIncome));
     return results.toString();
   }
 
@@ -150,6 +156,15 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
     if (_getPaid) {
       this._paidTravelledDistance += length;
     }
+    int onBoardSize = onBoardRequests.size();
+    if (onBoardSize > 0) {
+      double addedIncome = PerDistanceModel.getInstance().ComputeDriverIncome(
+          this, length, 0.);
+      this.perDistanceIncome += addedIncome;
+      for (R request : onBoardRequests) {
+        request.perDistanceFare += addedIncome/onBoardSize;
+      }
+    }
   }
 
   /*
@@ -186,7 +201,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
     request.actualDistance = travelledDistance - request.pickUpDistance;
     request.detour = request.actualDistance - request.optDistance;
     request.actualTime = time.SubtractInMinutes(request.pickUpTime);
-    request.finalFare = request.profile(request.detour) * request.defaultFare;
+    request.finalFare = Utils.PRICING_MODEL.ComputeFinalFare(request, request.detour);
     this.onBoardRequests.remove(request);
     this.servicedRequests.add(request);
     if (this._schedule.isEmpty()) {
@@ -202,7 +217,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
   }
 
   // if time provided, will be in millisecods
-  protected double GetCost(Double dist, @SuppressWarnings("unused") Double time) {
+  public double GetCost(Double dist, @SuppressWarnings("unused") Double time) {
     return INCOME_PER_MILE * dist;
   }
 
