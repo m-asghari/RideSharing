@@ -43,10 +43,12 @@ public class PerDistanceModel extends PricingModel {
     if (driver.onBoardRequests.size() > 0) {
       initTrip = new Pair<Double, Double>(0., 0.);
     }
+    int onBoardPassengers = driver.onBoardRequests.size();
     for (GPSNode n : schedule) {
       Pair<Double, Double> trip = loc.DistanceInMilesAndMillis(n.point);
       time.AddMillis(trip.Second.intValue());
       dist += trip.First;
+      collectedFare += ComputeDriverIncome(driver, onBoardPassengers, dist, trip.Second);
       loc = n.point;
       AuctionRequest request = (AuctionRequest) n.request;
       if (n.type == Type.source) {
@@ -55,6 +57,7 @@ public class PerDistanceModel extends PricingModel {
         }
         pickUpTimes.put(request, time.clone());
         pickUpDist.put(request, dist);
+        onBoardPassengers++;
       }
       if (n.type == Type.destination) {
         double tripDist =
@@ -65,10 +68,9 @@ public class PerDistanceModel extends PricingModel {
         double detour = tripDist - request.optDistance;
         if (!currentSchedule && !Utils.IsAcceptableDetour(detour, request.optDistance))
           return ProfitCostSchedule.WorstPCS();
+        onBoardPassengers--;
       }
     }
-    collectedFare = 1.25 * driver.GetCost(dist - (driver.travelledDistance + initTrip.First), 
-        time.SubtractInMillis(start) - initTrip.Second);
     double profit = 0.2 * collectedFare;
     double cost = 0.8 * collectedFare;
     return new ProfitCostSchedule(profit, cost, schedule);
@@ -81,12 +83,17 @@ public class PerDistanceModel extends PricingModel {
 
   @Override
   public <R extends Request, D extends Driver<R>> double ComputeDriverIncome(
-      D driver, double distance, double time) {
+      D driver, int onBoardPassengers, double distance, double time) {
     double base = 1.25 * driver.GetCost(distance, time);
-    if (driver.onBoardRequests.size() > 1) {
+    if (onBoardPassengers > 1) {
       return 1. * base;
     }
     return base;
+  }
+
+  @Override
+  public double DefaultFare(double distance, int time) {
+    return 1.25 * distance;
   }
 }
 

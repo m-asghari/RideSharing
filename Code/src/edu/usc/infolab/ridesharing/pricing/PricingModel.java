@@ -14,5 +14,8 @@ public abstract class PricingModel {
   
   public abstract double ComputeFinalFare(Request request, double detour);
   
-  public abstract <R extends Request, D extends Driver<R>> double ComputeDriverIncome(D driver, double distance, double time);
+  public abstract <R extends Request, D extends Driver<R>> double ComputeDriverIncome(
+      D driver, int onBoardPassengers, double distance, double time);
+  
+  public abstract double DefaultFare(double distance, int time);
 }

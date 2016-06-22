@@ -124,11 +124,6 @@ public class ShortestPathDriver extends AuctionDriver {
         double detour = tripDist - request.optDistance;
         if (!currentSchedule && !Utils.IsAcceptableDetour(detour, request.optDistance))
           return ProfitCostSchedule.WorstPCS();
-        //fare += request.profile(detour) * request.defaultFare;
-        //cost =
-        //    this.GetCost(
-        //        _paidTravelledDistance + (dist - (travelledDistance + initTrip.First)),
-        //        time.SubtractInMillis(start) - initTrip.Second);
       }
     }
     double travelled = dist - this.travelledDistance;

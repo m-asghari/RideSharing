@@ -8,14 +8,14 @@ import edu.usc.infolab.ridesharing.Utils;
 public class Bid implements Comparable<Bid>{
 	public AuctionDriver driver;
 	public ArrayList<GPSNode> schedule;
-	public double value;
+	public double profit;
 	public double cost;
 	public double distToPickup;
 	
-	public Bid(AuctionDriver driver, ArrayList<GPSNode> schedule, Double value, Double cost) {
+	public Bid(AuctionDriver driver, ArrayList<GPSNode> schedule, double profit, double cost) {
 		this.driver = driver;
 		this.schedule = new ArrayList<GPSNode>(schedule);
-		this.value = value;
+		this.profit = profit;
 		this.cost = cost;
 		this.distToPickup = Utils.Max_Double;
 	}
@@ -27,7 +27,7 @@ public class Bid implements Comparable<Bid>{
 	
 	@Override
 	public int compareTo(Bid o) {
-		if (this.value == o.value) {
+		if (this.profit == o.profit) {
 			if (this.distToPickup > o.distToPickup) {
 				return -1;
 			} else if (this.distToPickup < o.distToPickup) {
@@ -35,7 +35,7 @@ public class Bid implements Comparable<Bid>{
 			} else {
 				return 0;
 			}
-		} else if (this.value > o.value) {
+		} else if (this.profit > o.profit) {
 			return 1;
 		} else {
 			return -1;

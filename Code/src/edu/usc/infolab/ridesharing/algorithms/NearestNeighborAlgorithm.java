@@ -70,8 +70,8 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
           if (driver.id == nearestDriver.id) {
             continue;
           }
-          if (bid.value > 0 && bid.value > maxProfit) {
-              maxProfit = bid.value;
+          if (bid.profit > 0 && bid.profit > maxProfit) {
+              maxProfit = bid.profit;
               mostProfitable = bid.driver;
           }        
       }

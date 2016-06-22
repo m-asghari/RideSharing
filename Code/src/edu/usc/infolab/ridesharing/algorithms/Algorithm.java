@@ -10,16 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public abstract class Algorithm<R extends Request, D extends Driver<R>> {
-  /**
-   * 
-   * @param distance
-   * @param time
-   * @return default fare
-   */
-    public static Double FARE(Double distance, int time) {
-        //return 5 + (2. * distance);
-      return 1.25 * distance;
-    }
   
     protected Time currentTime;
 	// Ding: vary this in the experiment

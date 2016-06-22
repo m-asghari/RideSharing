@@ -52,12 +52,12 @@ public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
         for (KTDriver d : potentialDrivers) {
             AuctionDriver auctionDriver = GetAuctionDriver(d);
             Bid bid = auctionDriver.ComputeBid(GetAuctionRequest(r), time);
-            if (bid.value > 0 && bid.value > maxProfit) {
-                maxProfit = bid.value;
+            if (bid.profit > 0 && bid.profit > maxProfit) {
+                maxProfit = bid.profit;
                 mostProfitable = bid.driver;
             }
             if (d.id == selectedDriver.id) {
-              ktProfit = bid.value;
+              ktProfit = bid.profit;
             }
         }
 		if (mostProfitable != null) {

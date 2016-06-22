@@ -159,7 +159,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
     int onBoardSize = onBoardRequests.size();
     if (onBoardSize > 0) {
       double addedIncome = PerDistanceModel.getInstance().ComputeDriverIncome(
-          this, length, 0.);
+          this, onBoardSize, length, 0.);
       this.perDistanceIncome += addedIncome;
       for (R request : onBoardRequests) {
         request.perDistanceFare += addedIncome/onBoardSize;

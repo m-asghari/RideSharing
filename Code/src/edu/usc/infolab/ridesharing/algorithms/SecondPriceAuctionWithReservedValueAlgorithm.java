@@ -24,26 +24,26 @@ public class SecondPriceAuctionWithReservedValueAlgorithm<D extends AuctionDrive
 		double highestValue = Utils.Min_Double;
 		double secondHighestValue = Utils.Min_Double;
 		for (Bid bid : bids) {
-			if (bid.value > highestValue) {
+			if (bid.profit > highestValue) {
 				secondHighestValue = highestValue;
 				secondHighestBid = highestBid;
-				highestValue = bid.value;
+				highestValue = bid.profit;
 				highestBid = bid;
-			} else if (bid.value > secondHighestValue) {
-				secondHighestValue = bid.value;
+			} else if (bid.profit > secondHighestValue) {
+				secondHighestValue = bid.profit;
 				secondHighestBid = bid;
 			}
 		}
 		if (highestBid == null)
 			return null;
-		if (highestBid.value < 0) {
+		if (highestBid.profit < 0) {
 			return null;
 		}
-		if (highestBid.value == 0 && highestBid.schedule.isEmpty()) {
+		if (highestBid.profit == 0 && highestBid.schedule.isEmpty()) {
 			return null;
 		}
 		AuctionDriver winner = highestBid.driver;
-		r.serverProfit = highestBid.value;
+		r.serverProfit = highestBid.profit;
 		this.profit += r.serverProfit;
 		return winner;
 	}

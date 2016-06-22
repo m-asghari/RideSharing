@@ -3,7 +3,6 @@ package edu.usc.infolab.ridesharing;
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
-import edu.usc.infolab.ridesharing.algorithms.Algorithm;
 
 import java.text.ParseException;
 import java.util.HashMap;
@@ -110,7 +109,7 @@ public class Request implements Comparable<Request> {
 		this.detour = -1;
 		this.actualTime = -1;
 		this.actualDistance = -1;
-		this.defaultFare = Algorithm.FARE(optDistance, optTime);
+		this.defaultFare = Utils.PRICING_MODEL.DefaultFare(optDistance, optTime);
 		this.finalFare = -1;
 		this.perDistanceFare = 0;
 	}

@@ -73,6 +73,7 @@ private static DetourCompensatingModel _defaultInstance;
         fare += ComputeFinalFare(request, detour);
         cost = ComputeDriverIncome(
             driver,
+            -1 /* On Board Passenger is not important in this model */,
             driver._paidTravelledDistance + (dist - (driver.travelledDistance + initTrip.First)),
             time.SubtractInMillis(start) - initTrip.Second);
       }
@@ -88,8 +89,13 @@ private static DetourCompensatingModel _defaultInstance;
 
   @Override
   public <R extends Request, D extends Driver<R>> double ComputeDriverIncome(
-      D driver, double distance, double time) {
+      D driver, int onBoardPassengers, double distance, double time) {
     return driver.GetCost(distance, time);
+  }
+
+  @Override
+  public double DefaultFare(double distance, int time) {
+    return 2 * distance;
   }
 }
 
