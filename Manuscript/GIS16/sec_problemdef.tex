@@ -42,6 +42,7 @@ Assuming we have a set of Drivers V and a set of Requests R, we call $M \subset 
 \noindent In a matching $M$, for every driver $v$, there exists a valid schedule $s_v$, such that $(v, r_i) \in M \implies r_i.s \in s_v \wedge r_i.e \in s_v$ (or simply $r_i \in s_v$). 
 
 \subsection{Pricing Model}
+\label{subsec:pricing}
 
 Following the definition of basic concepts in the ride sharing system, we introduce a general price model that can be utilized to compute the corresponding fare of a ride, the payment drivers receive and subsequently, the profit the ride sharing system generates. Before we continue, it is necessary to point out that one of the building blocks of any real-world ride sharing system is a mechanism for computing the shortest path between any two points in the road network. Without loss of generality, we define our pricing model based on a static shortest path computations as opposed to time-dependent. However, the definitions can be easily updated to be compatible with time-dependent networks as well. For example, the fare of a ride is dependent on the distance between the pick-up and the drop-off points in a static network where in a time-dependent network it can be dependent on the travel time between those two points or perhaps both distance and travel time.
 
@@ -104,7 +105,6 @@ There does not exist a deterministic online algorithm that is $c-competetive$ ($
 \end{theorem}
 
 %%% TODO: given a rider and the current schedule, calculate the extra profit of inserting a new request.
-
 
 %Properties of the above definition, can we guarantee the extra profit should be positive?
 
