@@ -1,16 +1,70 @@
 \section{Introduction}
 
-TO-DO lists:
-\begin{itemize}
-	\item Problem definition: define driver profile, rider profile and our price model.
-	
-	\item Define our objective functions (i.e., maximize extra profit), and differentiate it with other optimization goal (e.g., minimize extra distance). 
-	%Given a rider and a driver with their profiles, calculate the cost of accepting the rider. 
-	
-	\item Introduce overall framework, and describe our auction-based mechanism.
-	
-	\item Properties of our framework in both local setting and global setting. In the local setting, show that we will get the same profit as the centralized setting. In the global setting, show that our technique can achieve certain approximation ratio compared with the global optimal (or upper bound of global optimal),  or vice verse we will suffer from certain degenerated cases.
-	
-	\item Optimizations: a) Maintain coarse-grained hierarchic index (adaptive grids, quad-tree), b) maintain novel shortest path index which is fine tuned for ride-sharing applications c) batch processing rider requests (single round bidding v.s. multi-round bidding).
-	
-\end{itemize}
+%TO-DO lists:
+%\begin{itemize}
+%	\item Problem definition: define driver profile, rider profile and our price model.
+%	
+%	\item Define our objective functions (i.e., maximize extra profit), and differentiate it with other optimization goal (e.g., minimize extra distance). 
+%	%Given a rider and a driver with their profiles, calculate the cost of accepting the rider. 
+%	
+%	\item Introduce overall framework, and describe our auction-based mechanism.
+%	
+%	\item Properties of our framework in both local setting and global setting. In the local setting, show that we will get the same profit as the centralized setting. In the global setting, show that our technique can achieve certain approximation ratio compared with the global optimal (or upper bound of global optimal),  or vice verse we will suffer from certain degenerated cases.
+%	
+%	\item Optimizations: a) Maintain coarse-grained hierarchic index (adaptive grids, quad-tree), b) maintain novel shortest path index which is fine tuned for ride-sharing applications c) batch processing rider requests (single round bidding v.s. multi-round bidding).
+%	
+%\end{itemize}
+
+%%%%%% 1. background information
+
+%Ridesharing is an important problem throughout the world. With the emergence of many commencial ridesharing platforms, it gains more popularity. Unlike taxi systems which supports prescheduling, the request of ridesahring are generated on-the-fly, and drivers are moving dynamiclly. The typical operations of ridesharing platforms are as follows: a rider submits a ridesharing request which consists of origin and destination at any time; Once receiving the request, the platform decides the most appropriate drivers to pick up the passengers. After the trip is finished.
+
+% Ridesharing becomes popular recently because it has potential to match riders with similar itineraries and time schedules, and to bring significant benefits to individual users and the city as a whole. 
+
+Real-time ridesharing is an importang problem because it can help reduce congestion, lower costs of commuters and decrease auto emissions. Recently, this concept of real-time sharing becomes more and more popular, with the emergence of many commecial platforms (e.g.,Uber and Lyft), which automatically match drivers and riders on-the-fly. According to XXX, since the lauching at XXX, the number of ridesharing trips of UberPool at SF has reached to XXX, xxx per day. Typically, these platforms are operaterd as follows: (1) rider request which consists of the origin and destination can be submitted at anytime to the platform. (2) Once receiving the request, the platform determines the most appropriate drivers (even en-route) to pick up the rider. (3) When the trip is completed, the platform then calculates the payment of riders and the rewards of drivers. xxx
+
+% Real-time ridesharing, which enables on-the-fly matching between riders and drivers (even en-route), is an important problem due to its environmental and societal benefits. With the emergence of many ride sharing platforms (e.g., Uber and Lyft), the design of a scalable framework to match riders and drivers based on their various constraints while maximizing the overall profit of the platform becomes a distinguishing business strategy. 
+% Some benefits of ridesharing:  saves energy consumption and eases traffic congestion while enhancing the capacity of commuting by taxis. Meanwhile, it reduces the fare of riders and increases the profit of drivers. 
+
+%%%%%% 2. explain the challengs and the detour of ridesharing......
+
+%Two natural questions are how to design the profit model which offsets the detours of both riders and drivers, hence providing incentives for all the participants, and how to efficiently determine the most appropriate driver. 
+
+Many challenges exist to enable such real-time ridesharing platform. First, because the requests are coming on-the-fly, the platform should decide the most approaite drivers (even en-route) to matching the given request at a short amount of time. Secondly, this platform should provide incentives for riders, drivers as well as the platform providers, this requires a fair pricing scheme that can determine the payments of riders, earning of drivers and the profit of the platform. Although ridesharing has a large potential of reducing the cost of riders because of sharing similar itineraries, it also causes the extra detour for riders. For example, xxxx. Ideally, rider will be compensated for the extra distance incurred from ridesharing, whereas the drivers and ridesharing platform's objective are to earn more profit. This two-face property makes the design of a fair pricing scheme that captures the requirements of both drivers and riders even more complexing. Therefore, the design of an efficient framework that match riders and drivers, with a fair price shcheme that provides incentives for all particiants becomes a distinguishing business strategy.
+
+% Therefore, the design of a scalable framework to match riders and drivers based on their various constraints while maximizing the overall profit of the platform becomse a distinguishing business strategy.
+
+%%% 3. show the shortcomings of existing work and how they fail to address the challenge
+The majority of previous studies~\cite{} focus on improving the efficiency of on-the-fly matching with the objective of minimizing the travel distance of drivers. However, minimizing drivers' travel distance is not always equivalent to shorter trips for riders. Consider the example of xxx. Few studies considers~\cite{} designing a price scheme (i.e, the payments of riders and rewards of drivers), and they ignore the profit of the ridesharing platform. Moreover, the price shceme are treated as the constraints instead of the optimization goal. Finally, the different requirements of rider and drivers have not been considered, which makes their pricing scheme less applicable for the general ridesharing platform. Hence no established dynamic ridesharing platform that offers the convenience of efficient matching of individual dynamically, while handling individual preferences. 
+
+%Therefore, no established dynamic ride sharing platform that offers the convenience of fast, efficient and accurate searching and matching of individuals dynamically for riding together, while also handling individual and trip specific preferences such as maximum driving detour and maximum walking for commuters. 
+
+%%% 4. explain our pricing model, and provides more intuition of better service quality.
+To address these challenges, in this paper, we introduce an Auction-based Price-Aware Real-time (APART) ridesharing framework. Specifically, we propose a general pricing model that simultaneously satisfies both the riders and drivers constraints and desires (formulated as their profiles). The profiles are  flexible and hence highly customized for different types of riders and drivers. Specifically, each rider profile defines the expected discount ratio for the extra detours incurred by ridesharing, similarly, a driver profile determines the expected cost from his/her total travel distance and time, with which we can determine the profit of a ridesharing request. With our price model, our objective is to maximize the total profit of the ridesharing platform. Because our pricing model compensates riders for longer trips, in order to maximize the profit, our framework reduces the detour of passengers and hence, providing better service quality. 
+
+%We define a fair price model, which is flexible and general. The profiles are served to xxx. The constraints of are expressed as profiles. Given a user and rider profile, the fare and cost of xxx can be automatically derived from their profiles and other constrains. 
+
+%%% 5. explain our framework
+To efficiently assign, we introduce a distributed auction-based framework where each driver's mobile app automatically bids on every nearby request taking into account many factors such as both the driver's and the rider's profiles, their itineraries, the pricing model, and the current number of riders in the vehicle.  Subsequently, the server determines the highest bidder and assign the rider to that driver. 
+
+%%% 6. show some experiment resutls
+We show that this framework is scalable and efficient, processing hundreds of tasks per second in the presence of thousands of drivers. We compare our framework with the state-of-the-art approaches in both industry and academia through experiments on New York City's taxi dataset. Our results show that our framework can simultaneously match more riders to drivers (i.e., higher service rate) by engaging the drivers more effectively. Moreover, our framework schedules shorter trips for riders (i.e., better service quality). Finally, as a consequence of higher service rate and shorter trips, our framework increases the overall profit of the ridesharing platforms.
+
+The remaining of our paper are organizes as follows:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% from mohammod 
+
+% Because platforms like Uber and Lyft are becoming more popular (we can show some numbers how their businesses are growing in the recent years). Ridesharing become popular recently. Existing ridesharing studies mainly focus on matching riders and drivers only considering their spatiotemporal constraints (max wait time, maximum detour, etc.)
+
+% It is important to design systems that not only satisfy spatiotemporal constraints of the users, but also take into consideration the monetary aspect of the business (i.e., the fees riders pay, the drivers' income and the system's profit). A key component of such framework is to xxx and xxx.
+
+% While most studies ignore this aspect of the system, T-Share provides a pricing model where on average riders end up paying less when compared to each passenger riding alone. However, based on some experimental results on NYC's taxi dataset, we noticed based on this pricing model, up to x\% of passengers end up paying even more that what they would have payed if they did not share a ride. Hence, this requires the design of a pricing model which is fair to every passenger meaning that if a passenger's trip gets longer as a result of sharing a ride, they should end up paying less (receiving a discount).
+
+% To address the above challenges, in this paper we propose xxx. The goal of our framework is to maximize the profit of the platform. Because we utilize a pricing model which compensates riders for longer trips, in order to maximize the profit, our framework reduces the detour of passengers and hence, providing better service quality.
+
+% Also, APART utilized an auction based approach allowing it to scale by distributing the computation among drivers (You can probably use a good chunk of this part from my CIKM submission).
+
+% We evaluated our .
+
+% The paper is organized as follows:
