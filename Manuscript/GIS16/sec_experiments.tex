@@ -1,7 +1,104 @@
 \section{Experiments}
-Dataset and experiment design.
 
-\begin{itemize}
-	\item Comparison with centralized method~\cite{huang2014large,ma2013t}.
-	\item Varying parameters.
-\end{itemize}
+\subsection{Dataset}
+Dataset and experiment desig.
+
+\subsection{Experiment Setup}
+
+\subsubsection{Algorithms}
+We compared the results of our framework (\textbf{APART}) with two other approaches; \textbf{SP} (i.e., Shortest Path) and \textbf{NN} (i.e., Nearest Neighbor).
+
+Our implementation of SP is based on the algorithms in \cite{Huang14}. The only advantage of \cite{Huang14} over \cite{Ma2013} is the the former considers reordering of the schedule while the latter does not. Although it is shown the performance increase of reordering requests is minimal, since we consider request reordering in APART, we decided to base the SP implementation on algorithms in \cite{Huang14} to make the comparison as fair as possible.
+
+Also, the NN algorithm is implemented based on the current approach adopted by major ridesharing platforms such as Uber. The NN approach, finds the first nearest driver to the pick-up location of a new request. If the driver is able to fit the new request in its schedule without violating any constraints, he accepts the request. Otherwise the request is rejected and the algorithm tries to assign the request to the next nearest driver. This continues until a driver accepts the request of every driver rejects it in which case the request is dropped.
+
+As a result, we are comparing the performance of APART with state-of-the-art approaches from both academia (SP) and industry (NN).
+
+In the first set of experiments, we use the pricing model explained in \cref{subsec:pricing} and compare the three approaches. In ...... we utilize the pricing model introduced in \cite{Ma2015} for both APART and SP. In the pricing model of \cite{Ma2015}, there is no concept of \textit{revenue} similar to what we introduces in \cref{subsec:pricing}. Therefore, in order to compare the generated revenue, we assume each driver has to pay 20\% of what they make as the server's share.
+
+\subsubsection{Configurations and Measures}
+In our experiments we measure three different metrics by varying different parameters of the system. We measure (1) service rate as the percentage of requests that were completed, (2) the revenue of the system and (3) the response time for matching a request with a driver. Also, \cref{tab:params} shows the different values we used for various parameters to evaluate our framework (default values are shown in \textbf{bold}).
+
+\TODO{mohammad}{Write default values for rider and driver profiles}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|}
+	\hline
+	Parameter & Values \\
+	\hline \hline
+	Max Wait Time & 3min, \textbf{6min}, 9min, 12min, 15min, 20min \\ 
+	\hline
+	\# of Drivers & 1000, 2000, \textbf{5000},  10000, 20000\\ 
+	\hline
+	Max Passengers & 2, 3, \textbf{4}, 5, 6 \\
+	\hline
+	Max Allowed Detour & 25\%, \textbf{50\%}, 75\%, 100\%\\
+	\hline
+\end{tabular}
+\caption{Parameters for Algorithm Comparison}
+\label{tab:params}
+\end{center}
+\end{table}
+
+\subsection{Algorithm Comparison}
+In this section, we evaluate the performance of the three approaches by varying one of the parameters based on \cref{tab:params} while other parameters have their default values. We show how the algorithms compare to each other with regard to service rate, generated revenue and response time.
+
+\subsubsection{Service Rate}
+In the first set of experiments we compare the service rate of the three approaches. As shown in \cref{fig:sr}, all algorithms generate high service rates when the constraints are loosened or there is high resource availability. However, under tight constraints or limited resources, APART outperform the other two approaches by up to 20\%. To better explain the reason why APART has a higher service rate, we use the notion of \textit{eligible drivers} defined in \cref{subsec:dispatch}. \TODO{mohammad}{add a chart that shows the percentage of requests where in APART there are more eligible drivers}.
+
+\begin{figure}[h]
+    \centering
+    \subfigure[\small{Maximum Wait Time}]{
+        \label{fig:mwt_sr}
+        \includegraphics[width = 0.45\columnwidth]{fig/mwt_sr.jpg}
+    }
+    \subfigure[\small{Number of Drivers}]{
+        \label{fig:nd_sr}
+        \includegraphics[width = 0.45\columnwidth]{fig/mwt_sr.jpg}
+    }
+    \subfigure[\small{Maximum Passengers}]{
+        \label{fig:mp_sr}
+        \includegraphics[width = 0.45\columnwidth]{fig/mwt_sr.jpg}
+    }
+    \subfigure[\small{Maximum Allowed Detour}]{
+        \label{fig:mad_sr}
+        \includegraphics[width = 0.45\columnwidth]{fig/mwt_sr.jpg}
+    }
+    \vspace{-0.15in}
+    \caption{Comparing Service Rate of the Algorithms}
+    \label{fig:sr}
+\end{figure}
+
+\subsubsection{Revenue}
+As mentioned, the main objective of APART is to maximize the ridesharing platform's revenue. In these set of experiments, we compare the generated revenue of each algorithm. In these experiments we applied the pricing model explained in \TODO{mohammad}{ref to correct section} and used for the riders and drivers, used profiles similar to the ones in \TODO{mohammad}{ref to sample rider profiles} and \TODO{mohammad}{ref to sample driver profile} respectively. Here, we want to evaluate the effect of varying the parameters in \cref{tab:params} on the overall revenue and compare different algorithms. Later in \cref{subsec:pricingexp} we will apply different pricing models to the algorithms and compare revenue under different pricing models as well.
+
+\begin{figure}[h]
+    \centering
+    \subfigure[\small{Maximum Wait Time}]{
+        \label{fig:mwt_rev}
+        \includegraphics[width = 0.45\columnwidth]{fig/mwt_sr.jpg}
+    }
+    \subfigure[\small{Number of Drivers}]{
+        \label{fig:nd_rev}
+        \includegraphics[width = 0.45\columnwidth]{fig/mwt_sr.jpg}
+    }
+    \subfigure[\small{Maximum Passengers}]{
+        \label{fig:mp_rev}
+        \includegraphics[width = 0.45\columnwidth]{fig/mwt_sr.jpg}
+    }
+    \subfigure[\small{Maximum Allowed Detour}]{
+        \label{fig:mad_rev}
+        \includegraphics[width = 0.45\columnwidth]{fig/mwt_sr.jpg}
+    }
+    \vspace{-0.15in}
+    \caption{Comparing Revenue of the Algorithms}
+    \label{fig:rev}
+\end{figure}
+
+As it can be seen in \cref{fig:rev} regardless of the values of different parameters, APART generates more revenue than any other approach. When we compare the results in \cref{fig:rev} with the ones in \cref{fig:sr}, even under configurations where all algorithms have the same service rate, APART manages to generate at least 10\% more revenue. The main reason for higher revenue is that APART is designed to make a \textit{Price-aware} assignment, i.e., assign the request to a driver that generates the most profit. Of course, as explained in \TODO{mohammad}{ref to pricing model section}, the pricing models that are used in APART are designed such that the higher profits are not gained by scamming the riders. On the other hand, as it was explained earlier, the SP and NN algorithm were not designed to maximize revenue.
+
+\subsubsection{Response Time}
+
+\subsection{Comparing Pricing Models}
+\label{subsec:pricingexp}

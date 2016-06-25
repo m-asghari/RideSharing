@@ -1,14 +1,16 @@
-\section{\fname Framework}
+\section{APART Framework}
+\label{sec:framework}
 
 In a real-time ride sharing application, the server finds out about a ride and its properties once it receives a request for that ride. At this time, a real-time centralized server has to evaluate the schedule of multiple drivers and decide which driver can best accommodate the new request in its schedule. With a large number of drivers, the scheduling phase soon becomes the bottleneck. In this section we introduce \fname which overcomes this shortcoming by distributing the scheduling process to the drivers themselves. First we explain the auction framework and how the server broadcasts new arriving requests to the drivers. Subsequently, we discuss how each driver generates a bid based on a potential new schedule. We end this section with a discussion on how we can simplify the bid computation process for each driver without sacrificing \fname 's revenue.
 
-\subsection{Request Dispatchment in \fname}
+\subsection{Request Dispatchment in APART}
+\label{subsec:dispatch}
 
 Auction frameworks are simple and allow for a decentralized implementation. For this reason, they have been effectively used for assignment problems \TODO{mohammad}{Provide Refs}. \fname considers drivers as bidders and ride requests as goods. Furthermore, the server plays the role of a central auctioneer in \fname. At a very high level, in \fname, once a new request is received by the server (auctioneer), it presents the request to the drivers (bidders). Each drivers computes a new valid schedule by adding the new request to its current schedule. Based on the new schedule, it generates a bid and submits the bid to the server which represents the profit \fname can make by assigning the request to that driver. The bidding process is performed as a \textit{sealed-bid auction} where drivers simultaneously submit bids and no other driver knows how much the other drivers have bid. The server selects the driver with the highest bid as the winner and matches the request with the driver.
 
 Broadcasting every incoming request to all available drivers incurs a large communication cost on the system. \fname lowers the communication cost by only sending any incoming request to \textit{eligible drivers} that are define as:
 
-\begin{definition} [Eligible Worker]
+\begin{definition} [Eligible Drivers]
 An available driver $v$ is said to be eligible for servicing a newly submitted request $r$, if and only if:
 \begin{equation*}
 distance(v, r.s) \leq r.w \times avg\_speed
