@@ -41,52 +41,7 @@ Assuming we have a set of Drivers V and a set of Requests R, we call $M \subset 
 
 \noindent In a matching $M$, for every driver $v$, there exists a valid schedule $s_v$, such that $(v, r_i) \in M \implies r_i.s \in s_v \wedge r_i.e \in s_v$ (or simply $r_i \in s_v$). 
 
-\subsection{Pricing Model}
-\label{subsec:pricing}
-
-Following the definition of basic concepts in the ride sharing system, we introduce a general price model that can be utilized to compute the corresponding fare of a ride, the payment drivers receive and subsequently, the profit the ride sharing system generates. Before we continue, it is necessary to point out that one of the building blocks of any real-world ride sharing system is a mechanism for computing the shortest path between any two points in the road network. Without loss of generality, we define our pricing model based on a static shortest path computations as opposed to time-dependent. However, the definitions can be easily updated to be compatible with time-dependent networks as well. For example, the fare of a ride is dependent on the distance between the pick-up and the drop-off points in a static network where in a time-dependent network it can be dependent on the travel time between those two points or perhaps both distance and travel time.
-
-Every request $r$ has a default fare based on the shortest distance, $d_r$, from $r.s$ to $r.e$. In other words, we have an arbitrary function $FARE: d \rightarrow \$ $ such that $FARE(d)$ is the default fare of a ride. In a ride sharing system, the actual route between the pick-up and drop-off locations of a ride is not necessary the shortest route between the two points. We show the actual route between the two end points of a ride with $d'_r$ and define the detour of a ride as $\delta d_r = d'_r - d_r$. As explained in \cref{def:req}, each request is associated with a profile. We introduce the concept of a \textit{rider's profile} as a tool for the rider to specify how much discount she expects to receive in return for a certain amount of detour on her trip. A rider's profile can have different formats: linear decay, exponential decay, etc. \cref{fig:rider_profile} shows an example of a rider's profile.
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width = 60mm]{fig/rider.eps}
-	\vspace{-0mm}\caption{Rider profile} \vspace{-2mm} \label{fig:rider_profile}
-\end{figure}\vspace{-0mm}
-
-Subsequently, for a request $r$ with shortest distance $d_r$, detour $\delta d_r$ and a profile $f_r$, the final fare is:
-
-\begin{equation}
-\label{eq:fare}
-fare(r) = F(d_r) f_r(\delta d_r)
-\end{equation}
-
-Every driver has a unique profile which allows him to specify the cost of his service. Similar to a rider, a driver's profile can be any function. In fact, the function can take any arbitrary input in addition to the distance. For example, it is possible to define the driver's profile as $g: n, d \rightarrow \$$ where $n$ is the number of passengers being serviced by the driver. Without loss of generality, in this paper we assume distance is the only input of the profile. Intuitively, the profile is a monotonically increasing function. For example, the profile in \cref{fig:driver_profile} is one where the driver charges \$1 per mile.
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width = 60mm]{fig/driver.eps}
-	\vspace{-0mm}\caption{Driver profile} \vspace{-2mm} \label{fig:driver_profile}
-\end{figure}\vspace{-0mm}
- 
-At any point in time, each driver has a schedule. A driver will be compensated during the time its schedule is not empty. Therefore, for every driver $v$, the cost is:
-
-\begin{equation}
-\label{eq:payment}
-cost_v = \int_{start_s}^{end_s} I\left( s_v(t) \neq \left\langle \right\rangle\right).g(dist(t))dt
-\end{equation}
-
-\noindent Where $I()$ is the indicator function, $s_v(t)$ and $dist(t)$ are the driver's schedule and the distance he travels at time $t$ respectively. In addition, $start_s$ and $end_s$ are the first pick-up time and last drop-off time of $s_v$.
-
-The profit \fname makes from driver $v$ is the difference between the fares collected from all requests serviced by $v$ and the payment $v$ receives for himself. Subsequently, the total profit (revenue) of the system will be the sum of the profits received from all drivers:
-
-\begin{align}
-\label{eq:profit} 
-profit_v &= \sum_{r_i \in s_v}fare(r_i) - cost_v\\
-revenue &= \sum_{v \in V}profit_v
-\end{align}
-
-Now that we have defined a generic pricing model, we can define the \textit{Ride-Sharing} problem as follows:
+In \cref{sec:pricing} we define a generic \textit{Pricing Model} where given a driver and its schedule, the pricing model will compute the final fare each rider has to pay, the income of the driver and the ride-sharing platform's profit. Subsequently, we can define the \textit{Ride-Sharing} problem as follows:
 
 \begin{definition} [Ride-Sharing Problem]
 Given a set of ride requests R and a set of drivers V, the goal of the Ride-Sharing problem is to find a matching M between R and V such that the revenue of M is maximized.

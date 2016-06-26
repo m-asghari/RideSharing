@@ -1,4 +1,4 @@
-\documentclass[]{sig-alternate-05-2015}
+\documentclass[]{vldb}
 
 \usepackage{graphicx}
 \usepackage{subfigure}
@@ -50,7 +50,7 @@
 \renewcommand{\bottomfraction}{1.0}
 \setcounter{totalnumber}{100}
 \setcounter{bottomnumber}{100}
-\setcounter{topnumber}{100}
+\setcounter{topnumber}{100} 
 
 % URLs
 \usepackage{url}
@@ -67,13 +67,19 @@
 \captionsetup{font=bf}
 \usepackage[justification=centering]{caption}
 
+% Single/Double Qoutes
+\newcommand{\qoute}[1]{`#1'}
+\newcommand{\qoutes}[1]{``#1''}
+\newcommand{\itqoutes}[1]{\textit{``#1''}}
+
+
+
 \newcommand{\TODO}[2]{\textbf{\textcolor{red}{TODO: (#1) #2}}}
 \newcommand{\dingedit}[1]{\textcolor{red}{\emph{[Ding: #1]}}}
 \newcommand{\moedit}[1]{\textcolor{cyan}{\emph{[Mohammad: #1]}}}
 \newcommand{\fname}{APART }
 
-\title{Price-aware Real-time Ride-sharing at Scale - An Auction-based Approach}
-
+\title{Price-aware Real-time Ride-sharing at Scale -\\An Auction-based Approach}
 
 \author{}
 
@@ -83,16 +89,16 @@
 \maketitle
 
 \begin{abstract}
-Real-time ridesharing, which enables on-the-fly matching between riders and drivers (even en-route), is an important problem due to its environmental and societal benefits. With the emergence of many ride sharing platforms (e.g., Uber and Lyft), the design of a scalable framework to match riders and drivers based on their various constraints while maximizing the overall profit of the platform becomes a distinguishing business strategy.
-A key challenge of such framework is to satisfy both types of the users in the system, e.g., reducing both riders' and drivers' travel distances. However, the majority of the existing approaches focus only on minimizing the total travelled distance of drivers which is not always equivalent to shorter trips for riders. Hence, we propose a fair pricing model that simultaneously satisfies both the riders and drivers constraints and desires (formulated as their profiles). In particular, we introduce a distributed auction-based framework where each driver's mobile app automatically bids on every nearby request taking into account many factors such as both the driver's and the rider's profiles, their itineraries, the pricing model, and the current number of riders in the vehicle.  Subsequently, the server determines the highest bidder and assigns the rider to that driver. We show that this framework is scalable and efficient, processing hundreds of tasks per second in the presence of thousands of drivers. We compare our framework with the state-of-the-art approaches in both industry and academia through experiments on New York City's taxi dataset.  Our results show that our framework can simultaneously match more riders to drivers (i.e., higher service rate) by engaging the drivers more effectively. Moreover, our framework schedules shorter trips for riders (i.e., better service quality).   Finally, as a consequence of higher service rate and shorter trips, our framework increases the overall profit of the ridesharing platforms. 
+Real-time ride-sharing, which enables on-the-fly matching between riders and drivers (even en-route), is an important problem due to its environmental and societal benefits. With the emergence of many ride sharing platforms (e.g., Uber and Lyft), the design of a scalable framework to match riders and drivers based on their various constraints while maximizing the overall profit of the platform becomes a distinguishing business strategy.\\
+A key challenge of such framework is to satisfy both types of the users in the system, e.g., reducing both riders' and drivers' travel distances. However, the majority of the existing approaches focus only on minimizing the total traveled distance of drivers which is not always equivalent to shorter trips for riders. Hence, we propose a fair pricing model that simultaneously satisfies both the riders' and drivers' constraints and desires (formulated as their profiles). In particular, we introduce a distributed auction-based framework where each driver's mobile app automatically bids on every nearby request taking into account many factors such as both the driver's and the riders' profiles, their itineraries, the pricing model, and the current number of riders in the vehicle.  Subsequently, the server determines the highest bidder and assigns the rider to that driver. We show that this framework is scalable and efficient, processing hundreds of tasks per second in the presence of thousands of drivers. We compare our framework with the state-of-the-art approaches in both industry and academia through experiments on New York City's taxi dataset.  Our results show that our framework can simultaneously match more riders to drivers (i.e., higher service rate) by engaging the drivers more effectively. Moreover, our framework schedules shorter trips for riders (i.e., better service quality). Finally, as a consequence of higher service rate and shorter trips, our framework increases the overall profit of the ride-he tilyhe the here he vhatBay uthe nothe th iteitemr gerhat trit ptemsharing platforms.
 \end{abstract}
 
 \input{sec_introduction}
 \input{sec_problemdef}
-%\input{sec_pricing}
+\input{sec_pricing}
 %\input{sec_overview}
 \input{sec_framework}
-\input{sec_optimization}
+%\input{sec_optimization}
 \input{sec_experiments}
 \input{sec_related}
 \input{sec_conclusion}
