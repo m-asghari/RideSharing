@@ -17,10 +17,17 @@ Consequently, every pricing model should define three key concepts: (1) \itqoute
 %\subsection{Rider's Fare}
 Every request $r$ has a default fare based on the shortest distance, $d_r$, from $r.s$ to $r.e$. In other words, every pricing model should have an arbitrary function $FARE: d \rightarrow \$ $ such that $FARE(d)$ is the default fare of a ride. In a ride-sharing system, the actual route between the pick-up and drop-off locations of a ride is not necessary the shortest route between the two points. We show the actual route between the two end points of a ride with $d'_r$ and define the detour of a ride as $\delta d_r = d'_r - d_r$. As explained in \cref{def:req}, each request is associated with a profile. We introduce the concept of a \textit{rider's profile} as a tool for the rider to specify how much discount she expects to receive in return for a certain amount of detour on her trip. A rider's profile can have different formats: linear decay, exponential decay, etc. \cref{fig:rider_profile} shows an example of a rider's profile.
 
-\begin{figure}[!ht]
+\begin{figure}
 	\centering
-	\includegraphics[width = 60mm]{fig/rider.eps}
-	\vspace{-0mm}\caption{Rider profile} \vspace{-2mm} \label{fig:rider_profile}
+    \subfigure[Rider's Profile]{
+        \label{fig:rider_profile}
+        \includegraphics[width=0.45\columnwidth ]{fig/rider.eps}
+    }
+    \subfigure[Driver's Profile]{
+        \label{fig:driver_profile}
+        \includegraphics[width=0.45\columnwidth ]{fig/driver.eps}
+    }
+	\vspace{-0mm}\caption{User Profiles} \vspace{-2mm} \label{fig:profiles}
 \end{figure}\vspace{-0mm}
 
 Subsequently, for a request $r$ with shortest distance $d_r$, detour $\delta d_r$ and a profile $f_r$, the final fare is:
@@ -35,12 +42,6 @@ fare(r) = F(d_r) f_r(\delta d_r)
 %\subsection{Driver's Income}
 Every driver has a unique profile which allows him to specify the cost of his service. Similar to riders, drivers can have different expectations for participating in a ride-sharing platforms. The driver's profile allows each driver to set their expectations with respect to how much they expect to make for participating in the platform. The driver's profile can be any function. In fact, it can take any arbitrary input in addition to the distance. For example, it is possible to define the driver's profile as $g: n, d \rightarrow \$$ where $n$ is the number of passengers being serviced by the driver. Without loss of generality, we assume distance is the only input of the driver's profile. Intuitively, the profile is a monotonically increasing function. For example, the profile in \cref{fig:driver_profile} is one where the driver charges \$1 per mile.
 
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width = 60mm]{fig/driver.eps}
-	\vspace{-0mm}\caption{Driver profile} \vspace{-2mm} \label{fig:driver_profile}
-\end{figure}\vspace{-0mm}
- 
 At any point in time, each driver has a schedule. A driver will be compensated during the time its schedule is not empty. Therefore, for every driver $v$, the income is:
 
 \begin{equation}
