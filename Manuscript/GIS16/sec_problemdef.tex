@@ -4,6 +4,7 @@
 In this section, we define the terminologies, and formally define the problem under consideration.
 
 \subsection{Basic Concepts}
+<<<<<<< HEAD
 The road network is represented as a graph $G(I, E)$, where each node represents intersections, and each edge represents a road segment. 
 Each edge $(i,j) \in E$ $(i, j \in I)$ is associated with a weight $c(i,j)$ which is a travel cost (can be either time or distance) from $i$ to $j$.
 % TODO: define path in road network
@@ -12,13 +13,27 @@ The shortest path cost $d(s,t)$ is defined as a minimal cost path connecting $s$
 \begin{definition} [Ride Request]
 \label{def:req}
 	A ride request r can be represented as $\left\langle s, e, w, \epsilon, f \right\rangle$ consisting of a starting point $s \in I$ and an end point $e \in I$. Each request also specifies $w$ as the maximum time the rider can wait after making a request and the maximal detour $\epsilon\cdot d(s, e)$ the rider can afford . In addition, a rider's profile $f: \mathbb{R}_{+} \rightarrow \left[ 0, 1 \right] $, specifies the relative discount in exchange for an incurred detour of $\Delta d \in \mathbb{R}_{+}$.
+=======
+The road network is represented as a graph $G(V, E)$, where each node represents intersections, and each edge represents a road segment. 
+Each edge $(i,j) \in E$ $(i, j \in V)$ is associated with a weight $c(i,j)$ which is a travel cost (can be either time or distance) from $i$ to $j$.
+% TODO: define path in road network
+The shortest path cost $d(s,t)$ is defined as the minimal cost path connecting $s$ and $t$. With our approach, APART, time and distance can be converted from one to the other.
+
+\begin{definition} [Ride Request]
+\label{def:req}
+A ride request r can be represented as $\left\langle s, e, w, \epsilon, F \right\rangle$ consisting of a starting point $s \in V$ and an end point $e \in V$. Each request also specifies $w$ as the maximum time the rider can wait after making a request and the maximal detour $\epsilon\cdot d(s, e)$ the rider can afford . In addition, a rider's profile $F: \delta d \rightarrow \left[ 0, 1 \right] $, specifies the relative discount in exchange for an incurred detour of $\delta d$.
+>>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 %the ridesharing fare she would accept based on the extra detour and the shortest possible trip.
 \end{definition}
 
 Upon the acceptance of a request, \fname assigns it to a driver.
 
 \begin{definition} [Driver]
+<<<<<<< HEAD
 A driver v is represented as $\left\langle L, n, g \right\rangle$ where $L$ is the list of ride requests assigned to $v$, and $n$ is the maximum number of requests v can accept at any point in time. A driver also has a profile $g: \mathbb{R}_{+}  \rightarrow \$ $\footnote{In this paper, we show monetary values with $\$ $} which specifies the monetary cost of v driving a distance $d \in \mathbb{R}_{+}$ while servicing its assigned requests.
+=======
+A driver v is represented as $\left\langle L, n, g \right\rangle$ where $L$ is the list of ride requests assigned to $v$, and $n$ is the maximum number of requests v can accept at any point in time. A driver also has a profile $g: d \rightarrow \$ $ which specifies the monetary cost of v driving a distance d while servicing its assigned requests.
+>>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 \end{definition} 
 
 \begin{definition} [Schedule]
@@ -40,7 +55,11 @@ The driver follows the sequence of picking up and dropping off riders. The sched
 Assuming we have a set of drivers V and a set of requests R, we call $M \subset V \times R$ a matching if for each $r \in R$ there is at most one $v \in V$ such that $\left( v, r \right) \in M$. We call $\left( v, r \right) \in M$ \emph{a match}.
 \end{definition}
 
+<<<<<<< HEAD
 \noindent In a matching $M$, for every driver $v$, there exists a \textit{valid} schedule $S_v$, such that $(v, r_i) \in M \implies r_i.s \in S_v \wedge r_i.e \in S_v$ (or simply $r_i \in S_v$). 
+=======
+\noindent In a matching $M$, for every driver $v$, there exists a \textit{valid} schedule $S_v$, such that $(v, r_i) \in M \implies r_i.s \in s_v \wedge r_i.e \in S_v$ (or simply $r_i \in S_v$). 
+>>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 
 In \cref{sec:pricing}, we define a generic \textit{pricing model} where given a driver and its schedule, the pricing model computes the final fare each rider has to pay, the income of the driver and the ride-sharing platform's profit. Subsequently, we can define the \textit{ride-sharing} problem as follows:
 
@@ -71,8 +90,12 @@ There does not exist a deterministic online algorithm for the ride-sharing probl
 \end{theorem}
 
 \begin{proof}
+<<<<<<< HEAD
 Suppose there exists an algorithm $\mathcal{A}$ that is \textit{c-competitive}. For $\mathcal{A}$ to be \textit{c-competitive}, it should be at most $c$ times worst than the optimal solution for \textit{every} input. Consequently, to show no \textit{c-competitive} algorithm exists, we only need to show one input for which where $\mathcal{A}$ does not have a competitive ratio of $c$.\\
 We assume there exist an adversary which knows every decision $\mathcal{A}$ makes and consider the input generated by this adversary. For simplicity, we assume there is only one driver at point $(0, 0)$. The input starts with $r_1$ with a pick-up location at $(w, 0)$ and $r_2$ with pick-up location at $(-w, 0)$ (we assume all requests have a maximum wait time of $w$). The algorithm can make three choices for the driver. (1) move toward $r_1$, (2) move towards $r_2$ and (3) stay still. If choice 1 is selected, the adversary can generate the input such that at time $t = 1$, $n$ more request are submitted with pick-up location at $(-w-1, 0)$ and drop-off locations similar to $r_2$. Similar arguments can be made if choice 2 or 3 are selected by the algorithm. A globally optimal solution can complete $n+1$ requests while $\mathcal{A}$ can at most complete one request. By adding more drivers far away in a similar situation, the adversary can make $\mathcal{A}$'s solution unboundedly worse than the optimal solution. Therefore, we contradicted the assumption that $\mathcal{A}$ is \textit{c-competitive}.
+=======
+Suppose there exists an algorithm $\mathcal{A}$ that is \textit{c-competitive}. We assume there exist a Clairvoyant which knows every decision $\mathcal{A}$ makes. For simplicity, we assume there is only one driver at point $(0, 0)$. The input starts with $r_1$ with a pick-up location at $(w, 0)$ and $r_2$ with pick-up location at $(-w, 0)$ (we assume all requests have a maximum wait time of $w$). The algorithm can make three choices for the driver. (1) move toward $r_1$, (2) move towards $r_2$ and (3) stay still. If choice 1 is selected, the Clairvoyant can generate the input such that at time $t = 1$, $n$ more request are submitted with pick-up location at $(-w-1, 0)$ and drop-off locations similar to $r_2$. Similar arguments can be made if choice 2 or 3 are selected by the algorithm. A globally optimal solution can complete $n+1$ requests while $\mathcal{A}$ can at most complete one request. By adding more drivers far away in a similar situation, the Clairvoyant can make $\mathcal{A}$'s solution unboundedly worse than the optimal solution. Therefore, we contradicted the assumption that $\mathcal{A}$ is \textit{c-competitive}.
+>>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 \end{proof}
 
 %%% TODO: given a rider and the current schedule, calculate the extra profit of inserting a new request.
