@@ -1,4 +1,4 @@
-\documentclass[]{vldb}
+\documentclass[letterpaper]{sig-alternate-05-2015}
 
 \usepackage{graphicx}
 \usepackage{subfigure}
@@ -72,8 +72,6 @@
 \newcommand{\qoutes}[1]{``#1''}
 \newcommand{\itqoutes}[1]{\textit{``#1''}}
 
-
-
 \newcommand{\TODO}[2]{\textbf{\textcolor{red}{TODO: (#1) #2}}}
 \newcommand{\dingedit}[1]{\textcolor{red}{\emph{[Ding: #1]}}}
 \newcommand{\moedit}[1]{\textcolor{cyan}{\emph{[Mohammad: #1]}}}
@@ -81,17 +79,37 @@
 
 \title{Price-aware Real-time Ride-sharing at Scale -\\An Auction-based Approach}
 
-\author{}
-
+\author{{Mohammad Asghari, Dingxiong Deng, Cyrus Shahabi, Ugur Demiryurek, Yaguang Li}\\
+\fontsize{10}{10}\selectfont\rmfamily\itshape
+University of Southern California, Los Angeles, CA, USA\\
+\fontsize{9}{9}\selectfont\ttfamily\upshape
+\{masghari,dingxiod,shahabi,demiryur,yaguang\}@usc.edu\\
+}
 
 \begin{document}
+
+\CopyrightYear{2016} 
+\setcopyright{acmcopyright}
+\conferenceinfo{SIGSPATIAL'16,}{October 31-November 03, 2016, Burlingame, CA, USA}
+\isbn{978-1-4503-4589-7/16/10}\acmPrice{\$15.00}
+\doi{http://dx.doi.org/10.1145/2996913.2996974}
 
 \maketitle
 
 \begin{abstract}
-Real-time ride-sharing, which enables on-the-fly matching between riders and drivers (even en-route), is an important problem due to its environmental and societal benefits. With the emergence of many ride sharing platforms (e.g., Uber and Lyft), the design of a scalable framework to match riders and drivers based on their various constraints while maximizing the overall profit of the platform becomes a distinguishing business strategy.\\
-A key challenge of such framework is to satisfy both types of the users in the system, e.g., reducing both riders' and drivers' travel distances. However, the majority of the existing approaches focus only on minimizing the total traveled distance of drivers which is not always equivalent to shorter trips for riders. Hence, we propose a fair pricing model that simultaneously satisfies both the riders' and drivers' constraints and desires (formulated as their profiles). In particular, we introduce a distributed auction-based framework where each driver's mobile app automatically bids on every nearby request taking into account many factors such as both the driver's and the riders' profiles, their itineraries, the pricing model, and the current number of riders in the vehicle.  Subsequently, the server determines the highest bidder and assigns the rider to that driver. We show that this framework is scalable and efficient, processing hundreds of tasks per second in the presence of thousands of drivers. We compare our framework with the state-of-the-art approaches in both industry and academia through experiments on New York City's taxi dataset.  Our results show that our framework can simultaneously match more riders to drivers (i.e., higher service rate) by engaging the drivers more effectively. Moreover, our framework schedules shorter trips for riders (i.e., better service quality). Finally, as a consequence of higher service rate and shorter trips, our framework increases the overall profit of the ride-he tilyhe the here he vhatBay uthe nothe th iteitemr gerhat trit ptemsharing platforms.
+Real-time ride-sharing, which enables on-the-fly matching between riders and drivers (even en-route), is an important problem due to its environmental and societal benefits. With the emergence of many ride-sharing platforms (e.g., Uber and Lyft), the design of a scalable framework to match riders and drivers based on their various constraints while maximizing the overall profit of the platform becomes a distinguishing business strategy.\\
+A key challenge of such framework is to satisfy both types of the users in the system, e.g., reducing both riders' and drivers' travel distances. However, the majority of the existing approaches focus only on minimizing the total travel distance of drivers which is not always equivalent to shorter trips for riders. Hence, we propose a fair pricing model that simultaneously satisfies both the riders' and drivers' constraints and desires (formulated as their profiles). In particular, we introduce a distributed auction-based framework where each driver's mobile app automatically bids on every nearby request taking into account many factors such as both the driver's and the riders' profiles, their itineraries, the pricing model, and the current number of riders in the vehicle.  Subsequently, the server determines the highest bidder and assigns the rider to that driver. We show that this framework is scalable and efficient, processing hundreds of tasks per second in the presence of thousands of drivers. We compare our framework with the state-of-the-art approaches in both industry and academia through experiments on New York City's taxi dataset.  Our results show that our framework can simultaneously match more riders to drivers (i.e., higher service rate) by engaging the drivers more effectively. Moreover, our framework schedules shorter trips for riders (i.e., better service quality). Finally, as a consequence of higher service rate and shorter trips, our framework increases the overall profit of the ride-sharing platforms.
 \end{abstract}
+
+\vspace{-0.15in}
+\section*{Categories and Subject Descriptors}
+\vspace{-0.025in}
+H.3.5 [\textbf{Information Storage and Retrieval}]: Online Information Services-\textit{Commercial services}
+
+\vspace{-0.1in}
+\section*{Keywords}
+\vspace{-0.025in}
+Ride-sharing, Revenue Maximization, Spatial Crowdsourcing
 
 \input{sec_introduction}
 \input{sec_problemdef}
@@ -102,9 +120,10 @@ A key challenge of such framework is to satisfy both types of the users in the s
 \input{sec_experiments}
 \input{sec_related}
 \input{sec_conclusion}
+\input{sec_futurework}
 
-\vspace{-0.1in}
-%\section*{Acknowledgement}
+\section*{Acknowledgement}
+This research has been funded in in part by NSF grants IIS-1320149 and CNS-1461963, METRANS Transportation Center under grants from Caltrans (DTRT12-G-UTC57), the USC Integrated Media Systems Center, and unrestricted cash gifts from Google, Northrop Grumman and Oracle. Any opinions, findings and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of any of the sponsors.
 
 \begin{scriptsize}
 %\begin{footnotesize}
