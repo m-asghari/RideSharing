@@ -19,10 +19,6 @@ Our implementation of TREE is based on the algorithms in \cite{Huang14}. Since T
 
 The NN algorithm is implemented based on the current approach adopted by major ride-sharing platforms such as Uber. To the best of knowledge, these platforms find the first nearest driver to the pick-up location of a new request. If the driver is able to fit the new request in its schedule without violating any constraints, he accepts the request. Otherwise the request is rejected and the algorithm tries to assign the request to the next nearest driver. This continues until a driver accepts the request, or every driver rejects it in which case the request is dropped.
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 \begin{table}[!ht]
 	\begin{center}
 		\begin{tabular}{|c|c|}
@@ -43,7 +39,6 @@ The NN algorithm is implemented based on the current approach adopted by major r
 	\end{center}
 	\vspace{-5mm}
 \end{table}
-<<<<<<< HEAD
 
 In the first set of experiments, we use the pricing model explained in \cref{sec:pricing} and compare the three approaches. In \cref{subsec:pricingexp} we utilize the pricing model introduced in \cite{Ma15} for both APART and TREE. Because there is no concept of \textit{revenue} (similar to what we introduced in \cref{sec:pricing}) in the pricing model of \cite{Ma15}, in order to compare the generated revenue, we assume each driver has to pay 20\% of their income as the platform's share.
 
@@ -96,59 +91,6 @@ Next, we compare the algorithms with regard to how much revenue they generate. \
 
 The final metric we compare, is the average response time for processing a single request. As shown in \cref{fig:default_rp}, with the default setting, the processing time in TREE is almost twice the response time in APART. The reason is that although TREE utilizes a ``Kinetic Tree'' data structure which maintains the current available schedules to expedite the scheduling process, the server has to perform scheduling for eligible drivers sequentially while APART distributes the scheduling to the drivers. Nevertheless, with the default settings, all three approaches process the requests under 3ms which is acceptable for a real-time framework.
 
-=======
-
-In the first set of experiments, we use the pricing model explained in \cref{sec:pricing} and compare the three approaches. In \cref{subsec:pricingexp} we utilize the pricing model introduced in \cite{Ma15} for both APART and TREE. Because there is no concept of \textit{revenue} (similar to what we introduced in \cref{sec:pricing}) in the pricing model of \cite{Ma15}, in order to compare the generated revenue, we assume each driver has to pay 20\% of their income as the platform's share.
-
-\subsubsection{Configurations and Measures}
-In our experiments we measure the following three metrics by varying different parameters of the system: (1) service rate as the percentage of requests that were completed, (2) the revenue of the system and (3) the response time for matching a request with a driver. \cref{tab:params} shows the different values we used for various parameters to evaluate our framework (default values are shown in \textbf{bold}).
-
-For the pricing model by default we configure it as:
-
-\begin{equation} \label{eq1}
-	\begin{split}
-		F(d) & = 2 \times d \\
-		\forall r, f_r(\delta d_r) & = 1 - (0.25 \times \delta d_r^2) \\
-		\forall v, g_v(d)  & = 1.5 \times d
-	\end{split}
-\end{equation}
-
-
-\begin{figure*}[]
-    \centering
-    \subfigure[\small{Service Rate}]{
-        \label{fig:default_sr}
-        \includegraphics[width = 0.45\columnwidth]{fig/default_sr.eps}
-    }
-    \subfigure[\small{Driver Availability}]{
-        \label{fig:availability}
-        \includegraphics[width = 0.45\columnwidth]{fig/availability.eps}
-    }
-    \subfigure[\small{Revenue}]{
-        \label{fig:default_rev}
-        \includegraphics[width = 0.45\columnwidth]{fig/default_rev.eps}
-    }
-    \subfigure[\small{Response Time}]{
-        \label{fig:default_rp}
-        \includegraphics[width = 0.45\columnwidth]{fig/default_rp.eps}
-    }
-    \vspace{-0.15in}
-    \caption{Comparing Algorithms with Default Values}
-    \label{fig:defaults}
-\end{figure*}
-
-\subsection{Algorithm Comparison}
-
-\subsubsection{Overall comparison}
-In this section, we compare and analyze the performance of the three approaches using the default parameters in \cref{tab:params} with respect to service rate, generated revenue and response time.
-
-As shown in \cref{fig:default_sr}, APART is able to serve more requests (i.e. higher service rate) compared to the other two approaches. For all three approaches we use the same set of requests and drivers for each iteration, which means all approaches start with the same configuration in the road network. However, each approach assigns riders to drivers differently and hence, after a while the dynamism of the network (i.e., location of the drivers on the road network) will be different in each algorithms. To understand the reason for higher service rate, for each incoming request, we also count the number of eligible workers (\cref{subsec:dispatch}). We say, the driver availability in algorithm $\mathcal{A}$ is higher than $\mathcal{B}$ with regard to request $r$, if during the simulation, more eligible drivers in algorithm $\mathcal{A}$ are available for $r$ compared to that of algorithm $\mathcal{B}$. \cref{fig:availability} shows the percentage of the requests for which APART has higher(/lower) driver availability compared to the other two approaches. The left two bars in \cref{fig:availability} show that for more than 60\% of the requests, APART has a higher driver availability compared to both NN and TREE. This means that APART engages drivers more effectively compared to NN and TREE and hence, is able to serve more requests.
-
-Next, we compare the algorithms with regard to how much revenue they generate. \cref{fig:default_rev} shows APART generates almost 20\% and 50\% more revenue compared to TREE and NN, respectively. In \cref{sec:intro} we mentioned that the driver with minimum increase in his travel distance is not necessarily the most profitable driver. To verify this theory, when running TREE, for each incoming request (and after the algorithm chose the driver with least increase in traveled distance), we also check all eligible drivers to see which one generates the highest profit by serving the new request. We performed a similar check when running NN. Based on our observations, for 23\% of the requests, the driver chosen by TREE is different from the most profitable driver. This number for NN is 70\%. In \cref{subsec:expalgo} we explain, with implementation of TREE and NN the request is not assigned to a driver that cannot satisfy the monetary constraint. In other words, both approaches make sure by assigning a request to a driver, the platform provider does not loose money. If we relax this check for both approaches, in TREE, 5\% of the requests are assigned to drivers that loose money. This number is 40\% for NN.
-
-The final metric we compare, is the average response time for processing a single request. As shown in \cref{fig:default_rp}, with the default setting, the processing time in TREE is almost twice the response time in APART. The reason is that although TREE utilizes a ``Kinetic Tree'' data structure which maintains the current available schedules to expedite the scheduling process, the server has to perform scheduling for eligible drivers sequentially while the auction-based approach in APART, distributes the scheduling to the drivers. Nevertheless, with the default settings, all three approaches process the requests under 3ms which is acceptable for a real-time framework.
-
->>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 Following we vary different parameters based on \cref{tab:params} and evaluate the effect of each parameter on the same metrics.
 
 \subsubsection{Service Rate}
@@ -177,11 +119,7 @@ In this set of experiments we compare the service rate of the three approaches. 
     \label{fig:sr}
 \end{figure}
 
-<<<<<<< HEAD
 \vspace{-5mm}
-=======
-\vspace{-1mm}
->>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 \subsubsection{Revenue}
 As mentioned, the main objective of APART is to maximize the ride-sharing platform's revenue. In this experiment, we compare the generated revenue of each algorithm. Towards that end, we apply the pricing model explained in \cref{sec:pricing}. Here, we want to evaluate the effect of varying the parameters in \cref{tab:params} on the revenue and compare different algorithms. In \cref{subsec:pricingexp} we apply different pricing models to the algorithms and compare revenue under different pricing models.
 
@@ -238,10 +176,7 @@ Similar to \cite{Ma13,Huang14}, APART instantly processes a request once it is s
     \label{fig:rp}
 \end{figure}
 
-<<<<<<< HEAD
 \vspace{-3mm}
-=======
->>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 \cref{fig:nd_rp} shows that when more drivers are added, the scalability of TREE suffers as it has to perform scheduling for a larger number of vehicles. On the other hand, due to the distributed nature of APART's auction-based approach, each driver does scheduling for itself and adding drivers does not affect the overall response time of APART as much. In \cref{fig:mp_rp} we observe that although APART's response time does not go beyond 5ms, TREE handles the increase in maximum passengers better due to the Kinetic Tree structure implementation \cite{Huang14}. The reason for NN's poor performance is that it has to perform scheduling computation sequentially, for possibly multiple drivers. Finally, in \cref{fig:mwt_rp} and \cref{fig:mad_rp} we conclude that for relaxed constraints, the response time of TREE increases up to 4 times higher than that of APART. The main reason is that the Kinetic Tree structure keeps track of all valid orders of requests that are assigned to a driver. As we relax the constraints, the number of feasible permutations of the requests increases which makes the size of the Kinetic Tree larger and updates become more expensive. This in turn increases the response time. \cref{fig:rp} shows unlike the other two approaches, APART's scalability does not suffer by varying different parameters of the framework.
 
 \subsection{Comparing Different Pricing Models}
@@ -251,17 +186,11 @@ In this section, we evaluate the effect of the pricing model. First we show the 
 
 \cref{fig:fairness} shows the result of utilizing the pricing model in \cite{Ma13}. Based on this pricing model, the driver's income is:
 
-<<<<<<< HEAD
 \vspace{-2mm}
 \begin{center}
 $c.d_1 + (1+\alpha).c.d_2$
 \end{center}
 \vspace{-2mm}
-=======
-\begin{center}
-$c.d_1 + (1+\alpha).c.d_2$
-\end{center}
->>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 
 \noindent where $d_1$ is the distance the driver had only one rider on-board, $d_2$ is the total distance the driver had more than one rider on-board and $c$ is some predefined constant. $\alpha$ takes a value between 0 and 1 which determines the increase in the driver's income for serving more than one rider. As we show in \cref{fig:saved}, by participating in ride-sharing, the majority of riders save money (pay less as compared to riding alone). \cref{fig:saved} supports the claim in \cite{Ma13} that on average riders will save money. However, \cref{fig:lost} shows that regardless of what algorithm is used, up to 10\% of riders pay more by participating in ride-sharing which is not acceptable. The reason is that, riders have to pay even for detours. Even though riders split the fare on detours, if detours are sufficiently long, even carpooling riders loose money.
 
@@ -280,10 +209,7 @@ $c.d_1 + (1+\alpha).c.d_2$
     \label{fig:fairness}
 \end{figure}
 
-<<<<<<< HEAD
 \vspace{-3mm}
-=======
->>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 In the next set of experiments, we apply the model in \cite{Ma15} and evaluate the performance of APART and TREE. In this model, riders get compensated for any detour incurred in their trip. The amount of compensation is based on the new rider's fare and the length of a rider's detour compared with the detour of other riders on the vehicle. Because the algorithm in \cite{Ma15} is similar to TREE, we only compared APART with TREE. \cref{fig:tkde_sr} shows that APART provides a slightly higher service rate than TREE. However, due to assigning the riders to the most profitable drivers, APART ends up generating 10\% more revenue.
 
 \begin{figure}[h]
@@ -298,18 +224,11 @@ In the next set of experiments, we apply the model in \cite{Ma15} and evaluate t
     }
     \vspace{-0.15in}
     \caption{Effect of Applying an Arbitrary Pricing Model}
-<<<<<<< HEAD
     \vspace{-2mm}
     \label{fig:tkde}
 \end{figure}
 
 In \cref{sec:pricing}, we mentioned by setting their profiles, users can configure APART to make assignments the way they find desirable. In the last set of our experiments, we use two different configurations to represent the riders' profiles. First, we set the riders' profiles to $f_T(\Delta d_r) = \frac{1}{(\Delta d_r + 1)}$. Such profile is suitable for a rider who wants to minimize his detour and is willing to share a ride only if the detour is short. Since the rider sets \textbf{Tight} constraints we show this profile by $f_T$. In the second iteration, we set the profile of the riders to $f_R(\Delta d_r) = 1 -  (\frac{\Delta d_r}{max \delta})$. This profile is more \textbf{Relaxed} (hence, $f_R$) and it is expected that more riders share a trip. \cref{fig:quality} shows the result of utilizing APART and TREE with $f_T$ and $f_R$. Since TREE does not make price-aware assignments, the results in both iterations were the same. However, as we observe with APART\_T, almost 10\% fewer riders ended up sharing a ride while on average they only observed 6-7\% increase in their trips. On the other hand, with APART\_R, almost every rider shares a ride and the average increase in their trip was almost 20\%. An interesting observation in \cref{fig:quality} is that with APART\_R, more riders share a ride compared to TREE while their average detour was still less.
-=======
-    \label{fig:tkde}
-\end{figure}
-
-In \cref{sec:pricing}, we mentioned by setting their profiles, users can configure APART to make assignments the way they find desirable. In the last set of our experiments, we use two different configurations to represent the riders' profiles. First, we set the riders' profiles to $f_T(\delta d_r) = \frac{1}{(\delta d_r + 1)}$. Such profile is suitable for a rider who wants to minimize his detour and is willing to share a ride only if the detour is short. Since the rider sets \textbf{Tight} constraints we show this profile by $f_T$. In the second iteration, we set the profile of the riders to $f_R(\delta d_r) = 1 -  (\frac{\delta d_r}{max \delta})$. This profile is more \textbf{Relaxed} (hence, $f_R$) and it is expected that more riders share a trip. \cref{fig:quality} shows the result of utilizing APART and TREE with $f_T$ and $f_R$. Since TREE does not make price-aware assignments, the results in both iterations were the same. However, as we observe with APART\_T, almost 10\% fewer riders ended up sharing a ride while on average they only observed 6-7\% increase in their trips. On the other hand, with APART\_R, almost every rider shares a ride and the average increase in their trip was almost 20\%. An interesting observation in \cref{fig:quality} is that with APART\_R, more riders share a ride compared to TREE while their average detour was still less.
->>>>>>> 46f67d188a36b6f09f72c25697c415296ddf3444
 
 \begin{figure}[h]
 	\centering

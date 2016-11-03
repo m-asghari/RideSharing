@@ -1,0 +1,5 @@
+\beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {2}{Definitions}{15}{0}{1}
+\beamer@sectionintoc {3}{Pricing Model}{20}{0}{2}
+\beamer@sectionintoc {4}{APART Framework}{34}{0}{3}
+\beamer@sectionintoc {5}{Experiments}{48}{0}{4}
