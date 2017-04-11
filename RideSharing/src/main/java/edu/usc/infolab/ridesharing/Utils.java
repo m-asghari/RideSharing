@@ -12,7 +12,7 @@ public class Utils {
 	public static Double Min_Double = -1. * Integer.MAX_VALUE;
 	public static Integer Max_Integer = Integer.MAX_VALUE;
 	public static Integer Min_Integer = Integer.MIN_VALUE;
-	
+
 	public static int MaxWaitTime = 5;
 	public static int NumberOfVehicles = 50;
 	public static int MaxPassengers = 3;
@@ -22,7 +22,13 @@ public class Utils {
 	public static File resultsDir = new File(
 			new File("Results"), 
 			String.format("Run_%s", FILE_SYSTEM_SDF.format(Calendar.getInstance().getTime())).replace(" ", "_").replace(":", "-"));
-	
+
+	public enum DistanceType {
+	    Euclidean,
+        Network
+    }
+    public static DistanceType distanceType = DistanceType.Euclidean;
+
 	public enum DetourConstraint {
 	  FIXED,
 	  RELATIVE

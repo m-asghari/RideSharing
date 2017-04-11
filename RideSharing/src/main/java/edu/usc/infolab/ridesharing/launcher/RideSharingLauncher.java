@@ -22,10 +22,12 @@ import java.util.Calendar;
 public class RideSharingLauncher {
 
 	public static void main(String[] args) throws Exception {
-		if (1 < 2) {
-			ShortestPathUtil.GetShortestPath();
-			return;
-		}
+		//if (1 < 2) {
+		//	ShortestPathUtil.GetShortestPath();
+		//	return;
+		//}
+
+		ShortestPathUtil.InitializeNYCGraph();
 
 		File requestsFile = new File("../Data/trips_2013_05_12.csv");
 		File driversFile = new File("../Data/drivers_from_reqs_2013_05_12.csv");
