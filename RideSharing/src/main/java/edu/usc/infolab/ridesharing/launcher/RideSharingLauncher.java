@@ -1,5 +1,6 @@
 package edu.usc.infolab.ridesharing.launcher;
 
+import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.algorithms.*;
@@ -150,7 +151,7 @@ public class RideSharingLauncher {
 	}
 	
 	private static String RunKineticTree(File requestsFile, File driversFile) {
-	  ArrayList<KTRequest> ktRequests = KTInput.GenerateRequests(requestsFile);
+	  ArrayList<Request> ktRequests = KTInput.GenerateRequests(requestsFile);
       ArrayList<KTDriver> ktDrivers = KTInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
       Time startTime = ktRequests.get(0).requestTime.clone();
       

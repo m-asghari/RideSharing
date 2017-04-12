@@ -21,10 +21,10 @@ public class KTInput extends NYTaxiInput<Request, KTDriver> {
 	 * Format of files should be:
 	 * pickUp_DateTime, dropOff_DataTime, passenger_count, tripTime_Seconds, tripDistance, pickUp_lng, pickUp_lat, dropOff_lng, dropOff_lat
 	 */
-	public static ArrayList<KTRequest> GenerateRequests(File inFile) {
+	public static ArrayList<Request> GenerateRequests(File inFile) {
 	  Request.reqCtr = 0;
 	  maxWaitTime = Utils.MaxWaitTime;
-		ArrayList<KTRequest> requests = new ArrayList<KTRequest>();
+		ArrayList<Request> requests = new ArrayList<>();
 		try {
 			FileReader fr = new FileReader(inFile);
 			BufferedReader br = new BufferedReader(fr);
