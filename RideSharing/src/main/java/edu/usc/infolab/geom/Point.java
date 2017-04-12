@@ -1,6 +1,6 @@
 package edu.usc.infolab.geom;
 
-import edu.usc.infolab.ridesharing.Pair;
+import edu.usc.infolab.ridesharing.TimeDistancePair;
 
 public abstract class Point {
 	private double _a;
@@ -21,7 +21,7 @@ public abstract class Point {
 	}
 	
 	public void MoveTowards(Point p, double length) {
-		Double dist = this.Distance(p).First;
+		Double dist = this.Distance(p).distance;
 		if (dist < length)
 			length = dist;
 		Double deltaA = length * (p._a - this._a) / dist;
@@ -35,7 +35,7 @@ public abstract class Point {
 	 * Return a pair of <Distance, Time> for the distance and travel time
 	 * of the shortest path between this and p.
 	 */
-	public abstract Pair<Double, Double> Distance(Point p);
+	public abstract TimeDistancePair Distance(Point p);
 	
 	@Override
 	public abstract Point clone();

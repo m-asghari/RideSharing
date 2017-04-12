@@ -82,7 +82,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
     ArrayList<R> finishedRequests = new ArrayList<R>();
     if (_schedule.isEmpty()) return finishedRequests;
     GPSNode dest = _schedule.get(0);
-    double dist = loc.DistanceInMilesAndMillis(dest.point).First;
+    double dist = loc.DistanceInMilesAndMillis(dest.point).distance;
     // the request has finished
     if (dist > length) {
       MoveTowards(dest.point, length);

@@ -59,16 +59,16 @@ public class KineticTree {
     if (!Feasible(
         node,
         points.get(0),
-        depth + node.point.DistanceInMilesAndMillis(points.get(0).point).First)) {
+        depth + node.point.DistanceInMilesAndMillis(points.get(0).point).distance)) {
       return false;
     }
     boolean fail = false;
     KTNode newNode = points.get(0).clone();
     for (KTNode n : node.next) {
       double detour =
-          node.DistanceInMilesAndMillis(newNode).First
-              + newNode.DistanceInMilesAndMillis(n).First
-              - node.DistanceInMilesAndMillis(n).First;
+          node.DistanceInMilesAndMillis(newNode).distance
+              + newNode.DistanceInMilesAndMillis(n).distance
+              - node.DistanceInMilesAndMillis(n).distance;
       if (!CopyNode(newNode, n, detour)) {
         fail = true;
       }
@@ -77,12 +77,12 @@ public class KineticTree {
       ArrayList<KTNode> newPoints = new ArrayList<KTNode>(points);
       newPoints.remove(0);
       if (!InsertNodes(
-          newNode, newPoints, -1 * points.get(0).DistanceInMilesAndMillis(points.get(1)).First))
+          newNode, newPoints, -1 * points.get(0).DistanceInMilesAndMillis(points.get(1)).distance))
         fail = true;
     }
     for (Iterator<KTNode> it = node.next.iterator(); it.hasNext(); ) {
       KTNode n = it.next();
-      if (!InsertNodes(n, points, depth + node.DistanceInMilesAndMillis(n).First)) {
+      if (!InsertNodes(n, points, depth + node.DistanceInMilesAndMillis(n).distance)) {
         it.remove();
       }
     }
@@ -212,7 +212,7 @@ public class KineticTree {
       double newDelta =
           ComputeDelta(
               child,
-              depth + node.DistanceInMilesAndMillis(child).First,
+              depth + node.DistanceInMilesAndMillis(child).distance,
               new HashMap<>(distanceSinceRequest),
               new HashMap<>(distanceSincePickUp));
       if (newDelta > maxChildDelta) {

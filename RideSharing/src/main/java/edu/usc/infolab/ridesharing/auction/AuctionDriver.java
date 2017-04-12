@@ -32,7 +32,7 @@ public class AuctionDriver extends Driver<AuctionRequest> {
     double extraProfit = bestPCS.profit - currentPCS.profit;
     double extraCost = bestPCS.cost - currentPCS.cost;
     Bid bid = new Bid(this, bestPCS.schedule, extraProfit, extraCost);
-    bid.distToPickup = this.loc.DistanceInMilesAndMillis(request.source.point).First;
+    bid.distToPickup = this.loc.DistanceInMilesAndMillis(request.source.point).distance;
     request.stats.acceptableBids++;
     this.lastPCS = new ProfitCostSchedule(extraProfit, extraCost, bestPCS.schedule);
     return bid;

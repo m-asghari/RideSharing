@@ -38,7 +38,7 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 					continue;
 				GPSPoint source = new GPSPoint(Double.parseDouble(fields[6]), Double.parseDouble(fields[5]));
 				GPSPoint dest = new GPSPoint(Double.parseDouble(fields[8]), Double.parseDouble(fields[7]));
-				if (source.DistanceInMilesAndMillis(dest).First.compareTo(minTripLength) < 0)
+				if (source.DistanceInMilesAndMillis(dest).distance.compareTo(minTripLength) < 0)
 				  continue;
 				Time requestTime = new Time();
 				requestTime.SetTime(Time.sdf.parse(fields[0]));

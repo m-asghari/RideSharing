@@ -1,8 +1,8 @@
 
 package edu.usc.infolab.geom;
 
-import edu.usc.infolab.ridesharing.Pair;
 import edu.usc.infolab.ridesharing.Time;
+import edu.usc.infolab.ridesharing.TimeDistancePair;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.shortestpath.ShortestPathUtil;
 
@@ -42,7 +42,7 @@ public class GPSPoint {
     }
     
     public void MoveTowards(GPSPoint p, double length) {
-        double dist = this.DistanceInMilesAndMillis(p).First;
+        double dist = this.DistanceInMilesAndMillis(p).distance;
         if (dist < length)
             length = dist;
         Double deltaLat = length * (p._lat - this._lat) / dist;
@@ -60,7 +60,7 @@ public class GPSPoint {
     
     //returned distance is in mile!
     //returned time in milliseconds
-    public Pair<Double, Double> DistanceInMilesAndMillis(GPSPoint other) {
+    public TimeDistancePair DistanceInMilesAndMillis(GPSPoint other) {
         switch (Utils.distanceType) {
             case Euclidean:
                 return EuclideanDistanceInMilesAndMillis(other);
@@ -71,7 +71,7 @@ public class GPSPoint {
         return EuclideanDistanceInMilesAndMillis(other);
     }
 
-    private Pair<Double, Double> EuclideanDistanceInMilesAndMillis(GPSPoint other) {
+    private TimeDistancePair EuclideanDistanceInMilesAndMillis(GPSPoint other) {
         double theta = this._lng - other._lng;
         double dist =
                 Math.sin(deg2rad(this._lat)) * Math.sin(deg2rad(other._lat)) +
@@ -79,14 +79,14 @@ public class GPSPoint {
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515;
-        return new Pair<>(dist, ((dist*Time.MillisInMinute)/ defaultSpeed));
+        return new TimeDistancePair(dist, ((dist*Time.MillisInMinute)/ defaultSpeed));
     }
 
-    private Pair<Double, Double> NetworkDistanceInMilesAndMillis(GPSPoint other) {
+    private TimeDistancePair NetworkDistanceInMilesAndMillis(GPSPoint other) {
         try {
             double distMeter = ShortestPathUtil.GetShortestPath(this._lat, this._lng, other._lat, other._lng);
             double distMiles = distMeter / 1600.;
-            return new Pair<>(distMiles, ((distMiles*Time.MillisInMinute)/defaultSpeed));
+            return new TimeDistancePair(distMiles, ((distMiles*Time.MillisInMinute)/defaultSpeed));
         }
         catch (Exception e) {
             System.out.println(e.getMessage());

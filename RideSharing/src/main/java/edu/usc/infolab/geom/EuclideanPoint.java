@@ -1,6 +1,6 @@
 package edu.usc.infolab.geom;
 
-import edu.usc.infolab.ridesharing.Pair;
+import edu.usc.infolab.ridesharing.TimeDistancePair;
 
 import java.awt.geom.Point2D;
 
@@ -27,10 +27,10 @@ public class EuclideanPoint extends Point {
 	}
 
 	@Override
-	public Pair<Double, Double> Distance(Point o) {
+	public TimeDistancePair Distance(Point o) {
 		EuclideanPoint other = (EuclideanPoint)o;
 		double dist = this._p.distance(other._p);
-		return new Pair<Double, Double>(dist, dist/defaultSpeed);
+		return new TimeDistancePair(dist, dist/defaultSpeed);
 	}
 
 	@Override

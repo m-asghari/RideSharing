@@ -3,6 +3,7 @@ package edu.usc.infolab.ridesharing.kinetictree;
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Request;
+import edu.usc.infolab.ridesharing.TimeDistancePair;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class KTNode extends GPSNode {
 	
 	public double delta;
 	public double Delta;
+	public TimeDistancePair toParent;
 	
 	public KTNode() {
 		super();
@@ -33,6 +35,7 @@ public class KTNode extends GPSNode {
 	private void Initialize() {
 		this.delta = 0;
 		this.Delta = 0;
+		this.toParent = new TimeDistancePair(0., 0.);
 		this.next = new ArrayList<>();
 		//allActive = new ArrayList<Request>();
 		//activeRequested = new ArrayList<Request>();
@@ -51,6 +54,7 @@ public class KTNode extends GPSNode {
 		this.request = (other.type == Type.root) ? null : other.request;
 		this.delta = other.delta;
 		this.Delta = other.Delta;
+		this.toParent = new TimeDistancePair(other.toParent.distance, other.toParent.time);
 		//allActive = new ArrayList<Request>(other.allActive);
 		//activeRequested = new ArrayList<Request>(other.activeRequested);
 		//activePickedUp = new ArrayList<Request>(activePickedUp);

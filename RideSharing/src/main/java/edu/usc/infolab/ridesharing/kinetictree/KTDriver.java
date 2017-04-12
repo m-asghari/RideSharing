@@ -1,6 +1,5 @@
 package edu.usc.infolab.ridesharing.kinetictree;
 
-import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Request;
@@ -27,7 +26,7 @@ public class KTDriver extends Driver<Request> {
 	public Double InsertRequest(Request request) {
 		KTTrip bestTrip = _ktree.InsertRequest(request);
 		if (bestTrip != null)
-			return bestTrip.Length() + loc.DistanceInMilesAndMillis(bestTrip.Get(0).point).First;
+			return bestTrip.Length() + loc.DistanceInMilesAndMillis(bestTrip.Get(0).point).distance;
 		else
 			return null;
 	}

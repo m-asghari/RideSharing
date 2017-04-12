@@ -1,6 +1,7 @@
 package edu.usc.infolab.ridesharing.algorithms;
 
 import edu.usc.infolab.geom.GPSNode;
+import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
@@ -14,14 +15,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
+public class KineticTreeAlgorithm extends Algorithm<Request, KTDriver> {
 
 	public KineticTreeAlgorithm(Time startTime, int ati) {
 		super(startTime, ati);
 	}
 
 	@Override
-	public Status ProcessRequest(KTRequest r, Time time) {
+	public Status ProcessRequest(Request r, Time time) {
 		ArrayList<KTDriver> potentialDrivers = GetPotentialDrivers(r);
 		r.stats.potentialDrivers = potentialDrivers.size();		
 		
@@ -79,7 +80,7 @@ public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
 		auctionDriver._schedule = new ArrayList<GPSNode>();
 		for (GPSNode node : driver._schedule) {
 			GPSNode newNode = node.clone();
-			newNode.request = GetAuctionRequest((KTRequest)node.request);
+			newNode.request = GetAuctionRequest(node.request);
 			auctionDriver._schedule.add(newNode);
 		}
 		auctionDriver.acceptedRequests = GetAuctionRequests(driver.acceptedRequests);
@@ -94,16 +95,16 @@ public class KineticTreeAlgorithm extends Algorithm<KTRequest, KTDriver> {
 		return auctionDriver;
 	}
 	
-	private ArrayList<AuctionRequest> GetAuctionRequests(ArrayList<KTRequest> requests) {
+	private ArrayList<AuctionRequest> GetAuctionRequests(ArrayList<Request> requests) {
 		ArrayList<AuctionRequest> auctionRequests = new ArrayList<AuctionRequest>();
-		for (KTRequest request : requests) {
+		for (Request request : requests) {
 			auctionRequests.add(GetAuctionRequest(request));
 		}
 		
 		return auctionRequests;
 	}
 	
-	private AuctionRequest GetAuctionRequest(KTRequest request) {
+	private AuctionRequest GetAuctionRequest(Request request) {
 		AuctionRequest auctionRequest = new AuctionRequest(request.source.point, request.destination.point, request.requestTime.clone(), request.maxWaitTime);
 		auctionRequest.id = request.id;
 		auctionRequest.actualDistance = request.actualDistance;

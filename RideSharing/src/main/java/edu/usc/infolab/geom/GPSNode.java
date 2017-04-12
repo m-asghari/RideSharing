@@ -1,7 +1,7 @@
 package edu.usc.infolab.geom;
 
-import edu.usc.infolab.ridesharing.Pair;
 import edu.usc.infolab.ridesharing.Request;
+import edu.usc.infolab.ridesharing.TimeDistancePair;
 
 public class GPSNode {
 	public enum Type {
@@ -34,7 +34,7 @@ public class GPSNode {
 	 * Return a pair of <Distance, Time> for the distance and travel time
 	 * of the shortest path between this and p.
 	 */
-	public Pair<Double, Double> DistanceInMilesAndMillis(GPSNode other) {
+	public TimeDistancePair DistanceInMilesAndMillis(GPSNode other) {
 		return this.point.DistanceInMilesAndMillis(other.point);
 	}
 	

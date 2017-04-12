@@ -35,16 +35,16 @@ public class PerDistanceModel extends PricingModel {
     HashMap<AuctionRequest, Time> pickUpTimes = new HashMap<AuctionRequest, Time>();
     HashMap<AuctionRequest, Double> pickUpDist = new HashMap<AuctionRequest, Double>();
 
-    Pair<Double, Double> initTrip = loc.DistanceInMilesAndMillis(schedule.get(0).point);
+    TimeDistancePair initTrip = loc.DistanceInMilesAndMillis(schedule.get(0).point);
     if (driver.onBoardRequests.size() > 0) {
-      initTrip = new Pair<Double, Double>(0., 0.);
+      initTrip = new TimeDistancePair(0., 0.);
     }
     int onBoardPassengers = driver.onBoardRequests.size();
     for (GPSNode n : schedule) {
-      Pair<Double, Double> trip = loc.DistanceInMilesAndMillis(n.point);
-      time.AddMillis(trip.Second.intValue());
-      dist += trip.First;
-      collectedFare += ComputeDriverIncome(driver, onBoardPassengers, dist, trip.Second);
+      TimeDistancePair trip = loc.DistanceInMilesAndMillis(n.point);
+      time.AddMillis(trip.time.intValue());
+      dist += trip.distance;
+      collectedFare += ComputeDriverIncome(driver, onBoardPassengers, dist, trip.time);
       loc = n.point;
       AuctionRequest request = (AuctionRequest) n.request;
       if (n.type == Type.source) {

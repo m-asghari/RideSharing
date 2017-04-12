@@ -96,7 +96,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 				continue;
 			
 			// the time from driver's location to the request's source point
-			Double time = driver.loc.DistanceInMilesAndMillis(r.source.point).Second;
+			Double time = driver.loc.DistanceInMilesAndMillis(r.source.point).time;
 			Time eat = currentTime.clone();
 			eat.AddMillis(time.intValue());
 

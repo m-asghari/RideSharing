@@ -36,14 +36,14 @@ private static DetourCompensatingModel _defaultInstance;
     HashMap<AuctionRequest, Time> pickUpTimes = new HashMap<AuctionRequest, Time>();
     HashMap<AuctionRequest, Double> pickUpDist = new HashMap<AuctionRequest, Double>();
 
-    Pair<Double, Double> initTrip = loc.DistanceInMilesAndMillis(schedule.get(0).point);
+    TimeDistancePair initTrip = loc.DistanceInMilesAndMillis(schedule.get(0).point);
     if (driver.onBoardRequests.size() > 0) {
-      initTrip = new Pair<Double, Double>(0., 0.);
+      initTrip = new TimeDistancePair(0., 0.);
     }
     for (GPSNode n : schedule) {
-      Pair<Double, Double> trip = loc.DistanceInMilesAndMillis(n.point);
-      time.AddMillis(trip.Second.intValue());
-      dist += trip.First;
+      TimeDistancePair trip = loc.DistanceInMilesAndMillis(n.point);
+      time.AddMillis(trip.time.intValue());
+      dist += trip.distance;
       loc = n.point;
       AuctionRequest request = (AuctionRequest) n.request;
       if (n.type == Type.source) {
@@ -70,8 +70,8 @@ private static DetourCompensatingModel _defaultInstance;
         cost = ComputeDriverIncome(
             driver,
             -1 /* On Board Passenger is not important in this model */,
-            driver._paidTravelledDistance + (dist - (driver.travelledDistance + initTrip.First)),
-            time.SubtractInMillis(start) - initTrip.Second);
+            driver._paidTravelledDistance + (dist - (driver.travelledDistance + initTrip.distance)),
+            time.SubtractInMillis(start) - initTrip.time);
       }
     }
     double profit = fare - cost;

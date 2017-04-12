@@ -41,7 +41,7 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     	nearestDriver = null;
     	double minDistance = Utils.Max_Double;
     	for (AuctionDriver driver : potentialDrivers) {
-    		double distance = driver.loc.DistanceInMilesAndMillis(request.source.point).First;
+    		double distance = driver.loc.DistanceInMilesAndMillis(request.source.point).distance;
     		if (distance < minDistance) {
     			minDistance = distance;
     			nearestDriver = driver;

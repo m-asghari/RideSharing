@@ -3,8 +3,8 @@ package edu.usc.infolab.ridesharing.auction;
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
-import edu.usc.infolab.ridesharing.Pair;
 import edu.usc.infolab.ridesharing.Time;
+import edu.usc.infolab.ridesharing.TimeDistancePair;
 import edu.usc.infolab.ridesharing.Utils;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class ShortestPathDriver extends AuctionDriver {
     double extraProfit = bestPCS.profit - currentPCS.profit;
     double extraCost = bestPCS.cost - currentPCS.cost;
     Bid bid = new Bid(this, bestPCS.schedule, extraProfit, extraCost);
-    bid.distToPickup = this.loc.DistanceInMilesAndMillis(request.source.point).First;
+    bid.distToPickup = this.loc.DistanceInMilesAndMillis(request.source.point).distance;
     request.stats.acceptableBids++;
     this.lastPCS = new ProfitCostSchedule(extraProfit, extraCost, bestPCS.schedule);
     return bid;
@@ -99,9 +99,9 @@ public class ShortestPathDriver extends AuctionDriver {
     //  initTrip = new Pair<Double, Double>(0., 0.);
     //}
     for (GPSNode n : schedule) {
-      Pair<Double, Double> trip = loc.DistanceInMilesAndMillis(n.point);
-      time.AddMillis(trip.Second.intValue());
-      dist += trip.First;
+      TimeDistancePair trip = loc.DistanceInMilesAndMillis(n.point);
+      time.AddMillis(trip.time.intValue());
+      dist += trip.distance;
       loc = n.point;
       AuctionRequest request = (AuctionRequest) n.request;
       if (n.type == Type.source) {

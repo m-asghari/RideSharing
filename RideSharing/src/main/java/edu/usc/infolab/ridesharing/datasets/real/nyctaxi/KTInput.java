@@ -16,7 +16,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class KTInput extends NYTaxiInput<KTRequest, KTDriver> {	
+public class KTInput extends NYTaxiInput<Request, KTDriver> {
 	/*
 	 * Format of files should be:
 	 * pickUp_DateTime, dropOff_DataTime, passenger_count, tripTime_Seconds, tripDistance, pickUp_lng, pickUp_lat, dropOff_lng, dropOff_lat
@@ -37,7 +37,7 @@ public class KTInput extends NYTaxiInput<KTRequest, KTDriver> {
 					continue;
 				GPSPoint source = new GPSPoint(Double.parseDouble(fields[6]), Double.parseDouble(fields[5]));
 				GPSPoint dest = new GPSPoint(Double.parseDouble(fields[8]), Double.parseDouble(fields[7]));
-				if (source.DistanceInMilesAndMillis(dest).First.compareTo(minTripLength) < 0)
+				if (source.DistanceInMilesAndMillis(dest).distance.compareTo(minTripLength) < 0)
 				  continue;
 				Time requestTime = new Time();
 				requestTime.SetTime(Time.sdf.parse(fields[0]));
