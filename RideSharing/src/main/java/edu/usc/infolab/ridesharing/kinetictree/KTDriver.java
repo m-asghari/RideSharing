@@ -3,18 +3,19 @@ package edu.usc.infolab.ridesharing.kinetictree;
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Driver;
+import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class KTDriver extends Driver<KTRequest> {
+public class KTDriver extends Driver<Request> {
 	public KTDriver(GPSPoint initialLoc, Time start, Time end) {
 		super(initialLoc, start, end);
 		_ktree = new KineticTree(this.loc);
-		_distanceSinceRequest = new HashMap<Integer, Double>();
-		_distanceSincePickUp = new HashMap<Integer, Double>();
+		_distanceSinceRequest = new HashMap<>();
+		_distanceSincePickUp = new HashMap<>();
 	}
 
 	private KineticTree _ktree;
@@ -23,7 +24,7 @@ public class KTDriver extends Driver<KTRequest> {
 	private HashMap<Integer, Double> _distanceSincePickUp;
 	
 	
-	public Double InsertRequest(KTRequest request) {
+	public Double InsertRequest(Request request) {
 		KTTrip bestTrip = _ktree.InsertRequest(request);
 		if (bestTrip != null)
 			return bestTrip.Length() + loc.DistanceInMilesAndMillis(bestTrip.Get(0).point).First;
@@ -32,15 +33,15 @@ public class KTDriver extends Driver<KTRequest> {
 	}
 	
 	@Override
-	public void AddRequest(KTRequest r, Time time) {
+	public void AddRequest(Request r, Time time) {
 		this.acceptedRequests.add(r);
 		_ktree.AddMostRecentRequest();
 		_currentTrip = _ktree.FindBestTrip();
 		_distanceSinceRequest.put(r.id, 0.);
 		_ktree.UpdateDeltas(
-				new HashMap<Integer, Double>(_distanceSinceRequest),
-				new HashMap<Integer, Double>(_distanceSincePickUp));
-		_schedule = new ArrayList<GPSNode>(_currentTrip.GetNodes());
+				new HashMap<>(_distanceSinceRequest),
+				new HashMap<>(_distanceSincePickUp));
+		_schedule = new ArrayList<>(_currentTrip.GetNodes());
 	}
 	
 	/*private void Check2() {
@@ -83,22 +84,22 @@ public class KTDriver extends Driver<KTRequest> {
 	}
 	
 	@Override
-	protected ArrayList<KTRequest> NewPointUpdates(Time time) {
-		ArrayList<KTRequest> finishedRequests = super.NewPointUpdates(time);
+	protected ArrayList<Request> NewPointUpdates(Time time) {
+		ArrayList<Request> finishedRequests = super.NewPointUpdates(time);
 		_ktree.SetRoot(_currentTrip.Get(1));
 		_currentTrip.UpdateRoot();
 		return finishedRequests;
 	}
 	
 	@Override
-	protected void PickUpUpdates(KTRequest request, Time time) {
+	protected void PickUpUpdates(Request request, Time time) {
 		super.PickUpUpdates(request, time);
 		_distanceSincePickUp.put(request.id, 0.);
 		_distanceSinceRequest.remove(request.id);
 	}
 	
 	@Override
-	protected void DropOffUpdates(KTRequest request, Time time) {
+	protected void DropOffUpdates(Request request, Time time) {
 		super.DropOffUpdates(request, time);
 		_distanceSincePickUp.remove(request.id);
 	}

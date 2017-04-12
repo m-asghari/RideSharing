@@ -2,6 +2,7 @@ package edu.usc.infolab.ridesharing.kinetictree;
 
 import edu.usc.infolab.geom.GPSNode;
 import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.ridesharing.Request;
 
 import java.util.ArrayList;
 
@@ -10,11 +11,11 @@ public class KTNode extends GPSNode {
 	
 	public ArrayList<KTNode> next;
 	
-	//public ArrayList<KTRequest> allActive;
-	//public ArrayList<KTRequest> activeRequested;
-	//public ArrayList<KTRequest> activePickedUp;
-	//public HashMap<KTRequest, Double> distanceSinceRequest;
-	//public HashMap<KTRequest, Double> distanceSincePickedUp;
+	//public ArrayList<Request> allActive;
+	//public ArrayList<Request> activeRequested;
+	//public ArrayList<Request> activePickedUp;
+	//public HashMap<Request, Double> distanceSinceRequest;
+	//public HashMap<Request, Double> distanceSincePickedUp;
 	
 	public double delta;
 	public double Delta;
@@ -24,7 +25,7 @@ public class KTNode extends GPSNode {
 		Initialize();
 	}
 	
-	public KTNode(GPSPoint point, Type type, KTRequest request) {
+	public KTNode(GPSPoint point, Type type, Request request) {
 		super(point, type, request);
 		Initialize();
 	}
@@ -32,17 +33,17 @@ public class KTNode extends GPSNode {
 	private void Initialize() {
 		this.delta = 0;
 		this.Delta = 0;
-		this.next = new ArrayList<KTNode>();
-		//allActive = new ArrayList<KTRequest>();
-		//activeRequested = new ArrayList<KTRequest>();
-		//activePickedUp = new ArrayList<KTRequest>();
-		//distanceSinceRequest = new HashMap<KTRequest, Double>();
-		//distanceSincePickedUp = new HashMap<KTRequest, Double>();
+		this.next = new ArrayList<>();
+		//allActive = new ArrayList<Request>();
+		//activeRequested = new ArrayList<Request>();
+		//activePickedUp = new ArrayList<Request>();
+		//distanceSinceRequest = new HashMap<Request, Double>();
+		//distanceSincePickedUp = new HashMap<Request, Double>();
 	}
 	
 	protected KTNode(KTNode other) {
 		this.point = other.point.clone();
-		this.next = new ArrayList<KTNode>();
+		this.next = new ArrayList<>();
 		for (KTNode otherNode : other.next) {
 			this.next.add(otherNode.clone());
 		}
@@ -50,9 +51,9 @@ public class KTNode extends GPSNode {
 		this.request = (other.type == Type.root) ? null : other.request;
 		this.delta = other.delta;
 		this.Delta = other.Delta;
-		//allActive = new ArrayList<KTRequest>(other.allActive);
-		//activeRequested = new ArrayList<KTRequest>(other.activeRequested);
-		//activePickedUp = new ArrayList<KTRequest>(activePickedUp);
+		//allActive = new ArrayList<Request>(other.allActive);
+		//activeRequested = new ArrayList<Request>(other.activeRequested);
+		//activePickedUp = new ArrayList<Request>(activePickedUp);
 	}
 	
 	@Override

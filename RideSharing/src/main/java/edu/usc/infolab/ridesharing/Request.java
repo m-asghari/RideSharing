@@ -69,6 +69,7 @@ public class Request implements Comparable<Request> {
 	public Time latestPickUpTime;
 
 	// optTime and optDistance based on the shortest path between src and dest
+	public double maxRelDetour;
 	public int optTime;
 	public double optDistance;
 
@@ -101,6 +102,7 @@ public class Request implements Comparable<Request> {
 				this.source.point, this.destination.point);
 		this.optDistance = shortestPath.First;
 		this.optTime = shortestPath.Second.intValue();
+		this.maxRelDetour = Utils.MaxDetourRelative;
 		this.pickUpTime = new Time();
 		this.pickUpDistance = -1;
 		this.dropOffTime = new Time();
@@ -134,6 +136,7 @@ public class Request implements Comparable<Request> {
 			this.latestPickUpTime = new Time(Time.sdf.parse(args[10]));
 			this.optTime = Integer.parseInt(args[11]);
 			this.optDistance = Double.parseDouble(args[12]);
+			this.maxRelDetour = Utils.MaxDetourRelative;
 			this.pickUpTime = new Time(Time.sdf.parse(args[13]));
 			this.pickUpDistance = Double.parseDouble(args[14]);
 			this.dropOffTime = new Time(Time.sdf.parse(args[15]));
@@ -161,6 +164,7 @@ public class Request implements Comparable<Request> {
 		this.latestPickUpTime = other.latestPickUpTime.clone();
 		this.optTime = other.optTime;
 		this.optDistance = other.optDistance;
+		this.maxRelDetour = other.maxRelDetour;
 		this.pickUpTime = other.pickUpTime.clone();
 		this.pickUpDistance = other.pickUpDistance;
 		this.dropOffTime = other.dropOffTime.clone();

@@ -9,12 +9,12 @@ public class KTTrip implements Comparable<KTTrip>{
 	private double _length;
 	
 	public KTTrip() {
-		nodes = new ArrayList<KTNode>();
+		nodes = new ArrayList<>();
 		_length = 0;
 	}
 	
 	protected KTTrip(KTTrip other) {
-		this.nodes = new ArrayList<KTNode>(other.nodes);
+		this.nodes = new ArrayList<>(other.nodes);
 		this._length = other._length;
 	}
 	

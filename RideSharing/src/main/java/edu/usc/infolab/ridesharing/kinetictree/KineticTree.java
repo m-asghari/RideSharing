@@ -3,6 +3,7 @@ package edu.usc.infolab.ridesharing.kinetictree;
 import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.FailureReason;
+import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Utils;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class KineticTree {
     _root = _rootCopy;
   }
 
-  public KTTrip InsertRequest(KTRequest r) {
+  public KTTrip InsertRequest(Request r) {
     KTNode rSrc = new KTNode(r.source.point, Type.source, r);
     KTNode rDst = new KTNode(r.destination.point, Type.destination, r);
     ArrayList<KTNode> rPoints = new ArrayList<KTNode>();
@@ -96,7 +97,7 @@ public class KineticTree {
   }
 
   private boolean Feasible(@SuppressWarnings("unused") KTNode node, KTNode newNode, double detour) {
-    KTRequest r = (KTRequest) newNode.request;
+    Request r = newNode.request;
     if (newNode.type == Type.source) {
       if (detour > r.maxWaitTime) {
         r.stats.AddFailureReason(FailureReason.MaxWaitTime);
@@ -114,7 +115,7 @@ public class KineticTree {
   private boolean CopyNode(KTNode node, KTNode source, double detour) {
     boolean retVal = false;
     if (Feasible(source, detour)) {
-      KTNode sourceCopy = new KTNode(source.point, source.type, (KTRequest) source.request);
+      KTNode sourceCopy = new KTNode(source.point, source.type, source.request);
       node.next.add(sourceCopy);
       if (source.next.isEmpty()) {
         return true;
@@ -183,7 +184,7 @@ public class KineticTree {
       double depth,
       HashMap<Integer, Double> distanceSinceRequest,
       HashMap<Integer, Double> distanceSincePickUp) {
-    KTRequest r = (KTRequest) node.request;
+    Request r = node.request;
     if (node.type == Type.source) {
       node.delta = r.maxWaitTime - (distanceSinceRequest.get(r.id) + depth);
       distanceSinceRequest.remove(r.id);
@@ -196,7 +197,7 @@ public class KineticTree {
           node.delta = (r.optDistance + Utils.MaxDetourFixed) - (distanceSincePickUp.get(r.id) + depth);
           break;
         case RELATIVE:
-          node.delta = ((1 + r.serviceConstraint) * r.optDistance) - (distanceSincePickUp.get(r.id) + depth);
+          node.delta = ((1 + r.maxRelDetour) * r.optDistance) - (distanceSincePickUp.get(r.id) + depth);
           break;
         default:
           break;
@@ -212,8 +213,8 @@ public class KineticTree {
           ComputeDelta(
               child,
               depth + node.DistanceInMilesAndMillis(child).First,
-              new HashMap<Integer, Double>(distanceSinceRequest),
-              new HashMap<Integer, Double>(distanceSincePickUp));
+              new HashMap<>(distanceSinceRequest),
+              new HashMap<>(distanceSincePickUp));
       if (newDelta > maxChildDelta) {
         maxChildDelta = newDelta;
       }
