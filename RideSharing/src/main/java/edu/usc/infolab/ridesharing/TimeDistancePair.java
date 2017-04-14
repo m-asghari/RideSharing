@@ -43,4 +43,9 @@ public class TimeDistancePair {
             return false;
         return true;
     }
+
+    @Override
+    public TimeDistancePair clone() {
+        return new TimeDistancePair(this.distance, this.time);
+    }
 }

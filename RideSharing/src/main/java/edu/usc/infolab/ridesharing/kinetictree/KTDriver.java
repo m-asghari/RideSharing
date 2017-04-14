@@ -24,52 +24,53 @@ public class KTDriver extends Driver<Request> {
 	
 	
 	public Double InsertRequest(Request request) {
-		KTTrip bestTrip = _ktree.InsertRequest(request);
+		//KTTrip bestTrip = _ktree.InsertRequest(request);
+		KTTrip bestTrip = null;
+		KTNode rootCopy = _ktree.InsertRequest(request);
+		if (rootCopy != null) {
+			bestTrip = FindShortestTrip(rootCopy);
+		}
 		if (bestTrip != null)
 			return bestTrip.Length() + loc.DistanceInMilesAndMillis(bestTrip.Get(0).point).distance;
 		else
 			return null;
 	}
+
+	private KTTrip FindShortestTrip(KTNode node) {
+		KTTrip bestTrip = new KTTrip();
+		for (KTNode n : node.next) {
+			KTTrip childBestTrip = FindShortestTrip(n);
+			if (childBestTrip.compareTo(bestTrip) < 0) {
+				bestTrip = childBestTrip;
+			}
+		}
+		bestTrip.AddToFirst(node);
+		return bestTrip;
+	}
+
+    private KTTrip FindMostProfitableTrip(KTNode node) {
+        KTTrip mostProfitableTrip = new KTTrip();
+        for (KTNode child : node.next) {
+            KTTrip childMostProfitibleTrip = FindMostProfitableTrip(child);
+            if (childMostProfitibleTrip.MoreProfitibleThan(this, mostProfitableTrip)) {
+                mostProfitableTrip = childMostProfitibleTrip;
+            }
+        }
+        mostProfitableTrip.AddToFirst(node);
+        return mostProfitableTrip;
+    }
 	
 	@Override
 	public void AddRequest(Request r, Time time) {
 		this.acceptedRequests.add(r);
 		_ktree.AddMostRecentRequest();
-		_currentTrip = _ktree.FindBestTrip();
+		_currentTrip = FindShortestTrip(_ktree.GetRoot());
 		_distanceSinceRequest.put(r.id, 0.);
 		_ktree.UpdateDeltas(
 				new HashMap<>(_distanceSinceRequest),
 				new HashMap<>(_distanceSincePickUp));
 		_schedule = new ArrayList<>(_currentTrip.GetNodes());
 	}
-	
-	/*private void Check2() {
-		if (_currentTrip == null) {
-			return;
-		}
-		for (int i = 0; i < _currentTrip.nodes.size() - 1; i++) {
-			if (!_currentTrip.Get(i).next.contains(_currentTrip.Get(i+1))) {
-				System.out.println("Check2 Went Wrong");
-				_ktree.FindBestTrip();
-			}			
-		}
-	}
-	
-	private void Check() {
-		KTNode currentTreeNode = _ktree._root;
-		if (_currentTrip == null)
-			return;
-		if (!_currentTrip.Get(0).equals(currentTreeNode)) {
-			System.out.println("Check Went Wrong");
-		}
-		for (int i = 1; i < _currentTrip.nodes.size(); i++) {
-			if (!currentTreeNode.next.contains(_currentTrip.Get(i))) {
-				System.out.println("Check Went Wrong");
-			}
-			int index = currentTreeNode.next.indexOf(_currentTrip.Get(i));
-			currentTreeNode = currentTreeNode.next.get(index);
-		}
-	}*/
 	
 	@Override
 	protected void UpdateTravelledDistance(double length) {

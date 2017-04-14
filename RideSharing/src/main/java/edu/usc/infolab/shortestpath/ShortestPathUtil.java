@@ -5,6 +5,7 @@ import edu.usc.infolab.geo.model.IndexedDirectedGraph;
 import edu.usc.infolab.geo.util.MapDataHelper;
 import edu.usc.infolab.geo.util.route.PathWithStat;
 import edu.usc.infolab.geom.GPSPoint;
+import org.geotools.graph.path.Path;
 
 public class ShortestPathUtil {
     private static IndexedDirectedGraph graph;

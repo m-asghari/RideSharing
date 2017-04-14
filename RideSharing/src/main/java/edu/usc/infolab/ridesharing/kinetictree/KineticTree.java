@@ -4,6 +4,7 @@ import edu.usc.infolab.geom.GPSNode.Type;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.FailureReason;
 import edu.usc.infolab.ridesharing.Request;
+import edu.usc.infolab.ridesharing.TimeDistancePair;
 import edu.usc.infolab.ridesharing.Utils;
 
 import java.util.ArrayList;
@@ -37,7 +38,24 @@ public class KineticTree {
     _root = _rootCopy;
   }
 
-  public KTTrip InsertRequest(Request r) {
+  KTNode GetRoot() {
+      return _root;
+  }
+
+  public KTNode InsertRequest(Request r) {
+      KTNode rSrc = new KTNode(r.source.point, Type.source, r);
+      KTNode rDst = new KTNode(r.destination.point, Type.destination, r);
+      ArrayList<KTNode> rPoints = new ArrayList<KTNode>();
+      rPoints.add(rDst);
+      _rootCopy = _root.clone();
+      if (NewInsertNodes(_rootCopy, rSrc, rPoints, 0)) {
+          return _rootCopy;
+      } else {
+          return null;
+      }
+  }
+
+  /*public KTTrip InsertRequest(Request r) {
     KTNode rSrc = new KTNode(r.source.point, Type.source, r);
     KTNode rDst = new KTNode(r.destination.point, Type.destination, r);
     ArrayList<KTNode> rPoints = new ArrayList<KTNode>();
@@ -53,9 +71,54 @@ public class KineticTree {
     } else {
       return null;
     }
+  }*/
+
+  // This method is similar to InsertNodes. Reading it might just be a little easier!!
+  private boolean NewInsertNodes(KTNode root, KTNode node, ArrayList<KTNode> remaining, double depth) {
+    TimeDistancePair rootToNode = root.point.DistanceInMilesAndMillis(node.point);
+    if (!Feasible(
+            root,
+            node,
+            depth + rootToNode.distance)) {
+      return false;
+    }
+    boolean fail = false;
+    KTNode nodeCopy = node.clone();
+    for (KTNode n : root.next) {
+        TimeDistancePair nodeCopyToN = nodeCopy.DistanceInMilesAndMillis(n);
+      double detour =
+              rootToNode.distance
+                      + nodeCopyToN.distance
+                      - n.fromParent.distance;
+      if (!CopyNode(nodeCopy, n, detour, nodeCopyToN)) {
+        fail = true;
+      }
+    }
+    if (!fail && !remaining.isEmpty()) {
+      ArrayList<KTNode> newRemaining = new ArrayList<KTNode>(remaining);
+      KTNode newNode = newRemaining.remove(0);
+      if (!NewInsertNodes(
+              nodeCopy, newNode, newRemaining, -1 * node.DistanceInMilesAndMillis(newNode).distance))
+        fail = true;
+    }
+    for (Iterator<KTNode> it = root.next.iterator(); it.hasNext(); ) {
+      KTNode n = it.next();
+      if (!NewInsertNodes(n, node, remaining, depth + root.DistanceInMilesAndMillis(n).distance)) {
+        it.remove();
+      }
+    }
+    if (!fail) {
+      root.next.add(nodeCopy);
+      nodeCopy.fromParent = rootToNode.clone();
+      return true;
+    } else if (root.next.isEmpty()) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
-  private boolean InsertNodes(KTNode node, ArrayList<KTNode> points, double depth) {
+  /*private boolean InsertNodes(KTNode node, ArrayList<KTNode> points, double depth) {
     if (!Feasible(
         node,
         points.get(0),
@@ -94,7 +157,7 @@ public class KineticTree {
     } else {
       return true;
     }
-  }
+  }*/
 
   private boolean Feasible(@SuppressWarnings("unused") KTNode node, KTNode newNode, double detour) {
     Request r = newNode.request;
@@ -112,16 +175,40 @@ public class KineticTree {
     return true;
   }
 
-  private boolean CopyNode(KTNode node, KTNode source, double detour) {
+    /**
+     * Recursively copies source under node (if source can tolerate detour)
+     */
+    /*private boolean CopyNode(KTNode node, KTNode source, double detour) {
+        boolean retVal = false;
+        if (Feasible(source, detour)) {
+            KTNode sourceCopy = new KTNode(source.point, source.type, source.request);
+            node.next.add(sourceCopy);
+            if (source.next.isEmpty()) {
+                return true;
+            }
+            for (KTNode n : source.next) {
+                if (CopyNode(sourceCopy, n, detour)) {
+                    retVal = true;
+                }
+            }
+        }
+        return retVal;
+    }*/
+
+  /**
+   * Recursively copies source under node (if source can tolerate detour)
+   */
+  private boolean CopyNode(KTNode node, KTNode source, double detour, TimeDistancePair nodeToSource) {
     boolean retVal = false;
     if (Feasible(source, detour)) {
       KTNode sourceCopy = new KTNode(source.point, source.type, source.request);
       node.next.add(sourceCopy);
+      sourceCopy.fromParent = nodeToSource.clone();
       if (source.next.isEmpty()) {
         return true;
       }
       for (KTNode n : source.next) {
-        if (CopyNode(sourceCopy, n, detour)) {
+        if (CopyNode(sourceCopy, n, detour, n.fromParent)) {
           retVal = true;
         }
       }
@@ -130,14 +217,14 @@ public class KineticTree {
   }
 
   private boolean Feasible(KTNode node, double detour) {
-    if (node.Delta > detour) {
-      return true;
-    }
-    node.request.stats.AddFailureReason(FailureReason.CantCopy);
-    return false;
+      if (node.Delta > detour) {
+          return true;
+      }
+      node.request.stats.AddFailureReason(FailureReason.CantCopy);
+      return false;
   }
 
-  public KTTrip FindBestTrip() {
+  /*public KTTrip FindBestTrip() {
     return FindBestTrip(_root);
   }
 
@@ -151,27 +238,6 @@ public class KineticTree {
     }
     bestTrip.AddToFirst(node);
     return bestTrip;
-  }
-
-  /*
-  // To be able to find trip either on _root or _rootCopy
-  private KTTrip FindBestTrip(KTNode root) {
-  	return FindBestTrip(root, new KTTrip());
-  }
-
-  private KTTrip FindBestTrip(KTNode node, KTTrip trip) {
-  	trip.AddNode(node);
-  	if (node.next.isEmpty()) {
-  		return trip;
-  	}
-  	KTTrip best = new KTTrip();
-  	for (KTNode n : node.next) {
-  		KTTrip newTrip = FindBestTrip(n, trip);
-  		if (newTrip.compareTo(best) < 0) {
-  			best = newTrip;
-  		}
-  	}
-  	return best;
   }*/
 
   public void UpdateDeltas(
