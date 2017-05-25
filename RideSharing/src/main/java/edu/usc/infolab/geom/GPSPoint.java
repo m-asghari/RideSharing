@@ -1,6 +1,7 @@
 
 package edu.usc.infolab.geom;
 
+import edu.usc.infolab.ridesharing.Pair;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.TimeDistancePair;
 import edu.usc.infolab.ridesharing.Utils;
@@ -71,7 +72,7 @@ public class GPSPoint {
         return EuclideanDistanceInMilesAndMillis(other);
     }
 
-    private TimeDistancePair EuclideanDistanceInMilesAndMillis(GPSPoint other) {
+    public TimeDistancePair EuclideanDistanceInMilesAndMillis(GPSPoint other) {
         double theta = this._lng - other._lng;
         double dist =
                 Math.sin(deg2rad(this._lat)) * Math.sin(deg2rad(other._lat)) +
@@ -94,7 +95,6 @@ public class GPSPoint {
             return EuclideanDistanceInMilesAndMillis(other);
         }
     }
-
     
     /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     /*::  This function converts decimal degrees to radians             :*/

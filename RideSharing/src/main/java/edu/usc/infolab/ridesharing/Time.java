@@ -35,6 +35,8 @@ public class Time implements Comparable<Time>{
 	public Date GetTime() {
 		return _cal.getTime();
 	}
+
+	public int Get(int field) {return _cal.get(field);}
 	
 	private void Add(int field, int value) {
 		_cal.add(field, value);

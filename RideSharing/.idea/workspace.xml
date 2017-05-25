@@ -13,6 +13,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
+<<<<<<< Updated upstream
     <leaf>
       <file leaf-file-name="KineticTree.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KineticTree.java">
@@ -24,11 +25,24 @@
                 <element signature="e#1092#1093#0" expanded="true" />
                 <element signature="e#3040#3048#0" expanded="true" />
                 <marker date="1492046351100" expanded="false" signature="1753:1761" ph="&lt;~&gt;" />
+=======
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="KTRequest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTRequest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="7" column="22" lean-forward="false" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#650#651#0" expanded="false" />
+                <element signature="e#683#684#0" expanded="false" />
+>>>>>>> Stashed changes
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="RideSharingLauncher.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/launcher/RideSharingLauncher.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -46,77 +60,165 @@
               <caret line="20" column="52" lean-forward="false" selection-start-line="20" selection-start-column="52" selection-end-line="20" selection-end-column="52" />
               <folding>
                 <element signature="imports" expanded="true" />
+=======
+      <file leaf-file-name="KTDriver.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTDriver.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="26" column="32" lean-forward="false" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
+              <folding>
+                <element signature="imports" expanded="false" />
+>>>>>>> Stashed changes
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="IndexedDirectedGraph.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/model/IndexedDirectedGraph.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="389">
               <caret line="258" column="57" lean-forward="false" selection-start-line="258" selection-start-column="57" selection-end-line="258" selection-end-column="57" />
               <folding />
+=======
+      <file leaf-file-name="AuctionDriver.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/auction/AuctionDriver.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="345">
+              <caret line="41" column="90" lean-forward="true" selection-start-line="41" selection-start-column="90" selection-end-line="41" selection-end-column="90" />
+              <folding>
+                <element signature="e#2461#2470#0" expanded="true" />
+                <element signature="e#2527#2536#0" expanded="true" />
+                <element signature="e#3397#3406#0" expanded="true" />
+                <element signature="e#3748#3757#0" expanded="true" />
+                <element signature="e#4389#4398#0" expanded="true" />
+                <element signature="e#4628#4637#0" expanded="true" />
+              </folding>
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="Driver.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Driver.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
               <caret line="19" column="28" lean-forward="false" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
               <folding />
+=======
+      <file leaf-file-name="PreProcess.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/real/nyctaxi/PreProcess.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="599">
+              <caret line="158" column="1" lean-forward="true" selection-start-line="158" selection-start-column="1" selection-end-line="158" selection-end-column="1" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2535#2562#0" expanded="true" />
+              </folding>
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="KTDriver.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTDriver.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="489">
               <caret line="81" column="46" lean-forward="false" selection-start-line="81" selection-start-column="46" selection-end-line="81" selection-end-column="46" />
+=======
+      <file leaf-file-name="Time.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Time.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="336">
+              <caret line="38" column="55" lean-forward="false" selection-start-line="38" selection-start-column="55" selection-end-line="38" selection-end-column="55" />
+>>>>>>> Stashed changes
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="KTTrip.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTTrip.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1373">
               <caret line="131" column="59" lean-forward="false" selection-start-line="131" selection-start-column="59" selection-end-line="131" selection-end-column="59" />
+=======
+      <file leaf-file-name="GPSPoint.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/GPSPoint.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="508">
+              <caret line="95" column="5" lean-forward="false" selection-start-line="95" selection-start-column="5" selection-end-line="95" selection-end-column="5" />
+>>>>>>> Stashed changes
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="PricingModel.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/pricing/PricingModel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
               <caret line="10" column="22" lean-forward="false" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
               <folding />
+=======
+      <file leaf-file-name="NYTaxiInput.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/real/nyctaxi/NYTaxiInput.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="13" column="2" lean-forward="true" selection-start-line="13" selection-start-column="2" selection-end-line="206" selection-end-column="3" />
+              <folding>
+                <element signature="e#6241#6268#0" expanded="true" />
+              </folding>
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="DetourCompensatingModel.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/pricing/DetourCompensatingModel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="425">
               <caret line="48" column="34" lean-forward="false" selection-start-line="48" selection-start-column="34" selection-end-line="48" selection-end-column="34" />
               <folding />
+=======
+      <file leaf-file-name="Bid.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/auction/Bid.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#673#674#0" expanded="false" />
+                <element signature="e#762#763#0" expanded="false" />
+              </folding>
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="Pair.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Pair.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="34">
               <caret line="2" column="17" lean-forward="false" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
               <folding />
+=======
+      <file leaf-file-name="AuctionRequest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/auction/AuctionRequest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
@@ -133,7 +235,11 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>infolab.usc</find>
+<<<<<<< Updated upstream
       <find>KTrequest</find>
+=======
+      <find>KTRequest</find>
+>>>>>>> Stashed changes
     </findStrings>
     <replaceStrings>
       <replace>edu.usc.infolab</replace>
@@ -147,6 +253,19 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+<<<<<<< Updated upstream
+=======
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/util/EdgeHelper.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/util/MapDataHelper.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/util/Utility.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/util/TestCaseBuilder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/model/RBearing.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/model/Route.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/RouteSegmentEstimator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/TestCaseBuilderDemo.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/ui/MapViewer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/dao/PlaceHelper.java" />
+>>>>>>> Stashed changes
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/ExperimentsDemo.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/GoogleMapsHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/servlets/GetRouteSummary.java" />
@@ -172,8 +291,12 @@
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/RelaxedRoutePartitioner.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/DrawTrajectoryDemo.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/preprocessing/PlacesRetrieval.java" />
+<<<<<<< Updated upstream
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Utils.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/GPSPoint.java" />
+=======
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTTrip.java" />
+>>>>>>> Stashed changes
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/GPSNode.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/Point.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/EuclideanPoint.java" />
@@ -193,11 +316,26 @@
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/TimeDistancePair.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTNode.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/shortestpath/ShortestPathUtil.java" />
+<<<<<<< Updated upstream
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/model/IndexedDirectedGraph.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Request.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTTrip.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KineticTree.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTDriver.java" />
+=======
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Utils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Request.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTDriver.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTNode.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KineticTree.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTRequest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/auction/AuctionDriver.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/real/nyctaxi/NYTaxiInput.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/real/nyctaxi/Preprocess.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Time.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/GPSPoint.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/real/nyctaxi/PreProcess.java" />
+>>>>>>> Stashed changes
       </list>
     </option>
   </component>
@@ -235,7 +373,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+<<<<<<< Updated upstream
       <pane id="Scope" />
+=======
+>>>>>>> Stashed changes
       <pane id="Scratches" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
@@ -440,8 +581,144 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RideSharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RideSharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="infolab" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ridesharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RideSharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RideSharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="infolab" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ridesharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="datasets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RideSharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RideSharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="infolab" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ridesharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="datasets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nyctaxi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RideSharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RideSharing" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="infolab" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="geom" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+<<<<<<< Updated upstream
+=======
+      <pane id="Scope" />
+>>>>>>> Stashed changes
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -911,16 +1188,29 @@
       <workItem from="1491526256058" duration="112000" />
       <workItem from="1491527566284" duration="504000" />
       <workItem from="1491934854129" duration="77000" />
+<<<<<<< Updated upstream
       <workItem from="1491934994678" duration="4015000" />
       <workItem from="1492020216698" duration="16297000" />
+=======
+      <workItem from="1491934994678" duration="6728000" />
+      <workItem from="1495730305201" duration="2893000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< Updated upstream
     <option name="totallyTimeSpent" value="30462000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
+=======
+    <option name="totallyTimeSpent" value="19771000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="0" width="1280" height="800" extended-state="0" />
+    <editor active="true" />
+>>>>>>> Stashed changes
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -937,7 +1227,11 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+<<<<<<< Updated upstream
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2078125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2640625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> Stashed changes
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -999,6 +1293,32 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< Updated upstream
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/ExperimentsDemo.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/GoogleMapsHelper.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/model/RPolyline.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/model/Route.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/servlets/GetRouteSummary.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/util/mapmatching/RouteCalibrator.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/RouteRetriever.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/RoutePartitioner.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/BasicRoutePartitioner.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/BasicRouteRetriever.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/RoutingHelper.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/preprocessing/Main.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/OSRMHelper.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/PGFeatureCollectionDemo.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/QueryLab.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/util/mapmatching/HMMRouteCalibrator.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/UpdateMainRoadName.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/RouteHelper.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/dao/RouteBeanHelper.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/ExactRouteRetriever.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/servlets/GetUserRoutes.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/NaturalRouteConstructor.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/RouteDescriptionGenerator.java" />
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/KnowledgePartitionDemo.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/util/RelaxedRoutePartitioner.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/semanticroute/demo/DrawTrajectoryDemo.java" />
@@ -1013,6 +1333,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/util/route/PathWithStat.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -1021,6 +1342,85 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/GPSPoint.java">
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/GPSNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="40" column="13" lean-forward="false" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+          <folding>
+            <element signature="e#850#851#0" expanded="false" />
+            <element signature="e#881#882#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geo/util/route/PathWithStat.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="21" column="18" lean-forward="false" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/real/nyctaxi/AuctionInput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="19" column="13" lean-forward="false" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/shortestpath/ShortestPathUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="17" column="59" lean-forward="true" selection-start-line="17" selection-start-column="59" selection-end-line="17" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="29" column="69" lean-forward="false" selection-start-line="29" selection-start-column="69" selection-end-line="29" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/launcher/RideSharingLauncher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="29" column="46" lean-forward="false" selection-start-line="29" selection-start-column="46" selection-end-line="29" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Request.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-354">
+          <caret line="166" column="47" lean-forward="false" selection-start-line="166" selection-start-column="47" selection-end-line="166" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KineticTree.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <folding>
+            <element signature="e#1218#1226#0" expanded="false" />
+            <element signature="e#2308#2316#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="17" column="21" lean-forward="false" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTTrip.java">
+>>>>>>> Stashed changes
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="2" column="0" lean-forward="true" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
@@ -1030,16 +1430,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/GPSNode.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTRequest.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="17">
           <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="false" />
+=======
+        <state relative-caret-position="60">
+          <caret line="7" column="22" lean-forward="false" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#650#651#0" expanded="false" />
+            <element signature="e#683#684#0" expanded="false" />
+>>>>>>> Stashed changes
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/geom/Point.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
@@ -1052,12 +1462,19 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
           <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTDriver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="26" column="32" lean-forward="false" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
+>>>>>>> Stashed changes
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -1110,10 +1527,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1513">
           <caret line="97" column="22" lean-forward="true" selection-start-line="97" selection-start-column="22" selection-end-line="97" selection-end-column="22" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Driver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="10" column="22" lean-forward="false" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
+>>>>>>> Stashed changes
           <folding />
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/Input.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -1256,12 +1680,23 @@
           <caret line="47" column="36" lean-forward="false" selection-start-line="47" selection-start-column="36" selection-end-line="47" selection-end-column="36" />
           <folding>
             <element signature="e#1388#1389#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/auction/Bid.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#673#674#0" expanded="false" />
+            <element signature="e#762#763#0" expanded="false" />
+>>>>>>> Stashed changes
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTNode.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/auction/AuctionRequest.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="867">
           <caret line="56" column="51" lean-forward="false" selection-start-line="56" selection-start-column="51" selection-end-line="56" selection-end-column="51" />
           <folding />
@@ -1298,6 +1733,45 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="19" column="28" lean-forward="false" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
+=======
+        <state relative-caret-position="60">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/auction/AuctionDriver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="41" column="90" lean-forward="true" selection-start-line="41" selection-start-column="90" selection-end-line="41" selection-end-column="90" />
+          <folding>
+            <element signature="e#2461#2470#0" expanded="true" />
+            <element signature="e#2527#2536#0" expanded="true" />
+            <element signature="e#3397#3406#0" expanded="true" />
+            <element signature="e#3748#3757#0" expanded="true" />
+            <element signature="e#4389#4398#0" expanded="true" />
+            <element signature="e#4628#4637#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/real/nyctaxi/NYTaxiInput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="13" column="2" lean-forward="true" selection-start-line="13" selection-start-column="2" selection-end-line="206" selection-end-column="3" />
+          <folding>
+            <element signature="e#6241#6268#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/Time.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="38" column="55" lean-forward="false" selection-start-line="38" selection-start-column="55" selection-end-line="38" selection-end-column="55" />
+>>>>>>> Stashed changes
           <folding />
         </state>
       </provider>
@@ -1357,17 +1831,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/kinetictree/KTDriver.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="489">
           <caret line="81" column="46" lean-forward="false" selection-start-line="81" selection-start-column="46" selection-end-line="81" selection-end-column="46" />
+=======
+        <state relative-caret-position="508">
+          <caret line="95" column="5" lean-forward="false" selection-start-line="95" selection-start-column="5" selection-end-line="95" selection-end-column="5" />
+>>>>>>> Stashed changes
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/launcher/RideSharingLauncher.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/usc/infolab/ridesharing/datasets/real/nyctaxi/PreProcess.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="209">
           <caret line="138" column="83" lean-forward="false" selection-start-line="138" selection-start-column="83" selection-end-line="138" selection-end-column="83" />
           <folding />
+=======
+        <state relative-caret-position="599">
+          <caret line="158" column="1" lean-forward="true" selection-start-line="158" selection-start-column="1" selection-end-line="158" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2535#2562#0" expanded="true" />
+          </folding>
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
