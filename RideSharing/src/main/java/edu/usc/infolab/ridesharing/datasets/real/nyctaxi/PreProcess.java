@@ -5,6 +5,12 @@ import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Random;
@@ -120,30 +126,30 @@ public class PreProcess {
                         BWs.get(request.Get(Calendar.MONTH)).write(
                                 String.format(
                                         "%s,%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%.2f,%.2f\n",
-                                        fields[5],// Request Time
-                                        request.Get(Calendar.YEAR),
-                                        request.Get(Calendar.MONTH),
-                                        request.Get(Calendar.DAY_OF_MONTH),
-                                        request.Get(Calendar.DAY_OF_WEEK),
-                                        request.Get(Calendar.HOUR),
-                                        request.Get(Calendar.MINUTE),
-                                        request.Get(Calendar.SECOND),
-                                        fields[6],
-                                        fields[7],
-                                        fields[8],
-                                        fields[9],
-                                        fields[10],// Pick-up Lng
-                                        fields[11],// Pick-up Lat
+                                        fields[5],// 0- Pick-up Time
+                                        request.Get(Calendar.YEAR),// 1-
+                                        request.Get(Calendar.MONTH),// 2-
+                                        request.Get(Calendar.DAY_OF_MONTH),// 3-
+                                        request.Get(Calendar.DAY_OF_WEEK),// 4-
+                                        request.Get(Calendar.HOUR),// 5-
+                                        request.Get(Calendar.MINUTE),// 6-
+                                        request.Get(Calendar.SECOND),// 7-
+                                        fields[6],// 8- Drop-off Time
+                                        fields[7],// 9- Passenger Count
+                                        fields[8],// 10- Trip Time in Sec
+                                        fields[9],// 11- Trip Distance
+                                        fields[10],// 12- Pick-up Lng
+                                        fields[11],// 13- Pick-up Lat
                                         pickUp.EuclideanDistanceInMilesAndMillis(
-                                                new GPSPoint(Double.parseDouble(fields[11]), minLng)).distance * 1600,
+                                                new GPSPoint(Double.parseDouble(fields[11]), minLng)).distance * 1600,// 14- Pick-up Lat Delta
                                         pickUp.EuclideanDistanceInMilesAndMillis(
-                                                new GPSPoint(minLat, Double.parseDouble(fields[10]))).distance * 1600,
-                                        fields[12],// Drop-off Lng
-                                        fields[13],// Drop-off Lat
+                                                new GPSPoint(minLat, Double.parseDouble(fields[10]))).distance * 1600,// 15- Pick-up Lng Delta
+                                        fields[12],// 16- Drop-off Lng
+                                        fields[13],// 17- Drop-off Lat
                                         pickUp.EuclideanDistanceInMilesAndMillis(
-                                                new GPSPoint(Double.parseDouble(fields[13]), minLng)).distance * 1600,
+                                                new GPSPoint(Double.parseDouble(fields[13]), minLng)).distance * 1600,// 18- Drop-off Lat Delta
                                         pickUp.EuclideanDistanceInMilesAndMillis(
-                                                new GPSPoint(minLat, Double.parseDouble(fields[12]))).distance * 1600
+                                                new GPSPoint(minLat, Double.parseDouble(fields[12]))).distance * 1600// 19- Drop-off Lng Delta
                                 ));
                     }
                 }
@@ -166,6 +172,72 @@ public class PreProcess {
         double lat = minLat + (rand.nextDouble() * (maxLat - minLat));
         double lng = minLng + (rand.nextDouble() * (maxLng - minLng));
         return new GPSPoint(lat, lng);
+    }
+
+    private void PopulateTripsTable(File dir) throws SQLException {
+        String dbDriver = "oracle.jdbc.driver.OracleDriver";
+        String dbConnectionString = "jdbc:oracle:thin:@localhost:1521";
+        String dbUser = "SYS";
+        String dbPassword = "rth@usc";
+        String dbDateFormat = "yyyy-mm-dd hh24:mi:ss";
+
+        String insertSQLFormat = "INSERT INTO TRIPS VALUES" +
+                "(to_date('%s','%s'), %s, %s, %s, %s, %s, %s, %s, %s," +
+                "to_date('%s','%s'), %s, %s, %s," +
+                " %s, %s, %s, %s, %s, %s, %s, %s)";
+
+        Connection dbConnection = null;
+        Statement statement = null;
+        try {
+            Class.forName(dbDriver);
+            dbConnection = DriverManager.getConnection(dbConnectionString, dbUser, dbPassword);
+
+            File[] inputFiles =
+                    dir.listFiles(
+                            new FilenameFilter() {
+                                @Override
+                                public boolean accept(File dir, String name) {
+                                    if (name.endsWith(".csv")) return true;
+                                    return false;
+                                }
+                            });
+            for (File file : inputFiles) {
+                System.out.println(String.format("Started File: %s", file.getName()));
+                if (file.isDirectory()) continue;
+                FileReader fr = new FileReader(file);
+                BufferedReader br = new BufferedReader(fr);
+
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] fields = line.split(",");
+
+                    statement = dbConnection.createStatement();
+
+                    String now = Time.sdf.format(Calendar.getInstance().getTime());
+                    statement.executeUpdate(
+                            String.format(insertSQLFormat,
+                                    fields[0], dbDateFormat,
+                                    fields[1], fields[2], fields[3], fields[4], "1",
+                                    fields[5], fields[6], fields[7],
+                                    fields[8], dbDateFormat,
+                                    fields[9], fields[10], fields[11],
+                                    fields[12], fields[15], fields[13], fields[14],
+                                    fields[16], fields[19], fields[17], fields[18])
+                    );
+                }
+                br.close();
+                fr.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (dbConnection != null) {
+                dbConnection.close();
+            }
+        }
     }
 
     public static void main(String[] args) {
