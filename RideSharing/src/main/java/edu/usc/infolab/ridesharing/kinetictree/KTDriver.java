@@ -24,7 +24,6 @@ public class KTDriver extends Driver<Request> {
 	
 	
 	public Double InsertRequest(Request request) {
-		//KTTrip bestTrip = _ktree.InsertRequest(request);
 		KTTrip bestTrip = null;
 		KTNode rootCopy = _ktree.InsertRequest(request);
 		if (rootCopy != null) {
@@ -47,18 +46,6 @@ public class KTDriver extends Driver<Request> {
 		bestTrip.AddToFirst(node);
 		return bestTrip;
 	}
-
-    private KTTrip FindMostProfitableTrip(KTNode node) {
-        KTTrip mostProfitableTrip = new KTTrip();
-        for (KTNode child : node.next) {
-            KTTrip childMostProfitibleTrip = FindMostProfitableTrip(child);
-            if (childMostProfitibleTrip.MoreProfitibleThan(this, mostProfitableTrip)) {
-                mostProfitableTrip = childMostProfitibleTrip;
-            }
-        }
-        mostProfitableTrip.AddToFirst(node);
-        return mostProfitableTrip;
-    }
 	
 	@Override
 	public void AddRequest(Request r, Time time) {

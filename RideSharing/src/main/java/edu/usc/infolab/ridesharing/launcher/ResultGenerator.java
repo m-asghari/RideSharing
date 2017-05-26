@@ -3,6 +3,7 @@ package edu.usc.infolab.ridesharing.launcher;
 import edu.usc.infolab.ridesharing.*;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
+import edu.usc.infolab.ridesharing.auction.ESAuctionDriver;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -170,7 +171,7 @@ public class ResultGenerator {
 			BufferedReader br = new BufferedReader(fr);
 			String line = "";
 			while ((line = br.readLine()) != null) {
-				drivers.add(new AuctionDriver(line.split(",")));
+				drivers.add(new ESAuctionDriver(line.split(",")));
 			}
 			br.close();
 			fr.close();

@@ -2,9 +2,11 @@ package edu.usc.infolab.ridesharing.launcher;
 
 import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
+import edu.usc.infolab.ridesharing.TimeDistancePair;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.algorithms.*;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
+import edu.usc.infolab.ridesharing.auction.AuctionDriverType;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.auction.ShortestPathDriver;
 import edu.usc.infolab.ridesharing.datasets.real.nyctaxi.AuctionInput;
@@ -28,12 +30,12 @@ public class RideSharingLauncher {
 		//	return;
 		//}
 
-		ShortestPathUtil.InitializeNYCGraph();
+//		ShortestPathUtil.InitializeNYCGraph();
 
 		File requestsFile = new File("../Data/trips_2013_05_12.csv");
 		File driversFile = new File("../Data/drivers_from_reqs_2013_05_12.csv");
 		StringBuilder summaries = new StringBuilder();
-		
+
 		// Create Results Directory
 		if (!Utils.resultsDir.exists()) {
 		  Utils.resultsDir.mkdir();
@@ -93,6 +95,20 @@ public class RideSharingLauncher {
 		  ioe.printStackTrace();
 		}
 	}
+
+	private static void RunShortestPath(File requestsFile) {
+        ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+        Calendar start = Calendar.getInstance();
+        for (int i = 0; i < 1000; i++) {
+            if (i % 50 == 0) {
+                System.out.println(String.format("i = %d", i));
+            }
+            AuctionRequest req = auctionRequests.get(i);
+            TimeDistancePair trip = req.source.DistanceInMilesAndMillis(req.destination);
+        }
+        Calendar end = Calendar.getInstance();
+        System.out.println((int)(end.getTimeInMillis() - start.getTimeInMillis()));
+    }
 	
 	@SuppressWarnings("unused")
 	private static String RunAlgorithms(File requestsFile, File driversFile) {
@@ -108,11 +124,11 @@ public class RideSharingLauncher {
 	@SuppressWarnings("unused")
 	private static String RunSecondPriceAuction(File requestsFile, File driversFile) {
 	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
-      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
+      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
       Time startTime = auctionRequests.get(0).requestTime.clone();
       
       SecondPriceAuctionAlgorithm<AuctionDriver> spaAlgo = new SecondPriceAuctionAlgorithm<AuctionDriver>(startTime, 1);
-      return String.format("%d,%d,%d,%s,%s\n",
+		return String.format("%d,%d,%d,%s,%s\n",
           Utils.MaxWaitTime,
           Utils.NumberOfVehicles,
           Utils.MaxPassengers,
@@ -122,7 +138,7 @@ public class RideSharingLauncher {
 	
 	private static String RunFirstPriceAuction(File requestsFile, File driversFile) {
 	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
-      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
+      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
       Time startTime = auctionRequests.get(0).requestTime.clone();
       
       SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver> sparvAlgo =
@@ -138,7 +154,7 @@ public class RideSharingLauncher {
 	
 	private static String RunNearestNeighbor(File requestsFile, File driversFile) {
 	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
-      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
+      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
       Time startTime = auctionRequests.get(0).requestTime.clone();
       
       NearestNeighborAlgorithm nnAlgo = new NearestNeighborAlgorithm(startTime, 1);

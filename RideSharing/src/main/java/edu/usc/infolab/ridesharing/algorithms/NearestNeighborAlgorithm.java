@@ -3,10 +3,7 @@ package edu.usc.infolab.ridesharing.algorithms;
 import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
-import edu.usc.infolab.ridesharing.auction.AuctionDriver;
-import edu.usc.infolab.ridesharing.auction.AuctionRequest;
-import edu.usc.infolab.ridesharing.auction.Bid;
-import edu.usc.infolab.ridesharing.auction.ProfitCostSchedule;
+import edu.usc.infolab.ridesharing.auction.*;
 
 import java.util.ArrayList;
 
@@ -35,20 +32,22 @@ public class NearestNeighborAlgorithm extends Algorithm<AuctionRequest, AuctionD
     request.stats.potentialDrivers = potentialDrivers.size();
     
     Time start = new Time();
-    AuctionDriver nearestDriver = null;
+    ESAuctionDriver nearestDriver = null;
     double nnProfit = 0;
-    while (!potentialDrivers.isEmpty()) {    	
+    while (!potentialDrivers.isEmpty()) {
+        Utils.spComputations = 0;
     	nearestDriver = null;
     	double minDistance = Utils.Max_Double;
     	for (AuctionDriver driver : potentialDrivers) {
     		double distance = driver.loc.DistanceInMilesAndMillis(request.source.point).distance;
     		if (distance < minDistance) {
     			minDistance = distance;
-    			nearestDriver = driver;
+    			nearestDriver = (ESAuctionDriver) driver;
     		}
     	}
     	if (nearestDriver == null) return Status.NOT_ASSIGNED;
     	ProfitCostSchedule bestPCS = nearestDriver.CanService(request, time);
+    	request.stats.spComputations.add(Utils.spComputations);
     	if (bestPCS.profit > 0) {
     		nearestDriver.AddRequest(request, time);
     		request.serverProfit = bestPCS.profit;

@@ -6,6 +6,7 @@ import edu.usc.infolab.geom.GPSPoint;
 
 import javax.activity.InvalidActivityException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Request implements Comparable<Request> {
@@ -23,6 +24,7 @@ public class Request implements Comparable<Request> {
 					put(FailureReason.ServiceConstraint, 0);
 				}
 			};
+			this.spComputations = new ArrayList<>();
 		}
 
 		private AssignmentStat(AssignmentStat other) {
@@ -36,6 +38,7 @@ public class Request implements Comparable<Request> {
 			this.profitDiff = other.profitDiff;
 			this.failureReasons = new HashMap<FailureReason, Integer>(
 					other.failureReasons);
+			this.spComputations = new ArrayList<>(other.spComputations);
 		}
 
 		public void AddFailureReason(FailureReason reason) {
@@ -51,6 +54,7 @@ public class Request implements Comparable<Request> {
 		public int looseMoney;
 		public double profitDiff;
 		public HashMap<FailureReason, Integer> failureReasons;
+		public ArrayList<Long> spComputations;
 
 		@Override
 		public AssignmentStat clone() {
@@ -227,6 +231,12 @@ public class Request implements Comparable<Request> {
 
 	// id,stats.assigned,stats.scheduleTime,stats.assignTime,stats.potentialDrivers,stats.acceptableBids,source,destination,rTime,maxW,latestPickUpTime,optTime,OptDist,pickUpTime,pickUpDistance,dropOffTime,dropOffDistance,detour,actualTime,actualDistance,default fare, final fare, other fare
 	public String PrintShortResults() {
+	    Long maxSpComputation = 0L;
+	    Long totalSpComputation = 0L;
+	    for (Long l : this.stats.spComputations) {
+	        totalSpComputation += l;
+	        maxSpComputation = (l.compareTo(maxSpComputation) > 0) ? l : maxSpComputation;
+        }
 		StringBuilder results = new StringBuilder();
 		results.append(String.format("%d,"
 		    + "%d,%d,%d,%d,%d,"
@@ -236,7 +246,8 @@ public class Request implements Comparable<Request> {
 			+ "%s,%.2f," 
 		    + "%s,%.2f,"
 			+ "%.2f,%d,%.2f," 
-		    + "%.2f,%.2f,%.2f,", 
+		    + "%.2f,%.2f,%.2f,"
+            + "%d,%d,",
 		    id, 
 		    stats.assigned,	stats.schedulingTime, stats.assignmentTime, stats.potentialDrivers, stats.acceptableBids,
 			source.toString(), destination.toString(),
@@ -245,7 +256,8 @@ public class Request implements Comparable<Request> {
 			Time.sdf.format(pickUpTime.GetTime()), pickUpDistance, 
 			Time.sdf.format(dropOffTime.GetTime()),	dropOffDistance, 
 			detour, actualTime, actualDistance,
-			defaultFare, finalFare, perDistanceFare));
+			defaultFare, finalFare, perDistanceFare,
+            maxSpComputation.intValue(),totalSpComputation.intValue()));
 		return results.toString();
 	}
 

@@ -62,6 +62,7 @@ public class GPSPoint {
     //returned distance is in mile!
     //returned time in milliseconds
     public TimeDistancePair DistanceInMilesAndMillis(GPSPoint other) {
+        Utils.spComputations++;
         switch (Utils.distanceType) {
             case Euclidean:
                 return EuclideanDistanceInMilesAndMillis(other);

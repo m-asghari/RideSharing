@@ -29,6 +29,7 @@ public abstract class AuctionAlgorithm<D extends AuctionDriver> extends Algorith
 		// select the best bid
 		int maxBidComputation = Utils.Min_Integer;
 		for (AuctionDriver d : potentialDrivers) {
+			Utils.spComputations = 0;
 			Calendar start = Calendar.getInstance();
 			// insert request into one driver's schedule
 			Bid bid = d.ComputeBid(r, time);
@@ -36,8 +37,8 @@ public abstract class AuctionAlgorithm<D extends AuctionDriver> extends Algorith
 			bids.add(bid);
 			
 			int bidTimeMillis = (int)(end.getTimeInMillis() - start.getTimeInMillis());
-			
 			if (bidTimeMillis > 10) {
+			    Utils.spComputations = 0;
 				Calendar s = Calendar.getInstance();
 				d.ComputeBid(r, time);
 				Calendar e = Calendar.getInstance();
@@ -46,7 +47,7 @@ public abstract class AuctionAlgorithm<D extends AuctionDriver> extends Algorith
 					bidTimeMillis = bidTimeMillis2;
 				}
 			}
-			
+			r.stats.spComputations.add(Utils.spComputations);
 			// track the computation time, i.e., the maximal time of one auction driver
 			if (bidTimeMillis > maxBidComputation) {
 				maxBidComputation = bidTimeMillis;

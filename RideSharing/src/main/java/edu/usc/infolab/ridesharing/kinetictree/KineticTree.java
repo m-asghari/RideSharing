@@ -76,6 +76,7 @@ public class KineticTree {
   // This method is similar to InsertNodes. Reading it might just be a little easier!!
   private boolean NewInsertNodes(KTNode root, KTNode node, ArrayList<KTNode> remaining, double depth) {
     TimeDistancePair rootToNode = root.point.DistanceInMilesAndMillis(node.point);
+    Utils.spComputations++;
     if (!Feasible(
             root,
             node,
@@ -86,23 +87,26 @@ public class KineticTree {
     KTNode nodeCopy = node.clone();
     for (KTNode n : root.next) {
         TimeDistancePair nodeCopyToN = nodeCopy.DistanceInMilesAndMillis(n);
-      double detour =
-              rootToNode.distance
-                      + nodeCopyToN.distance
-                      - n.fromParent.distance;
-      if (!CopyNode(nodeCopy, n, detour, nodeCopyToN)) {
-        fail = true;
-      }
+        Utils.spComputations++;
+        double detour =
+                rootToNode.distance
+                        + nodeCopyToN.distance
+                        - n.fromParent.distance;
+        if (!CopyNode(nodeCopy, n, detour, nodeCopyToN)) {
+            fail = true;
+        }
     }
     if (!fail && !remaining.isEmpty()) {
       ArrayList<KTNode> newRemaining = new ArrayList<KTNode>(remaining);
       KTNode newNode = newRemaining.remove(0);
+      Utils.spComputations++;
       if (!NewInsertNodes(
               nodeCopy, newNode, newRemaining, -1 * node.DistanceInMilesAndMillis(newNode).distance))
         fail = true;
     }
     for (Iterator<KTNode> it = root.next.iterator(); it.hasNext(); ) {
       KTNode n = it.next();
+      Utils.spComputations++;
       if (!NewInsertNodes(n, node, remaining, depth + root.DistanceInMilesAndMillis(n).distance)) {
         it.remove();
       }

@@ -6,6 +6,7 @@ import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
 import edu.usc.infolab.ridesharing.auction.AuctionDriver;
+import edu.usc.infolab.ridesharing.auction.ESAuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.auction.Bid;
 import edu.usc.infolab.ridesharing.kinetictree.KTDriver;
@@ -29,7 +30,9 @@ public class KineticTreeAlgorithm extends Algorithm<Request, KTDriver> {
 		HashMap<KTDriver, Double> insertCosts = new HashMap<KTDriver, Double>();
 		Time start = new Time();
 		for (KTDriver d : potentialDrivers) {
+			Utils.spComputations = 0;
 			insertCosts.put(d, d.InsertRequest(r));
+			r.stats.spComputations.add(Utils.spComputations);
 		}
 		
 		KTDriver selectedDriver = null;
@@ -47,7 +50,7 @@ public class KineticTreeAlgorithm extends Algorithm<Request, KTDriver> {
 		Time end = new Time();
 		r.stats.schedulingTime = end.SubtractInMillis(start);
 		
-		AuctionDriver mostProfitable = null;
+		ESAuctionDriver mostProfitable = null;
         double maxProfit = Utils.Min_Double;
         double ktProfit = 0;
         for (KTDriver d : potentialDrivers) {
@@ -55,7 +58,7 @@ public class KineticTreeAlgorithm extends Algorithm<Request, KTDriver> {
             Bid bid = auctionDriver.ComputeBid(GetAuctionRequest(r), time);
             if (bid.profit > 0 && bid.profit > maxProfit) {
                 maxProfit = bid.profit;
-                mostProfitable = bid.driver;
+                mostProfitable = (ESAuctionDriver) bid.driver;
             }
             if (d.id == selectedDriver.id) {
               ktProfit = bid.profit;
@@ -76,7 +79,7 @@ public class KineticTreeAlgorithm extends Algorithm<Request, KTDriver> {
 	}
 	
 	private AuctionDriver GetAuctionDriver(KTDriver driver) {
-		AuctionDriver auctionDriver = new AuctionDriver(driver.loc, driver.start, driver.end);
+		ESAuctionDriver auctionDriver = new ESAuctionDriver(driver.loc, driver.start, driver.end);
 		auctionDriver._schedule = new ArrayList<GPSNode>();
 		for (GPSNode node : driver._schedule) {
 			GPSNode newNode = node.clone();

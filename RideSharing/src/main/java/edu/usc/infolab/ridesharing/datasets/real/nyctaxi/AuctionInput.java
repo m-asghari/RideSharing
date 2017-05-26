@@ -5,9 +5,7 @@ import edu.usc.infolab.ridesharing.Driver;
 import edu.usc.infolab.ridesharing.Request;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.Utils;
-import edu.usc.infolab.ridesharing.auction.AuctionDriver;
-import edu.usc.infolab.ridesharing.auction.AuctionRequest;
-import edu.usc.infolab.ridesharing.auction.ShortestPathDriver;
+import edu.usc.infolab.ridesharing.auction.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,8 +21,8 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 	 * pickUp_DateTime, dropOff_DataTime, passenger_count, tripTime_Seconds, tripDistance, pickUp_lng, pickUp_lat, dropOff_lng, dropOff_lat
 	 */
 	public static ArrayList<AuctionRequest> GenerateRequests(File inFile) {
-	  Request.reqCtr = 0;
-	  maxWaitTime = Utils.MaxWaitTime;
+		Request.reqCtr = 0;
+		maxWaitTime = Utils.MaxWaitTime;
 		ArrayList<AuctionRequest> requests = new ArrayList<AuctionRequest>();
 		try {
 			FileReader fr = new FileReader(inFile);
@@ -57,7 +55,7 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 		return requests;
 	}
 	
-	public static ArrayList<AuctionDriver> GenerateDrivers(File inFile, int size) {
+	public static ArrayList<AuctionDriver> GenerateDrivers(File inFile, int size, AuctionDriverType type) {
 	  Driver.driverCtr = 0;
 	  ArrayList<AuctionDriver> drivers = new ArrayList<AuctionDriver>();
 	  int driverCtr = 0;
@@ -71,7 +69,14 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
 	      GPSPoint initLoc = new GPSPoint(Double.parseDouble(fields[0]), Double.parseDouble(fields[1]));
 	      Time start = new Time(Time.sdf.parse(fields[2]));
 	      Time end = new Time(Time.sdf.parse(fields[3]));
-	      drivers.add(new AuctionDriver(initLoc, start, end));
+	      switch (type) {
+              case EXHAUSTIVE_SEARCH:
+                  drivers.add(new ESAuctionDriver(initLoc, start, end));
+                  break;
+              case DYNAMIC_PROGRAMMING:
+                  drivers.add(new DPAuctionDriver(initLoc, start, end));
+                  break;
+          }
 	      driverCtr++;
 	    }
 	    br.close();
@@ -113,12 +118,17 @@ public class AuctionInput extends NYTaxiInput<AuctionRequest, AuctionDriver> {
       return drivers;
     }
 	
-	public static AuctionDriver GetNewDriver() {
+	public static AuctionDriver GetNewDriver(AuctionDriverType type) {
 		try {
 			GPSPoint initialLoc = NewRandomPoint();
 			Time start = new Time(Time.sdf.parse(filterStart));
 			Time end = new Time(Time.sdf.parse(filterEnd));
-			return new AuctionDriver(initialLoc, start, end);			
+            switch (type) {
+                case EXHAUSTIVE_SEARCH:
+                    return new ESAuctionDriver(initialLoc, start, end);
+                case DYNAMIC_PROGRAMMING:
+                    return new DPAuctionDriver(initialLoc, start, end);
+            }
 		}
 		catch (ParseException pe) {
 			pe.printStackTrace();

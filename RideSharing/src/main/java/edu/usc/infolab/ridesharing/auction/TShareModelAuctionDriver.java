@@ -3,7 +3,7 @@ package edu.usc.infolab.ridesharing.auction;
 import edu.usc.infolab.geom.GPSPoint;
 import edu.usc.infolab.ridesharing.Time;
 
-public class TShareModelAuctionDriver extends AuctionDriver {
+public class TShareModelAuctionDriver extends ESAuctionDriver {
   private static final double INFLATE_PARAM = 0.5;
 
   /**

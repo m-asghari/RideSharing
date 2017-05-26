@@ -31,7 +31,7 @@ public class KTTrip implements Comparable<KTTrip>{
 		nodes.add(node);
 	}*/
 	
-	void AddToFirst(KTNode node) {
+	public void AddToFirst(KTNode node) {
 		nodes.add(0, node);
 		if (nodes.size() > 1) {
 			_length += node.DistanceInMilesAndMillis(nodes.get(1)).distance;
@@ -68,15 +68,15 @@ public class KTTrip implements Comparable<KTTrip>{
 		return nodes.remove(size - 1);
 	}*/
 
-	KTNode Get(int index) {
+	public KTNode Get(int index) {
 		return nodes.get(index);
 	}
 	
-	double Length() {
+	public double Length() {
 		return _length;
 	}
 	
-	ArrayList<GPSNode> GetNodes() {
+	public ArrayList<GPSNode> GetNodes() {
 		ArrayList<GPSNode> retNodes = new ArrayList<GPSNode>();
 		for (KTNode n : nodes) {
 			retNodes.add(new GPSNode(n.point, n.type, n.request));
@@ -121,7 +121,7 @@ public class KTTrip implements Comparable<KTTrip>{
 		return true;
 	}
 
-	boolean MoreProfitibleThan(Driver driver, KTTrip other) {
+	public boolean MoreProfitibleThan(Driver driver, KTTrip other) {
 		if (this.nodes.size() > other.nodes.size())
 			return true;
 		double thisIncome =

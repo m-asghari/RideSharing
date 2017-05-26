@@ -10,7 +10,7 @@ import edu.usc.infolab.ridesharing.Utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ShortestPathDriver extends AuctionDriver {
+public class ShortestPathDriver extends ESAuctionDriver {
 
   /**
    * @param initialLoc

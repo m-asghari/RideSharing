@@ -1,5 +1,6 @@
 package edu.usc.infolab.ridesharing;
 
+import edu.usc.infolab.ridesharing.pricing.DetourCompensatingModel;
 import edu.usc.infolab.ridesharing.pricing.PerDistanceModel;
 import edu.usc.infolab.ridesharing.pricing.PricingModel;
 
@@ -28,6 +29,7 @@ public class Utils {
         Network
     }
     public static DistanceType distanceType = DistanceType.Euclidean;
+	public static long  spComputations = 0;
 
 	public enum DetourConstraint {
 	  FIXED,
@@ -52,6 +54,6 @@ public class Utils {
 	  return false;
 	}
 	
-	public static PricingModel PRICING_MODEL = PerDistanceModel.getInstance();
-	//public static PricingModel PRICING_MODEL = DetourCompensatingModel.getInstance();	
+	//public static PricingModel PRICING_MODEL = PerDistanceModel.getInstance();
+	public static PricingModel PRICING_MODEL = DetourCompensatingModel.getInstance();
 }
