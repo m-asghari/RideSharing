@@ -1,5 +1,11 @@
 Code/*.csv
 *.pdf
+*.log
+*.aux
+*.out
+*.snm
+*.synctex.gz
+*.toc
 RideSharing/target/
 RideSharing/Results/
 RideSharing/.idea/workspace.xml
