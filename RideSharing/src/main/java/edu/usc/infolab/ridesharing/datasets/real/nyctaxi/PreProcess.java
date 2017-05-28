@@ -113,6 +113,8 @@ public class PreProcess {
                     String[] fields = line.split(",");
                     if (fields.length < 14) continue;
                     Time request = new Time(Time.sdf.parse(fields[5]));
+                    int hour = request.Get(Calendar.HOUR);
+                    int hour2 = request.Get(Calendar.HOUR_OF_DAY);
                     GPSPoint pickUp =
                             new GPSPoint(Double.parseDouble(fields[11]), Double.parseDouble(fields[10]));
                     GPSPoint dropOff =
@@ -131,7 +133,7 @@ public class PreProcess {
                                         request.Get(Calendar.MONTH),// 2-
                                         request.Get(Calendar.DAY_OF_MONTH),// 3-
                                         request.Get(Calendar.DAY_OF_WEEK),// 4-
-                                        request.Get(Calendar.HOUR),// 5-
+                                        request.Get(Calendar.HOUR_OF_DAY),// 5-
                                         request.Get(Calendar.MINUTE),// 6-
                                         request.Get(Calendar.SECOND),// 7-
                                         fields[6],// 8- Drop-off Time
@@ -174,10 +176,10 @@ public class PreProcess {
         return new GPSPoint(lat, lng);
     }
 
-    private void PopulateTripsTable(File dir) throws SQLException {
+    private static void PopulateTripsTable(File dir) throws SQLException {
         String dbDriver = "oracle.jdbc.driver.OracleDriver";
-        String dbConnectionString = "jdbc:oracle:thin:@localhost:1521";
-        String dbUser = "SYS";
+        String dbConnectionString = "jdbc:oracle:thin:@localhost:1521:xe";
+        String dbUser = "masghari";
         String dbPassword = "rth@usc";
         String dbDateFormat = "yyyy-mm-dd hh24:mi:ss";
 
@@ -201,6 +203,7 @@ public class PreProcess {
                                     return false;
                                 }
                             });
+            int insertCount = 0;
             for (File file : inputFiles) {
                 System.out.println(String.format("Started File: %s", file.getName()));
                 if (file.isDirectory()) continue;
@@ -208,6 +211,7 @@ public class PreProcess {
                 BufferedReader br = new BufferedReader(fr);
 
                 String line;
+
                 while ((line = br.readLine()) != null) {
                     String[] fields = line.split(",");
 
@@ -224,6 +228,11 @@ public class PreProcess {
                                     fields[12], fields[15], fields[13], fields[14],
                                     fields[16], fields[19], fields[17], fields[18])
                     );
+                    if (insertCount % 100000 == 0) {
+                        System.out.println(String.format("%d Rows Inserted.", insertCount));
+                    }
+                    insertCount++;
+                    statement.close();
                 }
                 br.close();
                 fr.close();
@@ -240,10 +249,11 @@ public class PreProcess {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         String file = "../Data/NYCTaxiDataset/TripData";
         PreProcessData(new File(file));
         //FindMinMaxLatLng(new File(file));
+        //PopulateTripsTable(new File(file));
     }
 
 }
