@@ -104,7 +104,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../mallet-master/out/artifacts/mallet_master_jar/mallet-master.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/mallet-master.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
