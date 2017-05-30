@@ -44,7 +44,7 @@ public class CellCoordinates {
 
     @Override
     public int hashCode() {
-        return (int)((this.startLng+this.startLat+this.cellSize)/111);
+        return (int)((this.startLng+this.startLat+this.cellSize)/113);
     }
 
     @Override

@@ -9,13 +9,15 @@ import java.util.HashMap;
 public class STDocument {
     private static int idCounter = 0;
 
-    public int id;
+    //public int id;
+    public STDocID docID;
     public CellCoordinates spatialCoordinates;
     public int hour;
     int[] data;
 
-    public STDocument(int id, CellCoordinates spatialCoordinates, int hour, int dataSize) {
-        this.id = id;
+    public STDocument(CellCoordinates spatialCoordinates, int hour, int dataSize) {
+        //this.id = id;
+        this.docID = new STDocID(spatialCoordinates, hour);
         this.spatialCoordinates = spatialCoordinates.clone();
         this.hour = hour;
         this.data = new int[dataSize];

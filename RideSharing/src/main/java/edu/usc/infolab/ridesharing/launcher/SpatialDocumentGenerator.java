@@ -19,8 +19,8 @@ public class SpatialDocumentGenerator {
     private static final int HOUR_START = 6;
     private static final int HOUR_END = 24;
 
-    private static final int CELL_SIZE = 1000;
-    private static final int HOUR_SKIP = 3;
+    private static int CELL_SIZE = 1000;
+    private static int HOUR_SKIP = 3;
 
     // Following are some statistics for the grid (lng/lat deltas) in the month of January
     private static final int MIN_PICKUP_LNG_DELTA = 1842;
@@ -93,7 +93,7 @@ public class SpatialDocumentGenerator {
                 locationID++;
             };
         }
-        SaveViableLocations(viableLocations);
+        //SaveViableLocations(viableLocations);
         return viableLocations;
     }
 
@@ -141,7 +141,7 @@ public class SpatialDocumentGenerator {
         for (int hour = HOUR_START; hour < HOUR_END; hour += HOUR_SKIP) {
             HashMap<CellCoordinates, Integer> perHourMap = new HashMap<>();
             for (CellCoordinates pickUp : locations.keySet()) {
-                documents.add(new STDocument(idCounter, pickUp, hour, locations.size()));
+                documents.add(new STDocument(pickUp, hour, locations.size()));
                 perHourMap.put(pickUp, idCounter);
                 idCounter++;
             }
@@ -168,7 +168,7 @@ public class SpatialDocumentGenerator {
             int dropOffStartLng = dropOffLngDelta - (dropOffLngDelta % CELL_SIZE);
             int dropOffStartLat = dropOffLatDelta - (dropOffLatDelta % CELL_SIZE);
             CellCoordinates dropOffCell = new CellCoordinates(-1, dropOffStartLng, dropOffStartLat, CELL_SIZE);
-            int hour = hourOfDay - (hourOfDay % HOUR_SKIP);
+            int hour = hourOfDay - ((hourOfDay -HOUR_START) % HOUR_SKIP);
 
             if (locations.containsKey(pickUpCell) && locations.containsKey(dropOffCell)) {
                 if (dayOfMonth >= startDay && dayOfMonth < endDay) {
@@ -215,16 +215,34 @@ public class SpatialDocumentGenerator {
         fw.close();
     }
 
+    public static void GenerateTrainTestData(String dataFile, int cellSize, int hourSkip)
+            throws IOException, SQLException {
+        CELL_SIZE = cellSize;
+        HOUR_SKIP = hourSkip;
+        System.out.println(String.format("Starting Cell Size %d and Hour Skip %d",
+                cellSize, hourSkip));
+        //HashMap<CellCoordinates, Integer> viableLocations = GetViableLocations(dataFile);
+        HashMap<CellCoordinates, Integer> viableLocations = LoadViableLocations();
+        ArrayList<STDocument> trainingData = GetData(dataFile, viableLocations, DataType.TRAINING);
+        ArrayList<STDocument> testData = GetData(dataFile, viableLocations, DataType.TEST);
+    }
+
+
     public static void main(String[] args) throws SQLException, IOException {
-        HashMap<CellCoordinates, Integer> viableLocations = GetViableLocations(
-                "../Data/NYCTaxiDataset/TripData/ProcessedData/trips_procesed_0.csv");
-        //HashMap<CellCoordinates, Integer> viableLocations = LoadViableLocations();
-        ArrayList<STDocument> trainingData2 = GetData(
-                "../Data/NYCTaxiDataset/TripData/ProcessedData/trips_procesed_0.csv",
-                viableLocations, DataType.TRAINING);
-        //SaveData(trainingData, DataType.TRAINING);
-        //ArrayList<STDocument> testData = GetData(viableLocations, DataType.TEST);
-        //SaveData(testData, DataType.TEST);
+        String dataFile = "../Data/NYCTaxiDataset/TripData/ProcessedData/trips_procesed_0.csv";
+        for (int cellSize : new int[]{/*100,*/ 250, 500, 1000, 2500, 5000}) {
+            CELL_SIZE = cellSize;
+            HashMap<CellCoordinates, Integer> viableLocations = GetViableLocations(dataFile);
+            //HashMap<CellCoordinates, Integer> viableLocations = LoadViableLocations();
+            for (int hourSkip : new int[]{1, 2, 3, 4, 5}){
+                HOUR_SKIP = hourSkip;
+                System.out.println(String.format("Starting Cell Size %d and Hour Skip %d",
+                        cellSize, hourSkip));
+                SaveViableLocations(viableLocations);
+                ArrayList<STDocument> trainingData = GetData(dataFile, viableLocations, DataType.TRAINING);
+                ArrayList<STDocument> testData = GetData(dataFile, viableLocations, DataType.TEST);
+            }
+        }
     }
 
     /*public static HashMap<Integer, CellCoordinates> GetViableLocations() throws SQLException, IOException {
