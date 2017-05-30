@@ -6,6 +6,7 @@ package edu.usc.infolab.ridesharing.prediction;
  * Implementation of the Expectation Maximization Algorithm for Multinomial Mixture Models
  */
 public class EMforMMM {
+
     private class MMM {
         //Number of topics
         private int _topicSize;
@@ -35,6 +36,22 @@ public class EMforMMM {
                 res *= Math.pow(_theta[topicID][i], x[i]);
             }
             return res;
+        }
+
+        double logLikelihood(double[][] data) {
+            double sum = 0;
+            for (int i = 0; i < data.length; i++) {
+                double docSum = 0;
+                for (int j = 0; j < _topicSize; j++) {
+                    double mult = _pi[j];
+                    for (int v = 0; v < _p; v++) {
+                        mult *= Math.pow(_theta[j][v], data[i][v]);
+                    }
+                    docSum += mult;
+                }
+                sum += Math.log(docSum);
+            }
+            return sum;
         }
     }
 
@@ -116,5 +133,8 @@ public class EMforMMM {
             sum += (_model._pi[i] * _model.partialF(_data[docID], i));
         }
         return res/sum;
+    }
+
+    public static void main(String[] args) {
     }
 }
