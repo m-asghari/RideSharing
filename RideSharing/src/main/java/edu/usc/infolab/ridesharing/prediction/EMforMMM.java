@@ -155,9 +155,9 @@ public class EMforMMM {
     }
 
     public static void main(String[] args) throws IOException{
-        /*ArrayList<ArrayList<Double>> dataList = new ArrayList<>();
+        ArrayList<ArrayList<Double>> dataList = new ArrayList<>();
 
-        String dataFile = "";
+        String dataFile = "../Data/NYCTaxiDataset/TripData/PredictionData/TRAINING_250_5.csv";
         FileReader fr = new FileReader(dataFile);
         BufferedReader br = new BufferedReader(fr);
 
@@ -166,8 +166,9 @@ public class EMforMMM {
         while ((line = br.readLine()) != null) {
             ArrayList<Double> docData = new ArrayList<>();
             String[] fields = line.split(",");
-            for (int v = 2; v < fields.length; v++) {
-                docData.add(Double.parseDouble(fields[v]));
+            String[] counts = fields[2].split(":");
+            for (int v = 0; v < counts.length; v++) {
+                docData.add(Double.parseDouble(counts[v]));
             }
             dataList.add(docData);
         }
@@ -177,25 +178,35 @@ public class EMforMMM {
             data[i] = new double[dataList.get(i).size()];
             for (int v = 0; v < dataList.get(i).size(); v++) {
                 data[i][v] = dataList.get(i).get(v);
+                //if (data[i][v] == 0) data[i][v] = 0.0001;
             }
-        }*/
+        }
 
-        //double[][] data = {{0,1,1,1,0,0,1,0,1,0},{0,0,0,0,1,0,0,0,0,0},{0,1,0,0,0,0,0,1,0,0},{0,1,0,1,1,1,0,0,1,1},{1,0,0,0,1,0,0,0,1,0}};
-        double[][] data = {{5,5},{9,1},{8,2},{4,6},{7,3}};
-        int topicSize = 2;
+        //double[][] data = {{5,5},{9,1},{8,2},{4,6},{7,3}};
+        int topicSize = 20;
 
         EMforMMM model = new EMforMMM(data, topicSize);
-        Dirichlet dir = new Dirichlet(new double[]{5, 5});
-        double[] dist = dir.nextDistribution();
 
-        double[][] theta = {{0.7, 0.3}, {0.4, 0.6}};
-        double[] pi = {0.5, 0.5};
+        Dirichlet topicDir = new Dirichlet(topicSize);
+        double[] pi = topicDir.nextDistribution();
+        //double[] pi = {0.5, 0.5};
+
+        double[][] theta = new double[topicSize][];
+        Dirichlet thetaDir = new Dirichlet(data[0].length);
+        for (int j = 0; j < topicSize; j++) {
+            theta[j] = thetaDir.nextDistribution();
+        }
+
+        //double[][] theta = {{0.6, 0.4},{0.5, 0.5}};
+
+
         // Initialize theta and pi
-        model.initializeModel(theta, pi);
+        System.out.println(Math.pow(0.01943, 52));
         for (int r = 0; r < 1000; r++) {
             double logLikelihood = model._model.logLikelihood(data);
             model.eStep();
             model.mStep();
         }
+        System.out.println("Wait");
     }
 }
