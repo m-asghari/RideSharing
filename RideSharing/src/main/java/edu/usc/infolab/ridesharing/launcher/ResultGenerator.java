@@ -28,6 +28,9 @@ public class ResultGenerator {
         double totalPaidOtherFare = 0;
         double totalIncome = 0;
         double serverProfit = 0;
+        double fpaProfit = 0;
+        double spaProfit = 0;
+        double sparvProfit = 0;
         double serverOtherProfit = 0;
         double totalTravelledDistance = 0;
         double avgResponseTime = 0;
@@ -58,14 +61,17 @@ public class ResultGenerator {
                 avgProfitDiff += request.stats.profitDiff;
                 avgResponseTime += request.stats.assignmentTime;
                 avgResponseTime += request.stats.schedulingTime;
-                serverBidBetterThanSecondBid += request.stats.serverBidBetterThanSecondBid;
-                cheatingChangedWinner += request.stats.cheatingChangedWinner;
             }
             if (request instanceof AuctionRequest) {
                 AuctionRequest r = (AuctionRequest) request;
                 serverProfit += r.serverProfit;
                 serverOtherProfit += r.serverProfit;
                 serverBidBetterThanFirstBid += request.stats.serverBidBetterThanFirstBid;
+                serverBidBetterThanSecondBid += request.stats.serverBidBetterThanSecondBid;
+                cheatingChangedWinner += request.stats.cheatingChangedWinner;
+                fpaProfit += r.fpaProfit;
+                spaProfit += r.spaProfit;
+                sparvProfit += r.sparvProfit;
             }
         }
         return new StringBuilder()
@@ -73,12 +79,15 @@ public class ResultGenerator {
                 .append(String.format("Assigned Requests: %d\n",
                         assignedRequests))
                 .append(String.format("Used Drivers: %d\n", usedDrivers))
-                .append(String.format("Total Collected Fare: %.2f\n",
-                        totalCollectedFare))
-                .append(String.format("Total Paid Fare: %.2f\n", totalPaidFare))
-                .append(String.format("Total Income: %.2f\n", totalIncome))
-                .append(String.format("Server Profit: %.2f and %.2f\n",
-                        totalCollectedFare - totalIncome, serverProfit))
+                //.append(String.format("Total Collected Fare: %.2f\n",
+                //        totalCollectedFare))
+                //.append(String.format("Total Paid Fare: %.2f\n", totalPaidFare))
+                //.append(String.format("Total Income: %.2f\n", totalIncome))
+                //.append(String.format("Server Profit: %.2f and %.2f\n",
+                //       totalCollectedFare - totalIncome, serverProfit))
+                .append(String.format("FPA Profit: %.2f\n", fpaProfit))
+                .append(String.format("SPA Profit: %.2f\n", spaProfit))
+                .append(String.format("SPARV Profit: %.2f\n", sparvProfit))
                 .append(String.format("Response Time: %.2f\n", avgResponseTime
                         / assignedRequests))
                 .append(String.format("Server Bid Better Than First Bid: %d\n", serverBidBetterThanFirstBid))
@@ -95,6 +104,9 @@ public class ResultGenerator {
         int looseMoney = 0;
         int unfairRiders = 0;
         double serverProfit = 0;
+        double fpaProfit = 0;
+        double spaProfit = 0;
+        double sparvProfit = 0;
         double totalCollectedFare = 0;
         double totalIncome = 0;
         double avgResponseTime = 0;
@@ -125,13 +137,16 @@ public class ResultGenerator {
             if (request instanceof AuctionRequest) {
                 AuctionRequest r = (AuctionRequest) request;
                 serverProfit += r.serverProfit;
+                fpaProfit += r.fpaProfit;
+                spaProfit += r.spaProfit;
+                sparvProfit += r.sparvProfit;
             }
         }
-        return String.format("%d,%d,%d,%d,%.2f,%d,%d,%.2f,%.2f,%.2f,", totalRequests,
+        return String.format("%d,%d,%d,%d,%.2f,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,", totalRequests,
                 assignedRequests, mostProfitableDriver, looseMoney,
                 avgProfitDiff, unfairRiders, usedDrivers,
-                totalCollectedFare - totalIncome, serverProfit, avgResponseTime
-                        / assignedRequests);
+                totalCollectedFare - totalIncome, avgResponseTime / assignedRequests,
+                serverProfit, fpaProfit, spaProfit, sparvProfit);
     }
 
     public static <R extends Request, D extends Driver<R>> void SaveData(

@@ -36,7 +36,7 @@ public class RideSharingLauncher {
             Utils.resultsDir.mkdir();
         }
 
-        /*Utils.MaxWaitTime = 6;
+        /*Utils.MaxWaitTime = 3;
         Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
         for (double cheatingPortion : new double[]{0.0, 0.25, 0.5, 0.75, 1.}) {
@@ -122,13 +122,28 @@ public class RideSharingLauncher {
     private static String RunAlgorithms(File requestsFile, File driversFile) {
         StringBuilder summaries = new StringBuilder();
         //summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
-        summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
-        summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
-        summaries.append(RunSecondPriceAuctionWithReservedValue(requestsFile, driversFile));
+        //summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
+        //summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
+        //summaries.append(RunSecondPriceAuctionWithReservedValue(requestsFile, driversFile));
         //summaries.append(RunNearestNeighbor(requestsFile, driversFile));
         //summaries.append(RunShortestPath(requestsFile, driversFile));
         //summaries.append(RunKineticTree(requestsFile, driversFile));
+        summaries.append(RunAuction(requestsFile, driversFile));
         return summaries.toString();
+    }
+
+    private static String RunAuction(File requestsFile, File driversFile) {
+        ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+        ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
+        Time startTime = auctionRequests.get(0).requestTime.clone();
+
+        AuctionAlgorithm<AuctionDriver> aucAlgo = new AuctionAlgorithm<AuctionDriver>(startTime, 1);
+        return String.format("%d,%d,%d,%s,%s\n",
+                Utils.MaxWaitTime,
+                Utils.NumberOfVehicles,
+                Utils.MaxPassengers,
+                aucAlgo.GetName(),
+                aucAlgo.Run(auctionRequests, auctionDrivers));
     }
 
     private static String RunFirstPriceAuction(File requestsFile, File driversFile) {

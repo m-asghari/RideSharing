@@ -25,7 +25,6 @@ public class FirstPriceAuctionAlgorithm<D extends AuctionDriver> extends Auction
         ArrayList<Bid> modifiedBids = new ArrayList<>();
         double waitTimeFactor = Utils.GetWaitTimeFactor(r.maxWaitTime);
         double cheatingFactor = (double)(bids.size()-1)/(double)bids.size() * (1 + waitTimeFactor);
-        Random rand = new Random();
         for (Bid bid : bids) {
             if (bid.driver.isCheater) {
                 double diff = cheatingFactor * bid.profit;
@@ -61,8 +60,8 @@ public class FirstPriceAuctionAlgorithm<D extends AuctionDriver> extends Auction
             r.stats.cheatingChangedWinner = 1;
         }
         AuctionDriver winner = highestModifiedBid.driver;
-        //r.serverProfit = highestModifiedValue;
-        r.serverProfit = highestValue;
+        r.serverProfit = highestModifiedValue;
+        //r.serverProfit = highestValue;
         this.profit += r.serverProfit;
         return winner;
     }

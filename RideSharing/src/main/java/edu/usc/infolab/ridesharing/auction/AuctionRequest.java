@@ -8,11 +8,17 @@ import javax.activity.InvalidActivityException;
 
 public class AuctionRequest extends Request {
     public double serverProfit;
-    
+    public double fpaProfit;
+    public double spaProfit;
+    public double sparvProfit;
+
     public AuctionRequest(GPSPoint source, GPSPoint dest, Time requestTime,
                           int maxWaitTime) {
         super(source, dest, requestTime, maxWaitTime);
         serverProfit = 0;
+        fpaProfit = 0;
+        spaProfit = 0;
+        sparvProfit = 0;
     }
     
     public AuctionRequest(String[] args) {
@@ -33,6 +39,9 @@ public class AuctionRequest extends Request {
         StringBuilder results = new StringBuilder();
         results.append(super.PrintShortResults());
         results.append(String.format("%.2f,", serverProfit));
+        results.append(String.format("%.2f,", fpaProfit));
+        results.append(String.format("%.2f,", spaProfit));
+        results.append(String.format("%.2f,", sparvProfit));
         return results.toString();
     }
     
@@ -42,6 +51,12 @@ public class AuctionRequest extends Request {
         results.append(super.PrintLongResults());
         results.append(String.format("Server Profit: %.2f",
                 serverProfit));
+        results.append(String.format("FPA Profit: %.2f",
+                fpaProfit));
+        results.append(String.format("SPA Profit: %.2f",
+                spaProfit));
+        results.append(String.format("SPARV Profit: %.2f",
+                sparvProfit));
         return results.toString();
     }
 }

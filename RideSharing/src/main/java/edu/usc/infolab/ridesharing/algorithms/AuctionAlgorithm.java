@@ -12,12 +12,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
-public abstract class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<AuctionRequest, D> {
-    public Double profit;
+public class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<AuctionRequest, D> {
+    public double profit;
+    public double fpaProfit;
+    public double spaProfit;
+    public double sparvProfit;
 
     public AuctionAlgorithm(Time startTime, int ati) {
         super(startTime, ati);
         profit = 0.;
+        fpaProfit = 0.f;
+        spaProfit = 0.f;
+        sparvProfit = 0.f;
     }
 
     /**
@@ -62,7 +68,8 @@ public abstract class AuctionAlgorithm<D extends AuctionDriver> extends Algorith
         Time start = new Time();
         // select the bids based on the auction algorithm
         Random rand = new Random();
-        int expectedBids = (int) ((rand.nextGaussian() * 3) + 7);
+        //int expectedBids = (int) ((rand.nextGaussian() * 3) + 7);
+        int expectedBids = Math.max((int)((double)bids.size()/20), (int) ((rand.nextGaussian() * 3) + 10));
         ArrayList<Bid> selectedBids = new ArrayList<>();
         if (bids.size() > expectedBids) {
             for (int i = 0; i < expectedBids; i++) {
@@ -72,6 +79,7 @@ public abstract class AuctionAlgorithm<D extends AuctionDriver> extends Algorith
             selectedBids = new ArrayList<>(bids);
         }
         AuctionDriver selectedDriver = SelectWinner(r, selectedBids);
+        //AuctionDriver selectedDriver = SelectWinner(r, bids);
         Time end = new Time();
         r.stats.assignmentTime = end.SubtractInMillis(start);
         if (selectedDriver == null) {
@@ -81,10 +89,81 @@ public abstract class AuctionAlgorithm<D extends AuctionDriver> extends Algorith
         return Status.ASSIGNED;
     }
 
-    //@Override
-    //protected D GetNewDriver() {
-    //	return (D)AuctionInput.GetNewDriver();
-    //}
+    public AuctionDriver SelectWinner(AuctionRequest r, ArrayList<Bid> bids) {
+        ArrayList<Bid> modifiedBids = new ArrayList<>();
+        double waitTimeFactor = Utils.GetWaitTimeFactor(r.maxWaitTime);
+        double cheatingFactor = (double)(bids.size()-1)/(double)bids.size() * (1 + waitTimeFactor);
+        for (Bid bid : bids) {
+            if (bid.driver.isCheater) {
+                double diff = cheatingFactor * bid.profit;
+                modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit - diff, bid.cost+diff));
+            } else {
+                modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit, bid.cost));
+            }
+        }
+        Bid highestModifiedBid = null;
+        double highestModifiedValue = Utils.Min_Double;
+        for (Bid bid : modifiedBids) {
+            if (bid.profit > highestModifiedValue) {
+                highestModifiedValue = bid.profit;
+                highestModifiedBid = bid;
+            }
+        }
 
-    public abstract AuctionDriver SelectWinner(AuctionRequest r, ArrayList<Bid> bids);
+        Bid highestBid = null;
+        Bid secondHighestBid = null;
+        double highestValue = Utils.Min_Double;
+        double secondHighestValue = Utils.Min_Double;
+
+        double maxDriverCost = 0;
+        for (Bid bid : bids) {
+            double driverCost = bid.driver.GetCost(r.optDistance, (double)r.optTime);
+            maxDriverCost = (maxDriverCost < driverCost) ? driverCost : maxDriverCost;
+            if (bid.profit > highestValue) {
+                secondHighestValue = highestValue;
+                secondHighestBid = highestBid;
+                highestValue = bid.profit;
+                highestBid = bid;
+            } else if (bid.profit > secondHighestValue) {
+                secondHighestValue = bid.profit;
+                secondHighestBid = bid;
+            }
+        }
+        double serverBid = (r.defaultFare - maxDriverCost);
+        //double serverBid = 0.90 * highestValue;
+        if (highestBid == null || highestBid.profit < 0) {
+            return null;
+        }
+        if (highestBid.profit == 0 && highestBid.schedule.isEmpty()) {
+            return null;
+        }
+        if (secondHighestBid == null || secondHighestBid.profit <= 0) {
+            secondHighestValue = 0;
+        }
+        if (highestBid.profit < serverBid) {
+            r.stats.serverBidBetterThanFirstBid = 1;
+            serverBid = 0;
+        }
+        if (secondHighestValue < serverBid) {
+            r.stats.serverBidBetterThanSecondBid = 1;
+        }
+        if (highestBid.driver.id != highestModifiedBid.driver.id) {
+            r.stats.cheatingChangedWinner = 1;
+        }
+        AuctionDriver winner = highestBid.driver;
+
+        r.fpaProfit = highestModifiedValue;
+        this.fpaProfit += r.fpaProfit;
+        r.spaProfit = secondHighestValue;
+        this.spaProfit += r.spaProfit;
+        r.sparvProfit = (secondHighestValue < serverBid) ? serverBid : secondHighestValue;
+        this.sparvProfit += r.sparvProfit;
+
+        return winner;
+    }
+
+    @Override
+    public String GetName() {
+        return "AUC";
+    }
 }
