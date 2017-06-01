@@ -23,6 +23,8 @@ public class SecondPriceAuctionWithReservedValueAlgorithm<D extends AuctionDrive
 		Bid secondHighestBid = null;
 		double highestValue = Utils.Min_Double;
 		double secondHighestValue = Utils.Min_Double;
+
+		double maxDriverCost = 0;
 		for (Bid bid : bids) {
 			if (bid.profit > highestValue) {
 				secondHighestValue = highestValue;
@@ -33,17 +35,32 @@ public class SecondPriceAuctionWithReservedValueAlgorithm<D extends AuctionDrive
 				secondHighestValue = bid.profit;
 				secondHighestBid = bid;
 			}
+			double driverCost = bid.driver.GetCost(r.optDistance, (double)r.optTime);
+			maxDriverCost = (maxDriverCost < driverCost) ? driverCost : maxDriverCost;
 		}
-		if (highestBid == null)
-			return null;
-		if (highestBid.profit < 0) {
+		if (highestBid == null || highestBid.profit < 0) {
 			return null;
 		}
 		if (highestBid.profit == 0 && highestBid.schedule.isEmpty()) {
 			return null;
 		}
+		double waitTimeFactor = Utils.GetWaitTimeFactor(r.maxWaitTime);
+		double serverBid = (r.defaultFare - maxDriverCost) * 0.9;
+		serverBid = 0.90 * highestValue;
+		if (highestBid.profit < serverBid) {
+		    r.stats.serverBidBetterThanFirstBid = 1;
+		    //return null;
+            serverBid = 0;
+        }
+        if (secondHighestBid == null || secondHighestBid.profit <= 0) {
+            secondHighestValue = 0;
+        }
+        if (secondHighestValue < serverBid) {
+		    secondHighestValue = serverBid;
+		    r.stats.serverBidBetterThanSecondBid = 1;
+        }
 		AuctionDriver winner = highestBid.driver;
-		r.serverProfit = highestBid.profit;
+		r.serverProfit = secondHighestValue;
 		this.profit += r.serverProfit;
 		return winner;
 	}

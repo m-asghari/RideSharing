@@ -181,7 +181,7 @@ public class SpatialDocumentGenerator {
 
             recordCounter++;
             if (recordCounter % 1000000 == 0) {
-                System.out.println(String.format("SpatialDocGen-GetData: Processed %d records", recordCounter));
+                //System.out.println(String.format("SpatialDocGen-GetData: Processed %d records", recordCounter));
             }
         }
         br.close();
@@ -199,6 +199,12 @@ public class SpatialDocumentGenerator {
         for (STDocument document : documents) {
             StringBuilder sb = new StringBuilder();
             sb.append(document.spatialCoordinates.locationID);
+            sb.append(',');
+            sb.append((document.spatialCoordinates.startLng));
+            sb.append(',');
+            sb.append((document.spatialCoordinates.startLat));
+            sb.append(',');
+            sb.append((document.spatialCoordinates.cellSize));
             sb.append(',');
             sb.append(document.hour);
             sb.append(',');
@@ -230,10 +236,10 @@ public class SpatialDocumentGenerator {
 
     public static void main(String[] args) throws SQLException, IOException {
         String dataFile = "../Data/NYCTaxiDataset/TripData/ProcessedData/trips_procesed_0.csv";
-        for (int cellSize : new int[]{/*100,*/ 250, 500, 1000, 2500, 5000}) {
+        for (int cellSize : new int[]{100, 250, 500, 1000, 2500, 5000}) {
             CELL_SIZE = cellSize;
-            HashMap<CellCoordinates, Integer> viableLocations = GetViableLocations(dataFile);
-            //HashMap<CellCoordinates, Integer> viableLocations = LoadViableLocations();
+            //HashMap<CellCoordinates, Integer> viableLocations = GetViableLocations(dataFile);
+            HashMap<CellCoordinates, Integer> viableLocations = LoadViableLocations();
             for (int hourSkip : new int[]{1, 2, 3, 4, 5}){
                 HOUR_SKIP = hourSkip;
                 System.out.println(String.format("Starting Cell Size %d and Hour Skip %d",

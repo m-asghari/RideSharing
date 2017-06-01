@@ -24,28 +24,36 @@ import java.util.Calendar;
 
 public class RideSharingLauncher {
 
-	public static void main(String[] args) throws Exception {
-		//if (1 < 2) {
-		//	ShortestPathUtil.GetShortestPath();
-		//	return;
-		//}
+    public static void main(String[] args) throws Exception {
+        //ShortestPathUtil.InitializeNYCGraph();
 
-//		ShortestPathUtil.InitializeNYCGraph();
+        File requestsFile = new File("../Data/trips_2013_05_12.csv");
+        File driversFile = new File("../Data/drivers_from_reqs_2013_05_12.csv");
+        StringBuilder summaries = new StringBuilder();
 
-		File requestsFile = new File("../Data/trips_2013_05_12.csv");
-		File driversFile = new File("../Data/drivers_from_reqs_2013_05_12.csv");
-		StringBuilder summaries = new StringBuilder();
+        // Create Results Directory
+        if (!Utils.resultsDir.exists()) {
+            Utils.resultsDir.mkdir();
+        }
 
-		// Create Results Directory
-		if (!Utils.resultsDir.exists()) {
-		  Utils.resultsDir.mkdir();
-		}
-		
-		/*Utils.MaxWaitTime = 6;
-		Utils.NumberOfVehicles = 500;
+        /*Utils.MaxWaitTime = 6;
+        Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
-		RunAlgorithms(requestsFile, driversFile);*/
-		
+        for (double cheatingPortion : new double[]{0.0, 0.25, 0.5, 0.75, 1.}) {
+            Utils.cheatingPortion = cheatingPortion;
+            System.out.println(String.format("Starting: "
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
+            summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
+        }
+
+        System.out.println(String.format("Starting: "
+                        + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
+                Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
+        RunAlgorithms(requestsFile, driversFile);*/
+
+
+
 		
 		int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
         int[] numOfVehicles = new int[]{250, 500, 1000, 2000, 5000};
@@ -80,23 +88,23 @@ public class RideSharingLauncher {
               Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
 		  summaries.append(RunAlgorithms(requestsFile, driversFile));
 		}
-        
-        String finalSummary = summaries.toString();
-		System.out.println(finalSummary);
-		try {
-		  File oFile = new File(String.format("Summaries_%s.csv", 
-		      Utils.FILE_SYSTEM_SDF.format(Calendar.getInstance().getTime())));
-		  FileWriter fw = new FileWriter(oFile);
-		  BufferedWriter bw = new BufferedWriter(fw);
-		  bw.write(finalSummary);
-		  bw.close();
-		  fw.close();
-		} catch (IOException ioe) {
-		  ioe.printStackTrace();
-		}
-	}
 
-	private static void RunShortestPath(File requestsFile) {
+        String finalSummary = summaries.toString();
+        System.out.println(finalSummary);
+        try {
+            File oFile = new File(String.format("Summaries_%s.csv",
+                    Utils.FILE_SYSTEM_SDF.format(Calendar.getInstance().getTime())));
+            FileWriter fw = new FileWriter(oFile);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(finalSummary);
+            bw.close();
+            fw.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private static void RunShortestPath(File requestsFile) {
         ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
         Calendar start = Calendar.getInstance();
         for (int i = 0; i < 1000; i++) {
@@ -107,91 +115,107 @@ public class RideSharingLauncher {
             TimeDistancePair trip = req.source.DistanceInMilesAndMillis(req.destination);
         }
         Calendar end = Calendar.getInstance();
-        System.out.println((int)(end.getTimeInMillis() - start.getTimeInMillis()));
+        System.out.println((int) (end.getTimeInMillis() - start.getTimeInMillis()));
     }
-	
-	@SuppressWarnings("unused")
-	private static String RunAlgorithms(File requestsFile, File driversFile) {
-	  StringBuilder summaries = new StringBuilder();
-	  //summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
-	  summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
-	  summaries.append(RunNearestNeighbor(requestsFile, driversFile));
-	  summaries.append(RunShortestPath(requestsFile, driversFile));
-      summaries.append(RunKineticTree(requestsFile, driversFile));          
-      return summaries.toString();
-	}
-	
-	@SuppressWarnings("unused")
-	private static String RunSecondPriceAuction(File requestsFile, File driversFile) {
-	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
-      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
-      Time startTime = auctionRequests.get(0).requestTime.clone();
-      
-      SecondPriceAuctionAlgorithm<AuctionDriver> spaAlgo = new SecondPriceAuctionAlgorithm<AuctionDriver>(startTime, 1);
-		return String.format("%d,%d,%d,%s,%s\n",
-          Utils.MaxWaitTime,
-          Utils.NumberOfVehicles,
-          Utils.MaxPassengers,
-          spaAlgo.GetName(),
-          spaAlgo.Run(auctionRequests, auctionDrivers));
-	}
-	
-	private static String RunFirstPriceAuction(File requestsFile, File driversFile) {
-	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
-      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
-      Time startTime = auctionRequests.get(0).requestTime.clone();
-      
-      SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver> sparvAlgo =
-          new SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver>(startTime, 1);
-      return String.format("%d,%d,%d,%s,%s\n",
-          Utils.MaxWaitTime,
-          Utils.NumberOfVehicles,
-          Utils.MaxPassengers,
-          sparvAlgo.GetName(),
-          sparvAlgo.Run(auctionRequests, auctionDrivers));
 
-	}
-	
-	private static String RunNearestNeighbor(File requestsFile, File driversFile) {
-	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
-      ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
-      Time startTime = auctionRequests.get(0).requestTime.clone();
-      
-      NearestNeighborAlgorithm nnAlgo = new NearestNeighborAlgorithm(startTime, 1);
-      return String.format("%d,%d,%d,%s,%s\n",
-          Utils.MaxWaitTime,
-          Utils.NumberOfVehicles,
-          Utils.MaxPassengers,
-          nnAlgo.GetName(),
-          nnAlgo.Run(auctionRequests, auctionDrivers));
-	}
-	
-	private static String RunKineticTree(File requestsFile, File driversFile) {
-	  ArrayList<Request> ktRequests = KTInput.GenerateRequests(requestsFile);
-      ArrayList<KTDriver> ktDrivers = KTInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
-      Time startTime = ktRequests.get(0).requestTime.clone();
-      
-      KineticTreeAlgorithm ktAlgo = new KineticTreeAlgorithm(startTime, 1);
-      return String.format("%d,%d,%d,%s,%s\n",
-          Utils.MaxWaitTime,
-          Utils.NumberOfVehicles,
-          Utils.MaxPassengers,ktAlgo.GetName(),
-          ktAlgo.Run(ktRequests, ktDrivers));
-	}
-	
-	private static String RunShortestPath(File requestsFile, File driversFile) {
-	  ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
-	  ArrayList<ShortestPathDriver> shortestPathDrivers =
-	      AuctionInput.GenerateShortestPathDrivers(driversFile, Utils.NumberOfVehicles);
-      Time startTime = auctionRequests.get(0).requestTime.clone();
-      
-      ShortestPathAlgorithm spAlgo = new ShortestPathAlgorithm(startTime, 1);
-      return String.format("%d,%d,%d,%s,%s\n",
-          Utils.MaxWaitTime,
-          Utils.NumberOfVehicles,
-          Utils.MaxPassengers,
-          spAlgo.GetName(),
-          spAlgo.Run(auctionRequests, shortestPathDrivers)); 
-	}
+    @SuppressWarnings("unused")
+    private static String RunAlgorithms(File requestsFile, File driversFile) {
+        StringBuilder summaries = new StringBuilder();
+        //summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
+        summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
+        summaries.append(RunSecondPriceAuction(requestsFile, driversFile));
+        summaries.append(RunSecondPriceAuctionWithReservedValue(requestsFile, driversFile));
+        //summaries.append(RunNearestNeighbor(requestsFile, driversFile));
+        //summaries.append(RunShortestPath(requestsFile, driversFile));
+        //summaries.append(RunKineticTree(requestsFile, driversFile));
+        return summaries.toString();
+    }
+
+    private static String RunFirstPriceAuction(File requestsFile, File driversFile) {
+        ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+        ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
+        Time startTime = auctionRequests.get(0).requestTime.clone();
+
+        FirstPriceAuctionAlgorithm<AuctionDriver> fpaAlgo = new FirstPriceAuctionAlgorithm<AuctionDriver>(startTime, 1);
+        return String.format("%d,%d,%d,%s,%s\n",
+                Utils.MaxWaitTime,
+                Utils.NumberOfVehicles,
+                Utils.MaxPassengers,
+                fpaAlgo.GetName(),
+                fpaAlgo.Run(auctionRequests, auctionDrivers));
+    }
+
+    @SuppressWarnings("unused")
+    private static String RunSecondPriceAuction(File requestsFile, File driversFile) {
+        ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+        ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
+        Time startTime = auctionRequests.get(0).requestTime.clone();
+
+        SecondPriceAuctionAlgorithm<AuctionDriver> spaAlgo = new SecondPriceAuctionAlgorithm<AuctionDriver>(startTime, 1);
+        return String.format("%d,%d,%d,%s,%s\n",
+                Utils.MaxWaitTime,
+                Utils.NumberOfVehicles,
+                Utils.MaxPassengers,
+                spaAlgo.GetName(),
+                spaAlgo.Run(auctionRequests, auctionDrivers));
+    }
+
+    private static String RunSecondPriceAuctionWithReservedValue(File requestsFile, File driversFile) {
+        ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+        ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
+        Time startTime = auctionRequests.get(0).requestTime.clone();
+
+        SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver> sparvAlgo =
+                new SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver>(startTime, 1);
+        return String.format("%d,%d,%d,%s,%s\n",
+                Utils.MaxWaitTime,
+                Utils.NumberOfVehicles,
+                Utils.MaxPassengers,
+                sparvAlgo.GetName(),
+                sparvAlgo.Run(auctionRequests, auctionDrivers));
+
+    }
+
+    private static String RunNearestNeighbor(File requestsFile, File driversFile) {
+        ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+        ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
+        Time startTime = auctionRequests.get(0).requestTime.clone();
+
+        NearestNeighborAlgorithm nnAlgo = new NearestNeighborAlgorithm(startTime, 1);
+        return String.format("%d,%d,%d,%s,%s\n",
+                Utils.MaxWaitTime,
+                Utils.NumberOfVehicles,
+                Utils.MaxPassengers,
+                nnAlgo.GetName(),
+                nnAlgo.Run(auctionRequests, auctionDrivers));
+    }
+
+    private static String RunKineticTree(File requestsFile, File driversFile) {
+        ArrayList<Request> ktRequests = KTInput.GenerateRequests(requestsFile);
+        ArrayList<KTDriver> ktDrivers = KTInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles);
+        Time startTime = ktRequests.get(0).requestTime.clone();
+
+        KineticTreeAlgorithm ktAlgo = new KineticTreeAlgorithm(startTime, 1);
+        return String.format("%d,%d,%d,%s,%s\n",
+                Utils.MaxWaitTime,
+                Utils.NumberOfVehicles,
+                Utils.MaxPassengers, ktAlgo.GetName(),
+                ktAlgo.Run(ktRequests, ktDrivers));
+    }
+
+    private static String RunShortestPath(File requestsFile, File driversFile) {
+        ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
+        ArrayList<ShortestPathDriver> shortestPathDrivers =
+                AuctionInput.GenerateShortestPathDrivers(driversFile, Utils.NumberOfVehicles);
+        Time startTime = auctionRequests.get(0).requestTime.clone();
+
+        ShortestPathAlgorithm spAlgo = new ShortestPathAlgorithm(startTime, 1);
+        return String.format("%d,%d,%d,%s,%s\n",
+                Utils.MaxWaitTime,
+                Utils.NumberOfVehicles,
+                Utils.MaxPassengers,
+                spAlgo.GetName(),
+                spAlgo.Run(auctionRequests, shortestPathDrivers));
+    }
 
 }

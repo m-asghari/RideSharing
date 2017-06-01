@@ -157,7 +157,7 @@ public class EMforMMM {
     public static void main(String[] args) throws IOException{
         ArrayList<ArrayList<Double>> dataList = new ArrayList<>();
 
-        String dataFile = "../Data/NYCTaxiDataset/TripData/PredictionData/TRAINING_250_5.csv";
+        String dataFile = "../Data/NYCTaxiDataset/TripData/PredictionData/TRAINING_5000_5.csv";
         FileReader fr = new FileReader(dataFile);
         BufferedReader br = new BufferedReader(fr);
 
@@ -183,12 +183,13 @@ public class EMforMMM {
         }
 
         //double[][] data = {{5,5},{9,1},{8,2},{4,6},{7,3}};
-        int topicSize = 20;
+        int topicSize = 10;
 
         EMforMMM model = new EMforMMM(data, topicSize);
 
         Dirichlet topicDir = new Dirichlet(topicSize);
         double[] pi = topicDir.nextDistribution();
+        double[] pi2 = topicDir.nextDistribution();
         //double[] pi = {0.5, 0.5};
 
         double[][] theta = new double[topicSize][];
@@ -201,9 +202,17 @@ public class EMforMMM {
 
 
         // Initialize theta and pi
-        System.out.println(Math.pow(0.01943, 52));
+        for (int j = 0; j < topicSize; j++) {
+            model._model._pi[j] = pi[j];
+            for (int v = 0; v < data[0].length; v++) {
+                model._model._theta[j][v] = theta[j][v];
+            }
+        }
+
+        double prevLikelihood;
         for (int r = 0; r < 1000; r++) {
             double logLikelihood = model._model.logLikelihood(data);
+            prevLikelihood = logLikelihood;
             model.eStep();
             model.mStep();
         }
