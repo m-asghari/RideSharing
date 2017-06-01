@@ -1,4 +1,5 @@
 Code/*.csv
+Summaries*.csv
 *.pdf
 *.log
 *.aux
