@@ -39,55 +39,69 @@ public class RideSharingLauncher {
         /*Utils.MaxWaitTime = 3;
         Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
+        Utils.MaxDetourRelative = 0.5;
         for (double cheatingPortion : new double[]{0.0, 0.25, 0.5, 0.75, 1.}) {
             Utils.cheatingPortion = cheatingPortion;
             System.out.println(String.format("Starting: "
-                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
-                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
             summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
         }
 
         System.out.println(String.format("Starting: "
-                        + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
-                Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
         RunAlgorithms(requestsFile, driversFile);*/
 
 
-
-		
-		int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
+        int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
         int[] numOfVehicles = new int[]{250, 500, 1000, 2000, 5000};
         int[] numOfPassengers = new int[]{2, 3, 4, 5, 6};
-        
-		Utils.NumberOfVehicles = 500;
-		Utils.MaxPassengers = 4;
-		for (int maxWaitTime : maxWaitTimes) {
-		  Utils.MaxWaitTime = maxWaitTime;
-		  System.out.println(String.format("Starting: "
-              + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
-              Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
-		  summaries.append(RunAlgorithms(requestsFile, driversFile));		  
-		}
-		
-		Utils.MaxWaitTime = 6;
-        Utils.MaxPassengers = 4;
-		for (int numOfVehicle : numOfVehicles) {
-		  Utils.NumberOfVehicles = numOfVehicle;
-		  System.out.println(String.format("Starting: "
-              + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
-              Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
-		  summaries.append(RunAlgorithms(requestsFile, driversFile));
-		}
-		
-		Utils.MaxWaitTime = 6;
+        double[] maxDetourRelatives = new double[]{0.25, 0.5, 0.75, 1.f};
+
         Utils.NumberOfVehicles = 500;
+        Utils.MaxPassengers = 4;
+        Utils.MaxDetourRelative = 0.5;
+        for (int maxWaitTime : maxWaitTimes) {
+            Utils.MaxWaitTime = maxWaitTime;
+            System.out.println(String.format("Starting: "
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
+            summaries.append(RunAlgorithms(requestsFile, driversFile));
+        }
+
+        Utils.MaxWaitTime = 6;
+        Utils.MaxPassengers = 4;
+        Utils.MaxDetourRelative = 0.5;
+        for (int numOfVehicle : numOfVehicles) {
+            Utils.NumberOfVehicles = numOfVehicle;
+            System.out.println(String.format("Starting: "
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
+            summaries.append(RunAlgorithms(requestsFile, driversFile));
+        }
+
+        Utils.MaxWaitTime = 6;
+        Utils.NumberOfVehicles = 500;
+        Utils.MaxDetourRelative = 0.5;
         for (int numOfPassenger : numOfPassengers) {
-		  Utils.MaxPassengers = numOfPassenger;
-		  System.out.println(String.format("Starting: "
-              + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d\n",
-              Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers));
-		  summaries.append(RunAlgorithms(requestsFile, driversFile));
-		}
+            Utils.MaxPassengers = numOfPassenger;
+            System.out.println(String.format("Starting: "
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
+            summaries.append(RunAlgorithms(requestsFile, driversFile));
+        }
+
+        Utils.MaxWaitTime = 3;
+        Utils.NumberOfVehicles = 500;
+        Utils.MaxPassengers = 4;
+        for (double maxDetourRelative : maxDetourRelatives) {
+            Utils.MaxDetourRelative = maxDetourRelative;
+            System.out.println(String.format("Starting: "
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
+            summaries.append(RunAlgorithms(requestsFile, driversFile));
+        }
 
         String finalSummary = summaries.toString();
         System.out.println(finalSummary);
@@ -138,10 +152,11 @@ public class RideSharingLauncher {
         Time startTime = auctionRequests.get(0).requestTime.clone();
 
         AuctionAlgorithm<AuctionDriver> aucAlgo = new AuctionAlgorithm<AuctionDriver>(startTime, 1);
-        return String.format("%d,%d,%d,%s,%s\n",
+        return String.format("%d,%d,%d,%.2f,%s,%s\n",
                 Utils.MaxWaitTime,
                 Utils.NumberOfVehicles,
                 Utils.MaxPassengers,
+                Utils.MaxDetourRelative,
                 aucAlgo.GetName(),
                 aucAlgo.Run(auctionRequests, auctionDrivers));
     }
@@ -152,10 +167,11 @@ public class RideSharingLauncher {
         Time startTime = auctionRequests.get(0).requestTime.clone();
 
         FirstPriceAuctionAlgorithm<AuctionDriver> fpaAlgo = new FirstPriceAuctionAlgorithm<AuctionDriver>(startTime, 1);
-        return String.format("%d,%d,%d,%s,%s\n",
+        return String.format("%d,%d,%d,%.2f,%s,%s\n",
                 Utils.MaxWaitTime,
                 Utils.NumberOfVehicles,
                 Utils.MaxPassengers,
+                Utils.MaxDetourRelative,
                 fpaAlgo.GetName(),
                 fpaAlgo.Run(auctionRequests, auctionDrivers));
     }
@@ -167,10 +183,11 @@ public class RideSharingLauncher {
         Time startTime = auctionRequests.get(0).requestTime.clone();
 
         SecondPriceAuctionAlgorithm<AuctionDriver> spaAlgo = new SecondPriceAuctionAlgorithm<AuctionDriver>(startTime, 1);
-        return String.format("%d,%d,%d,%s,%s\n",
+        return String.format("%d,%d,%d,%.2f,%s,%s\n",
                 Utils.MaxWaitTime,
                 Utils.NumberOfVehicles,
                 Utils.MaxPassengers,
+                Utils.MaxDetourRelative,
                 spaAlgo.GetName(),
                 spaAlgo.Run(auctionRequests, auctionDrivers));
     }
@@ -182,10 +199,11 @@ public class RideSharingLauncher {
 
         SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver> sparvAlgo =
                 new SecondPriceAuctionWithReservedValueAlgorithm<AuctionDriver>(startTime, 1);
-        return String.format("%d,%d,%d,%s,%s\n",
+        return String.format("%d,%d,%d,%.2f,%s,%s\n",
                 Utils.MaxWaitTime,
                 Utils.NumberOfVehicles,
                 Utils.MaxPassengers,
+                Utils.MaxDetourRelative,
                 sparvAlgo.GetName(),
                 sparvAlgo.Run(auctionRequests, auctionDrivers));
 
@@ -197,10 +215,11 @@ public class RideSharingLauncher {
         Time startTime = auctionRequests.get(0).requestTime.clone();
 
         NearestNeighborAlgorithm nnAlgo = new NearestNeighborAlgorithm(startTime, 1);
-        return String.format("%d,%d,%d,%s,%s\n",
+        return String.format("%d,%d,%d,%.2f,%s,%s\n",
                 Utils.MaxWaitTime,
                 Utils.NumberOfVehicles,
                 Utils.MaxPassengers,
+                Utils.MaxDetourRelative,
                 nnAlgo.GetName(),
                 nnAlgo.Run(auctionRequests, auctionDrivers));
     }
@@ -211,10 +230,12 @@ public class RideSharingLauncher {
         Time startTime = ktRequests.get(0).requestTime.clone();
 
         KineticTreeAlgorithm ktAlgo = new KineticTreeAlgorithm(startTime, 1);
-        return String.format("%d,%d,%d,%s,%s\n",
+        return String.format("%d,%d,%d,%.2f,%s,%s\n",
                 Utils.MaxWaitTime,
                 Utils.NumberOfVehicles,
-                Utils.MaxPassengers, ktAlgo.GetName(),
+                Utils.MaxPassengers,
+                Utils.MaxDetourRelative,
+                ktAlgo.GetName(),
                 ktAlgo.Run(ktRequests, ktDrivers));
     }
 
@@ -225,10 +246,11 @@ public class RideSharingLauncher {
         Time startTime = auctionRequests.get(0).requestTime.clone();
 
         ShortestPathAlgorithm spAlgo = new ShortestPathAlgorithm(startTime, 1);
-        return String.format("%d,%d,%d,%s,%s\n",
+        return String.format("%d,%d,%d,%.2f,%s,%s\n",
                 Utils.MaxWaitTime,
                 Utils.NumberOfVehicles,
                 Utils.MaxPassengers,
+                Utils.MaxDetourRelative,
                 spAlgo.GetName(),
                 spAlgo.Run(auctionRequests, shortestPathDrivers));
     }

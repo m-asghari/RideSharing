@@ -91,11 +91,12 @@ public class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<Auction
 
     public AuctionDriver SelectWinner(AuctionRequest r, ArrayList<Bid> bids) {
         ArrayList<Bid> modifiedBids = new ArrayList<>();
-        double waitTimeFactor = Utils.GetWaitTimeFactor(r.maxWaitTime);
-        double cheatingFactor = (double)(bids.size()-1)/(double)bids.size() * (1 + waitTimeFactor);
+        //double waitTimeFactor = Utils.GetWaitTimeFactor(r.maxWaitTime);
+        //double cheatingFactor = (double)(bids.size()-1)/(double)bids.size() * (1 + waitTimeFactor);
+        double cheatingFactor = (bids.size() > 1) ? (double)(bids.size()-1)/(double)bids.size() : 1;
         for (Bid bid : bids) {
             if (bid.driver.isCheater) {
-                double diff = cheatingFactor * bid.profit;
+                double diff = (1.f - cheatingFactor) * bid.profit;
                 modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit - diff, bid.cost+diff));
             } else {
                 modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit, bid.cost));
@@ -129,8 +130,8 @@ public class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<Auction
                 secondHighestBid = bid;
             }
         }
-        double serverBid = (r.defaultFare - maxDriverCost);
-        //double serverBid = 0.90 * highestValue;
+        //double serverBid = (r.defaultFare - maxDriverCost);
+        double serverBid = 0.90 * highestValue;
         if (highestBid == null || highestBid.profit < 0) {
             return null;
         }
