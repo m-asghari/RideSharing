@@ -19,7 +19,7 @@ public class Request implements Comparable<Request> {
             this.profitDiff = 0;
             this.serverBidBetterThanFirstBid = 0;
             this.serverBidBetterThanSecondBid = 0;
-            this.cheatingChangedWinner = 0;
+            this.cheatingHelpedWinner = 0;
             this.failureReasons = new HashMap<FailureReason, Integer>() {
                 {
                     put(FailureReason.CantCopy, 0);
@@ -41,7 +41,7 @@ public class Request implements Comparable<Request> {
             this.profitDiff = other.profitDiff;
             this.serverBidBetterThanFirstBid = other.serverBidBetterThanFirstBid;
             this.serverBidBetterThanSecondBid = other.serverBidBetterThanSecondBid;
-            this.cheatingChangedWinner = other.cheatingChangedWinner;
+            this.cheatingHelpedWinner = other.cheatingHelpedWinner;
             this.failureReasons = new HashMap<FailureReason, Integer>(
                     other.failureReasons);
             this.spComputations = new ArrayList<>(other.spComputations);
@@ -61,7 +61,7 @@ public class Request implements Comparable<Request> {
         public double profitDiff;
 		public int serverBidBetterThanSecondBid;
 		public int serverBidBetterThanFirstBid;
-		public int cheatingChangedWinner;
+		public int cheatingHelpedWinner;
         public HashMap<FailureReason, Integer> failureReasons;
         public ArrayList<Long> spComputations;
 

@@ -61,7 +61,7 @@ public class Utils {
     public static PricingModel PRICING_MODEL = DetourCompensatingModel.getInstance();
 
 
-    public static double cheatingPortion = 1.;
+    public static double CheatingPortion = 1.;
     public static double GetWaitTimeFactor(double waitTime) {
 		//return ((waitTime/3.f)-1)/10.f;
         return 0.;

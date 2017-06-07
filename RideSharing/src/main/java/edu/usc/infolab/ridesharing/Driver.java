@@ -55,7 +55,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
         this.collectedFare = 0;
         this.income = 0;
         this.perDistanceIncome = 0;
-        if (rand.nextDouble() <= Utils.cheatingPortion) {
+        if (rand.nextDouble() <= Utils.CheatingPortion) {
             isCheater = true;
         } else {
             isCheater = false;
@@ -120,7 +120,7 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
                         id,
                         servicedRequests.size(),
                         travelledDistance,
-                        Boolean.toString(_getPaid),
+                        Boolean.toString(isCheater),
                         _paidTravelledDistance,
                         collectedFare,
                         income,

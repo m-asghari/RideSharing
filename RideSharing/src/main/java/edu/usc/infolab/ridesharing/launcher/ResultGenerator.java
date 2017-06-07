@@ -68,7 +68,7 @@ public class ResultGenerator {
                 serverOtherProfit += r.serverProfit;
                 serverBidBetterThanFirstBid += request.stats.serverBidBetterThanFirstBid;
                 serverBidBetterThanSecondBid += request.stats.serverBidBetterThanSecondBid;
-                cheatingChangedWinner += request.stats.cheatingChangedWinner;
+                cheatingChangedWinner += request.stats.cheatingHelpedWinner;
                 fpaProfit += r.fpaProfit;
                 spaProfit += r.spaProfit;
                 sparvProfit += r.sparvProfit;
@@ -154,8 +154,9 @@ public class ResultGenerator {
         try {
             String now = Utils.FILE_SYSTEM_SDF.format(Calendar.getInstance().getTime());
             File driversFile = new File(Utils.resultsDir, String.format(
-                    "%s_%d_%d_%d_%s_drivers.csv", name, Utils.MaxWaitTime,
-                    Utils.NumberOfVehicles, Utils.MaxPassengers, now));
+                    "%s_%d_%d_%d_%d_%d_%s_drivers.csv", name, Utils.MaxWaitTime,
+                    Utils.NumberOfVehicles, Utils.MaxPassengers,
+                    (int)(Utils.MaxDetourRelative*100), (int)(Utils.CheatingPortion*100), now));
             FileWriter fw = new FileWriter(driversFile);
             BufferedWriter bw = new BufferedWriter(fw);
             for (D d : drivers) {
@@ -166,8 +167,9 @@ public class ResultGenerator {
             fw.close();
 
             File requestsFile = new File(Utils.resultsDir, String.format(
-                    "%s_%d_%d_%d_%s_requests.csv", name, Utils.MaxWaitTime,
-                    Utils.NumberOfVehicles, Utils.MaxPassengers, now));
+                    "%s_%d_%d_%d_%d_%d_%s_requests.csv", name, Utils.MaxWaitTime,
+                    Utils.NumberOfVehicles, Utils.MaxPassengers,
+                    (int)(Utils.MaxDetourRelative*100), (int)(Utils.CheatingPortion*100), now));
             fw = new FileWriter(requestsFile);
             bw = new BufferedWriter(fw);
             for (R r : requests) {

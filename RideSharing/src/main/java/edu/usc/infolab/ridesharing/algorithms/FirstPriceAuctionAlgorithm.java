@@ -57,7 +57,7 @@ public class FirstPriceAuctionAlgorithm<D extends AuctionDriver> extends Auction
             return null;
         }
         if (highestBid.driver.id != highestModifiedBid.driver.id) {
-            r.stats.cheatingChangedWinner = 1;
+            r.stats.cheatingHelpedWinner = 1;
         }
         AuctionDriver winner = highestModifiedBid.driver;
         r.serverProfit = highestModifiedValue;

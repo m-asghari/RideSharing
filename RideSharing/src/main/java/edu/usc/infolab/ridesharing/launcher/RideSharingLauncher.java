@@ -36,22 +36,22 @@ public class RideSharingLauncher {
             Utils.resultsDir.mkdir();
         }
 
-        /*Utils.MaxWaitTime = 3;
+        Utils.MaxWaitTime = 6;
         Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
         Utils.MaxDetourRelative = 0.5;
         for (double cheatingPortion : new double[]{0.0, 0.25, 0.5, 0.75, 1.}) {
-            Utils.cheatingPortion = cheatingPortion;
+            Utils.CheatingPortion = cheatingPortion;
             System.out.println(String.format("Starting: "
-                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
-                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
-            summaries.append(RunFirstPriceAuction(requestsFile, driversFile));
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f, Cheating Portion: %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative, Utils.CheatingPortion));
+            summaries.append(RunAlgorithms(requestsFile, driversFile));
         }
 
-        System.out.println(String.format("Starting: "
+        /*System.out.println(String.format("Starting: "
                             + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
                     Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
-        RunAlgorithms(requestsFile, driversFile);*/
+        RunAlgorithms(requestsFile, driversFile);
 
 
         int[] maxWaitTimes = new int[]{3, 6, 9, 12, 15, 20};
@@ -62,46 +62,50 @@ public class RideSharingLauncher {
         Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
         Utils.MaxDetourRelative = 0.5;
+        Utils.CheatingPortion = 1.;
         for (int maxWaitTime : maxWaitTimes) {
             Utils.MaxWaitTime = maxWaitTime;
             System.out.println(String.format("Starting: "
-                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
-                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f, Cheating Portion: %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative, Utils.CheatingPortion));
             summaries.append(RunAlgorithms(requestsFile, driversFile));
         }
 
         Utils.MaxWaitTime = 6;
         Utils.MaxPassengers = 4;
         Utils.MaxDetourRelative = 0.5;
+        Utils.CheatingPortion = 1.;
         for (int numOfVehicle : numOfVehicles) {
             Utils.NumberOfVehicles = numOfVehicle;
             System.out.println(String.format("Starting: "
-                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
-                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f, Cheating Portion: %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative, Utils.CheatingPortion));
             summaries.append(RunAlgorithms(requestsFile, driversFile));
         }
 
         Utils.MaxWaitTime = 6;
         Utils.NumberOfVehicles = 500;
         Utils.MaxDetourRelative = 0.5;
+        Utils.CheatingPortion = 1.;
         for (int numOfPassenger : numOfPassengers) {
             Utils.MaxPassengers = numOfPassenger;
             System.out.println(String.format("Starting: "
-                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
-                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f, Cheating Portion: %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative, Utils.CheatingPortion));
             summaries.append(RunAlgorithms(requestsFile, driversFile));
         }
 
         Utils.MaxWaitTime = 3;
         Utils.NumberOfVehicles = 500;
         Utils.MaxPassengers = 4;
+        Utils.CheatingPortion = 1.;
         for (double maxDetourRelative : maxDetourRelatives) {
             Utils.MaxDetourRelative = maxDetourRelative;
             System.out.println(String.format("Starting: "
-                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f\n",
-                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative));
+                            + "MaxWaitTime: %d, Number of Vehicles: %d, Max Passenger: %d, Max Detour(Relative): %.2f, Cheating Portion: %.2f\n",
+                    Utils.MaxWaitTime, Utils.NumberOfVehicles, Utils.MaxPassengers, Utils.MaxDetourRelative, Utils.CheatingPortion));
             summaries.append(RunAlgorithms(requestsFile, driversFile));
-        }
+        }*/
 
         String finalSummary = summaries.toString();
         System.out.println(finalSummary);

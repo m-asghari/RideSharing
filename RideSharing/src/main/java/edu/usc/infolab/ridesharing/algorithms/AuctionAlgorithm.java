@@ -148,8 +148,8 @@ public class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<Auction
         if (secondHighestValue < serverBid) {
             r.stats.serverBidBetterThanSecondBid = 1;
         }
-        if (highestBid.driver.id != highestModifiedBid.driver.id) {
-            r.stats.cheatingChangedWinner = 1;
+        if (highestModifiedBid.driver.isCheater) {
+            r.stats.cheatingHelpedWinner = 1;
         }
         AuctionDriver winner = highestBid.driver;
 
