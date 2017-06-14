@@ -1,4 +1,6 @@
 Code/*.csv
+Prediction/*.csv
+RideSharing/*.csv
 Summaries*.csv
 *.pdf
 *.log
