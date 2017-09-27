@@ -18,6 +18,11 @@ public class Request implements Comparable<Request> {
 			this.looseMoney = 0;
 			this.profitDiff = 0;
 			this.failureReasons = new HashMap<FailureReason, Integer>() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				{
 					put(FailureReason.CantCopy, 0);
 					put(FailureReason.MaxWaitTime, 0);

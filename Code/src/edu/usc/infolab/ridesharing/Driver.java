@@ -212,12 +212,12 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
   }
 
   protected double GetIncome(
-      @SuppressWarnings("unused") R request, @SuppressWarnings("unused") Time time) {
+      R request, Time time) {
     return GetCost(_paidTravelledDistance, null);
   }
 
-  // if time provided, will be in millisecods
-  public double GetCost(Double dist, @SuppressWarnings("unused") Double time) {
+  // if time provided, will be in milliseconds
+  public double GetCost(Double dist, Double time) {
     return INCOME_PER_MILE * dist;
   }
 
@@ -228,5 +228,5 @@ public abstract class Driver<R extends Request> implements Comparable<Driver<R>>
     return this.start.compareTo(o.start);
   }
 
-  public void Check(@SuppressWarnings("unused") Time time) {}
+  public void Check(Time time) {}
 }
