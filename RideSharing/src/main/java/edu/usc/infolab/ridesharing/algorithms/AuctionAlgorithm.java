@@ -7,6 +7,10 @@ import edu.usc.infolab.ridesharing.auction.AuctionDriver;
 import edu.usc.infolab.ridesharing.auction.AuctionRequest;
 import edu.usc.infolab.ridesharing.auction.Bid;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,12 +22,35 @@ public class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<Auction
     public double spaProfit;
     public double sparvProfit;
 
+    FileWriter fw;
+    BufferedWriter bw;
+
     public AuctionAlgorithm(Time startTime, int ati) {
         super(startTime, ati);
         profit = 0.;
         fpaProfit = 0.f;
         spaProfit = 0.f;
         sparvProfit = 0.f;
+    }
+
+    @Override
+    public String Run(ArrayList<AuctionRequest> requests, ArrayList<D> drivers)  {
+        try {
+            String now = Utils.FILE_SYSTEM_SDF.format(Calendar.getInstance().getTime());
+            File bidsFile = new File(Utils.resultsDir, String.format(
+                    "%s_%d_%d_%d_%d_%d_%s_bids.csv", GetName(), Utils.MaxWaitTime,
+                    Utils.NumberOfVehicles, Utils.MaxPassengers,
+                    (int)(Utils.MaxDetourRelative*100), (int)(Utils.CheatingPortion*100), now));
+            fw = new FileWriter(bidsFile);
+            bw = new BufferedWriter(fw);
+            String retString = super.Run(requests, drivers);
+            bw.close();
+            fw.close();
+            return retString;
+        } catch (IOException exp) {
+            exp.printStackTrace();
+        }
+        return "";
     }
 
     /**
@@ -90,16 +117,30 @@ public class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<Auction
     }
 
     public AuctionDriver SelectWinner(AuctionRequest r, ArrayList<Bid> bids) {
+        StringBuilder sb = new StringBuilder();
+        for (Bid bid : bids) {
+            sb.append(bid.profit);
+            sb.append(',');
+        }
+        try {
+            bw.append(sb.toString());
+            bw.newLine();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
         ArrayList<Bid> modifiedBids = new ArrayList<>();
         //double waitTimeFactor = Utils.GetWaitTimeFactor(r.maxWaitTime);
         //double cheatingFactor = (double)(bids.size()-1)/(double)bids.size() * (1 + waitTimeFactor);
-        double cheatingFactor = (bids.size() > 1) ? (double)(bids.size()-1)/(double)bids.size() : 1;
+        int size = bids.size() * 2;
+        double cheatingFactor = (size > 1) ? (double)(size-1)/(double)size : 1;
         for (Bid bid : bids) {
             if (bid.driver.isCheater) {
                 double diff = (1.f - cheatingFactor) * bid.profit;
-                modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit - diff, bid.cost+diff));
+                modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit - diff, bid.profit));
+                //modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit - diff, bid.cost+diff));
             } else {
-                modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit, bid.cost));
+                //modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit, bid.cost));
+                modifiedBids.add(new Bid(bid.driver, bid.schedule, bid.profit, bid.profit));
             }
         }
         Bid highestModifiedBid = null;
@@ -108,6 +149,16 @@ public class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<Auction
             if (bid.profit > highestModifiedValue) {
                 highestModifiedValue = bid.profit;
                 highestModifiedBid = bid;
+            }
+            if (bid.profit == highestModifiedValue && bid.driver.servicedRequests.size() < highestModifiedBid.driver.servicedRequests.size()) {
+                highestModifiedValue = bid.profit;
+                highestModifiedBid = bid;
+            }
+        }
+
+        for (Bid bid : modifiedBids) {
+            if (bid.cost > highestModifiedValue && bid.driver.isCheater && !highestModifiedBid.driver.isCheater) {
+                r.stats.cheatingScrewedDriver = 1;
             }
         }
 
@@ -148,7 +199,7 @@ public class AuctionAlgorithm<D extends AuctionDriver> extends Algorithm<Auction
         if (secondHighestValue < serverBid) {
             r.stats.serverBidBetterThanSecondBid = 1;
         }
-        if (highestModifiedBid.driver.isCheater) {
+        if (highestModifiedBid.driver.isCheater && highestModifiedBid.profit < highestModifiedBid.cost) {
             r.stats.cheatingHelpedWinner = 1;
         }
         AuctionDriver winner = highestBid.driver;

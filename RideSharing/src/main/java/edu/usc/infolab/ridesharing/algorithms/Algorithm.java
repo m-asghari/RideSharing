@@ -6,6 +6,7 @@ import edu.usc.infolab.ridesharing.Status;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.launcher.ResultGenerator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -25,7 +26,7 @@ public abstract class Algorithm<R extends Request, D extends Driver<R>> {
 		activeRequests = new ArrayList<R>();
 	}
 	
-	public String Run(ArrayList<R> requests, ArrayList<D> drivers) {
+	public String Run(ArrayList<R> requests, ArrayList<D> drivers){
 		ArrayList<R> remainingRequests = new ArrayList<R>(requests);
 		activeDrivers = new ArrayList<>(drivers);
 		ArrayList<D> allDrivers = new ArrayList<D>(drivers);

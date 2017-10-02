@@ -1,11 +1,11 @@
 package edu.usc.infolab.ridesharing.prediction;
 
 import cc.mallet.types.Dirichlet;
+import edu.usc.infolab.ridesharing.Utils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -37,6 +37,10 @@ public class WeightedAverage {
         String dataFileTemplate = "../Data/NYCTaxiDataset/TripData/PredictionData/%s_%d_%d.csv";
         //int cellSize = 5000;
         //int hour = 1;
+
+        String now = Utils.FILE_SYSTEM_SDF.format(Calendar.getInstance().getTime());
+        FileWriter fw = new FileWriter(String.format("WeightedAverage-%s.csv", now));
+        BufferedWriter bw = new BufferedWriter(fw);
 
         for (int cellSize : new int[]{100, 250, 500, 1000, 2500, 5000}) {
             for (int hour : new int[]{1,2,3,4,5}) {
@@ -106,8 +110,13 @@ public class WeightedAverage {
                     double[] docTestProbs = testingProbs[testDocIDs.indexOf(docID)];
                     divergence += Divergence.KLD(docTrainProbs, docTestProbs);
                 }
+
                 System.out.println(String.format("cellSize: %d, hour: %d -> %.6f", cellSize, hour, divergence/testingProbs.length));
+                bw.write(String.format("%d,%d,%.6f", cellSize, hour, divergence/testingProbs.length));
+                bw.newLine();
             }
         }
+        bw.close();
+        fw.close();
     }
 }

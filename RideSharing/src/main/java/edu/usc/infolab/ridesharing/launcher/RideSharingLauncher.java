@@ -150,7 +150,7 @@ public class RideSharingLauncher {
         return summaries.toString();
     }
 
-    private static String RunAuction(File requestsFile, File driversFile) {
+    private static String RunAuction(File requestsFile, File driversFile)  {
         ArrayList<AuctionRequest> auctionRequests = AuctionInput.GenerateRequests(requestsFile);
         ArrayList<AuctionDriver> auctionDrivers = AuctionInput.GenerateDrivers(driversFile, Utils.NumberOfVehicles, AuctionDriverType.EXHAUSTIVE_SEARCH);
         Time startTime = auctionRequests.get(0).requestTime.clone();

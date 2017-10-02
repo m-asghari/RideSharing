@@ -20,6 +20,7 @@ public class Request implements Comparable<Request> {
             this.serverBidBetterThanFirstBid = 0;
             this.serverBidBetterThanSecondBid = 0;
             this.cheatingHelpedWinner = 0;
+            this.cheatingScrewedDriver = 0;
             this.failureReasons = new HashMap<FailureReason, Integer>() {
                 {
                     put(FailureReason.CantCopy, 0);
@@ -42,6 +43,7 @@ public class Request implements Comparable<Request> {
             this.serverBidBetterThanFirstBid = other.serverBidBetterThanFirstBid;
             this.serverBidBetterThanSecondBid = other.serverBidBetterThanSecondBid;
             this.cheatingHelpedWinner = other.cheatingHelpedWinner;
+            this.cheatingScrewedDriver = other.cheatingScrewedDriver;
             this.failureReasons = new HashMap<FailureReason, Integer>(
                     other.failureReasons);
             this.spComputations = new ArrayList<>(other.spComputations);
@@ -62,6 +64,7 @@ public class Request implements Comparable<Request> {
 		public int serverBidBetterThanSecondBid;
 		public int serverBidBetterThanFirstBid;
 		public int cheatingHelpedWinner;
+		public int cheatingScrewedDriver;
         public HashMap<FailureReason, Integer> failureReasons;
         public ArrayList<Long> spComputations;
 

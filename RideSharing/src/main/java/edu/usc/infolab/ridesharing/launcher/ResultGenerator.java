@@ -38,6 +38,7 @@ public class ResultGenerator {
         int serverBidBetterThanFirstBid = 0;
         int serverBidBetterThanSecondBid = 0;
         int cheatingChangedWinner = 0;
+        int cheatingHelpedWinner = 0;
         for (D driver : drivers) {
             if (!driver.servicedRequests.isEmpty()) {
                 usedDrivers++;
@@ -68,7 +69,8 @@ public class ResultGenerator {
                 serverOtherProfit += r.serverProfit;
                 serverBidBetterThanFirstBid += request.stats.serverBidBetterThanFirstBid;
                 serverBidBetterThanSecondBid += request.stats.serverBidBetterThanSecondBid;
-                cheatingChangedWinner += request.stats.cheatingHelpedWinner;
+                cheatingChangedWinner += request.stats.cheatingScrewedDriver;
+                cheatingHelpedWinner += request.stats.cheatingHelpedWinner;
                 fpaProfit += r.fpaProfit;
                 spaProfit += r.spaProfit;
                 sparvProfit += r.sparvProfit;
@@ -92,7 +94,8 @@ public class ResultGenerator {
                         / assignedRequests))
                 .append(String.format("Server Bid Better Than First Bid: %d\n", serverBidBetterThanFirstBid))
                 .append(String.format("Server Bid Better Than Second Bid: %d\n", serverBidBetterThanSecondBid))
-                .append(String.format("Cheating Changed Winner: %d\n", cheatingChangedWinner)).toString();
+                .append(String.format("Cheating Changed Winner: %d\n", cheatingChangedWinner))
+                .append(String.format("Cheating Helped Winner: %d\n", cheatingHelpedWinner)).toString();
     }
 
     public static <R extends Request, D extends Driver<R>> String ShortSummary(
@@ -103,6 +106,10 @@ public class ResultGenerator {
         int mostProfitableDriver = 0;
         int looseMoney = 0;
         int unfairRiders = 0;
+        int serverBidBetterThanFirstBid = 0;
+        int serverBidBetterThanSecondBid = 0;
+        int cheatingChangedWinner = 0;
+        int cheatingHelpedWinner = 0;
         double serverProfit = 0;
         double fpaProfit = 0;
         double spaProfit = 0;
@@ -140,13 +147,18 @@ public class ResultGenerator {
                 fpaProfit += r.fpaProfit;
                 spaProfit += r.spaProfit;
                 sparvProfit += r.sparvProfit;
+                serverBidBetterThanFirstBid += request.stats.serverBidBetterThanFirstBid;
+                serverBidBetterThanSecondBid += request.stats.serverBidBetterThanSecondBid;
+                cheatingChangedWinner += request.stats.cheatingScrewedDriver;
+                cheatingHelpedWinner += request.stats.cheatingHelpedWinner;
             }
         }
-        return String.format("%d,%d,%d,%d,%.2f,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,", totalRequests,
+        return String.format("%d,%d,%d,%d,%.2f,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%d,%d,%d,%d,", totalRequests,
                 assignedRequests, mostProfitableDriver, looseMoney,
                 avgProfitDiff, unfairRiders, usedDrivers,
                 totalCollectedFare - totalIncome, avgResponseTime / assignedRequests,
-                serverProfit, fpaProfit, spaProfit, sparvProfit);
+                serverProfit, fpaProfit, spaProfit, sparvProfit,
+                serverBidBetterThanFirstBid, serverBidBetterThanSecondBid, cheatingChangedWinner, cheatingHelpedWinner);
     }
 
     public static <R extends Request, D extends Driver<R>> void SaveData(
