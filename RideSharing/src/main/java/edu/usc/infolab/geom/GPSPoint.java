@@ -1,7 +1,7 @@
 
 package edu.usc.infolab.geom;
 
-import edu.usc.infolab.ridesharing.Pair;
+import com.esri.core.geometry.Point;
 import edu.usc.infolab.ridesharing.Time;
 import edu.usc.infolab.ridesharing.TimeDistancePair;
 import edu.usc.infolab.ridesharing.Utils;
@@ -32,6 +32,10 @@ public class GPSPoint {
         this._lat = other._lat;
         this._lng = other._lng;
     }
+
+    public double getLng() {return this._lng;}
+
+    public double getLat() {return this._lat;}
     
     public void Update(double lat, double lng) {
         this._lat = lat;

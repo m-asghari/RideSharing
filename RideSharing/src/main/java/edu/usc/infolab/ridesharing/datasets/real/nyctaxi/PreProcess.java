@@ -1,19 +1,18 @@
 package edu.usc.infolab.ridesharing.datasets.real.nyctaxi;
 
+import com.esri.core.geometry.OperatorOverlaps;
+import com.esri.core.geometry.Polygon;
 import edu.usc.infolab.geom.GPSPoint;
+import edu.usc.infolab.geom.shapefile.ShapeReader;
+import edu.usc.infolab.geom.shapefile.ShapefileUtils;
 import edu.usc.infolab.ridesharing.Time;
-import edu.usc.infolab.ridesharing.Utils;
+
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.List;
 
 /**
  * Created by mohammad on 5/25/17.
@@ -24,7 +23,7 @@ public class PreProcess {
     protected static final double maxLng = -73.0;
     protected static final double minLng = -74.5;
 
-    private static void FindMinMaxLatLng(File dir) {
+    /*private static void FindMinMaxLatLng(File dir) {
         Double maxLat = -1. * Integer.MAX_VALUE, maxLng = -1. * Integer.MAX_VALUE, minLat = 1. * Integer.MAX_VALUE, minLng = 1. * Integer.MAX_VALUE;
         try {
             File[] inputFiles =
@@ -67,7 +66,7 @@ public class PreProcess {
         System.out.println(String.format("maxLat: %f, maxLng: %f, minLat: %f, minLng: %f\n", maxLat, maxLng, minLat, minLng));
     }
 
-    /*private static boolean IsValid(Request request) {
+    private static boolean IsValid(Request request) {
         if (!request.source.point.In(minLat, maxLat, minLng, maxLng))
             return false;
         if (!request.source.point.In(minLat, maxLat, minLng, maxLng))
@@ -75,8 +74,7 @@ public class PreProcess {
         return true;
     }*/
 
-    @SuppressWarnings("unused")
-    private static void PreProcessData(File dir) {
+    private static void preProcessData(File dir) {
         try {
             HashMap<Integer, FileWriter> FWs = new HashMap<>();
             HashMap<Integer, BufferedWriter> BWs = new HashMap<>();
@@ -168,15 +166,7 @@ public class PreProcess {
         }
     }
 
-    private static final Random rand = new Random();
-
-    protected static GPSPoint NewRandomPoint() {
-        double lat = minLat + (rand.nextDouble() * (maxLat - minLat));
-        double lng = minLng + (rand.nextDouble() * (maxLng - minLng));
-        return new GPSPoint(lat, lng);
-    }
-
-    private static void PopulateTripsTable(File dir) throws SQLException {
+    /*private static void PopulateTripsTable(File dir) throws SQLException {
         String dbDriver = "oracle.jdbc.driver.OracleDriver";
         String dbConnectionString = "jdbc:oracle:thin:@localhost:1521:xe";
         String dbUser = "masghari";
@@ -247,11 +237,11 @@ public class PreProcess {
                 dbConnection.close();
             }
         }
-    }
+    }*/
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws IOException {
         String file = "../Data/NYCTaxiDataset/TripData";
-        PreProcessData(new File(file));
+        preProcessData(new File(file));
         //FindMinMaxLatLng(new File(file));
         //PopulateTripsTable(new File(file));
     }
