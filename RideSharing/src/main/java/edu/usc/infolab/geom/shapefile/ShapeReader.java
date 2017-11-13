@@ -25,8 +25,6 @@ public class ShapeReader {
     public transient double ymin;
     public transient double xmax;
     public transient double ymax;
-    public transient double mmin;
-    public transient double mmax;
     public transient int numParts;
     public transient int numPoints;
 
