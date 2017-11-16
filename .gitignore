@@ -1,4 +1,5 @@
 Code/*.csv
+Data/**
 Prediction/*.csv
 RideSharing/*.csv
 Summaries*.csv
