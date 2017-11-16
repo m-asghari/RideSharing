@@ -3,10 +3,10 @@ package edu.usc.infolab.geom.shapefile;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polygon;
 
+import edu.usc.infolab.ridesharing.Pair;
 import org.apache.commons.io.EndianUtils;
 
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Code from github.com/mraad/Shapefile
@@ -44,13 +44,14 @@ public class ShapeReader {
         return m_dataInputStream.available() > 0;
     }
 
-    private void readRecordHeader() throws IOException
+    private int readRecordHeader() throws IOException
     {
         recordNumber = m_dataInputStream.readInt();
         contentLength = m_dataInputStream.readInt();
         contentLengthInBytes = contentLength + contentLength - 4;
 
         shapeType = EndianUtils.readSwappedInteger(m_dataInputStream);
+        return recordNumber;
     }
 
     public Point readPoint() throws IOException
@@ -58,7 +59,7 @@ public class ShapeReader {
         return queryPoint(new Point());
     }
 
-    public Polygon readPolygon() throws IOException
+    public Pair<Integer, Polygon> readPolygon() throws IOException
     {
         return queryPolygon(new Polygon());
     }
@@ -71,11 +72,11 @@ public class ShapeReader {
         return point;
     }
 
-    public Polygon queryPolygon(final Polygon polygon) throws IOException
+    public Pair<Integer, Polygon> queryPolygon(final Polygon polygon) throws IOException
     {
         polygon.setEmpty();
 
-        readRecordHeader();
+        int recordNumber = readRecordHeader();
 
         readShapeHeader();
 
@@ -99,7 +100,7 @@ public class ShapeReader {
 
         polygon.closeAllPaths();
 
-        return polygon;
+        return new Pair<>(recordNumber, polygon);
     }
 
     private void readShapeHeader() throws IOException
