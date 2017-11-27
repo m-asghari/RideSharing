@@ -33,4 +33,16 @@ public class TimeInstancePriceAnalyzer1 extends TimeInstancePriceAnalyzer {
         if (price > maxP) return 1;
         return Math.pow(price, 2) / Math.pow(maxP,2);
     }
+
+    @Override
+    protected double adjustedDemand_inverse(double trips) {
+        if (trips < 0) return maxP;
+        if (trips > m_demand) return 0;
+        return 5 * Math.sqrt((m_demand - trips)/m_demand);
+    }
+
+    @Override
+    protected double getPotentialOptimalPrice(double deltaTrips) {
+        return maxP * Math.sqrt((double)(m_demand)/(m_supply + m_demand + deltaTrips));
+    }
 }
