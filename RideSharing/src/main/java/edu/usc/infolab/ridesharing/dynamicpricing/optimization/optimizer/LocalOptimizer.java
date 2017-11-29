@@ -1,7 +1,8 @@
 package edu.usc.infolab.ridesharing.dynamicpricing.optimization.optimizer;
 
-import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.TimeInstancePriceAnalyzer;
-import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.TimeInstancePriceAnalyzer1;
+import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.SupplyDemandChart;
+import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.SupplyDemandChart;
+import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.SupplyDemandChart1;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,20 +20,15 @@ public class LocalOptimizer extends Optimizer {
         double totalRevenue = 0;
         for (int t = 0; t < m_demands.length; t++) {
             double timeInstanceRevenue = 0;
-            List<TimeInstancePriceAnalyzer> priceAnalyzers = new ArrayList<>();
+            List<SupplyDemandChart> sources = new ArrayList<>();
             for (int i = 0; i < m_demands.length; i++) {
-                TimeInstancePriceAnalyzer1 priceAnalyzer = new TimeInstancePriceAnalyzer1(m_demands[t][i], m_supplies[i]);
-                timeInstanceRevenue += priceAnalyzer.getRevenue(priceAnalyzer.getOptimalPrice());
-                priceAnalyzers.add(priceAnalyzer);
+                SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[t][i], m_supplies[i], i);
+                timeInstanceRevenue += priceAnalyzer.getRevenue();
+                sources.add(priceAnalyzer);
             }
-            int[] futureSupplies = new int[m_supplies.length];
-            for (int j = 0; j < futureSupplies.length; j++) {
-                futureSupplies[j] = priceAnalyzers.get(j).getUnusedSupply(priceAnalyzers.get(j).getOptimalPrice());
-                for (int i = 0; i < priceAnalyzers.size(); i++) {
-                    TimeInstancePriceAnalyzer priceAnalyzer = priceAnalyzers.get(i);
-                    futureSupplies[j] += (int)(priceAnalyzer.getNumberOfTrips(priceAnalyzer.getOptimalPrice()) * m_transitions[t][i][j]);
-                }
-            }
+            int[] futureSupplies = getFutureSupply(sources.toArray(new SupplyDemandChart[0]), t);
+            m_supplies = futureSupplies;
+
             totalRevenue += timeInstanceRevenue;
         }
 
