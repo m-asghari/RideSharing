@@ -17,7 +17,9 @@ public class PredictiveOptimizer extends Optimizer {
     @Override
     public double Run() {
         double totalRevenue = 0;
-        for (int t = 0; t < m_demands.length - 1; t++) {
+        int timeIntervalsSize = m_demands.length;
+        int locationsSize = m_supplies.length;
+        for (int t = 0; t < timeIntervalsSize - 1; t++) {
             double timeInstanceRevenue = 0;
 
             // Construct Source Supply/Demand Charts
@@ -29,7 +31,7 @@ public class PredictiveOptimizer extends Optimizer {
                     return revRed1.compareTo(revRed2);
                 }
             });
-            for (int i = 0; i < m_demands.length; i++) {
+            for (int i = 0; i < locationsSize; i++) {
                 SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[t][i], m_supplies[i], i);
                 sourcePQ.add(priceAnalyzer);
                 //timeInstanceRevenue += priceAnalyzer.getRevenue(priceAnalyzer.getCurrentPrice());
@@ -46,15 +48,15 @@ public class PredictiveOptimizer extends Optimizer {
             });
 
             int[] futureSupplies = getFutureSupply(sourcePQ.toArray(new SupplyDemandChart[0]), t);
-            for (int i = 0; i < m_demands.length; i++) {
+            for (int i = 0; i < locationsSize; i++) {
                 SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[t+1][i], futureSupplies[i], i);
                 destinationPQ.add(priceAnalyzer);
             }
 
 
             // Compute current and max number of trips
-            int[][] maxTrips = new int[m_demands.length][m_demands.length];
-            int[][] currentTrips = new int[m_demands.length][m_demands.length];
+            int[][] maxTrips = new int[locationsSize][locationsSize];
+            int[][] currentTrips = new int[locationsSize][locationsSize];
             for (Iterator<SupplyDemandChart> it = sourcePQ.iterator(); it.hasNext();) {
                 SupplyDemandChart source = it.next();
                 for (int j = 0; j < maxTrips.length; j++) {
@@ -110,11 +112,19 @@ public class PredictiveOptimizer extends Optimizer {
             }
 
             // (TODO): adjust future supplies
+            futureSupplies = getFutureSupply(sourcePQ.toArray(new SupplyDemandChart[0]), t);
+            m_supplies = futureSupplies;
 
             totalRevenue += timeInstanceRevenue;
         }
 
         // (TODO): last time instance
+        double lastInstanceRevenue = 0;
+        for (int i = 0; i < locationsSize; i++) {
+            SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[timeIntervalsSize-1][i], m_supplies[i], i);
+            lastInstanceRevenue += priceAnalyzer.getRevenue();
+        }
+        totalRevenue += lastInstanceRevenue;
 
         return totalRevenue;
     }

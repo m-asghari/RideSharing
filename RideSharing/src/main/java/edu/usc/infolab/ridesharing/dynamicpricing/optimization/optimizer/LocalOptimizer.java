@@ -21,7 +21,7 @@ public class LocalOptimizer extends Optimizer {
         for (int t = 0; t < m_demands.length; t++) {
             double timeInstanceRevenue = 0;
             List<SupplyDemandChart> sources = new ArrayList<>();
-            for (int i = 0; i < m_demands.length; i++) {
+            for (int i = 0; i < m_demands[t].length; i++) {
                 SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[t][i], m_supplies[i], i);
                 timeInstanceRevenue += priceAnalyzer.getRevenue();
                 sources.add(priceAnalyzer);
