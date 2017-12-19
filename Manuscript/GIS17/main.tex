@@ -1,0 +1,96 @@
+\documentclass[sigconf]{acmart}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% Figures
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{subfigure}
+
+% Math
+\usepackage{amsmath}
+\usepackage{mathtools}
+\newcommand{\pluseq}{\mathrel{+}=}
+\newcommand{\asteq}{\mathrel{*}=}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\newcommand\bigforall{\mbox{\Large $\mathsurround0pt\forall$}} 
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+% Table
+\usepackage{multirow}
+\usepackage{colortbl}
+\definecolor{kugray5}{RGB}{224,224,224}
+\usepackage{rotating}
+
+\usepackage{cleveref}
+
+\newcommand{\moedit}[1]{\textcolor{cyan}{\emph{[Mohammad: #1]}}}
+\newcommand{\csedit}[1]{\textcolor{magenta}{\emph{[Cyrus: #1]}}}
+
+\begin{document}
+\title{An On-line Truthful and Individually Rational\\Pricing Mechanism for Ride-sharing}
+\author{Mohammad Asghari}
+\affiliation{%
+  \institution{University of Southern California}
+  \city{Los Angeles}
+  \state{CA}
+  \country{USA}
+}
+\email{masghari@usc.edu}
+\author{Cyrus Shahabi}
+\affiliation{%
+  \institution{University of Southern California}
+  \city{Los Angeles}
+  \state{CA}
+  \country{USA}
+}
+\email{shahabi@usc.edu}
+
+\begin{abstract}
+Ride-sharing has the potential of addressing many socioeconomic challenges related to transportation. The rising popularity of ride-sharing platforms (e.g., Uber, Lyft, DiDi) in addition to the emergence of new applications like food delivery and grocery shopping which use a similar platform,  calls for an in-depth and detailed evaluation of various aspects of this problem.\\
+Auction frameworks and mechanism design, have been widely used for modeling ride-sharing platforms. A key challenge in these approaches is preventing the involving parties from manipulating the platform for their personal gain which in turn, can result in a less satisfactory experience for other parties and/or loss of profit for the platform provider. We introduce a latent space transition model for ride-sharing platforms which drivers can exploit and predict the future supply of the drivers (i.e., available drivers) to their own advantage. Following, we propose a pricing model for ride-sharing platforms which is both truthful and individually rational based on Vickery auctions and show how we can manage the loss of revenue in this approach. We compare our predicting model and pricing model with competing approaches through experiments on New York City's taxi dataset. Our results show that our model can accurately learn the transition patterns of people's ride requests. Furthermore, our pricing mechanism forces drivers to be truthful and takes away any unfair advantage the drivers can achieve by bidding untruthfully. More importantly, our pricing model forces truthfulness without sacrificing much profit unlike what is typical with second-price auction schemes.
+\end{abstract}
+
+\copyrightyear{2017}
+\acmYear{2017}
+\setcopyright{acmcopyright}
+\acmConference{SIGSPATIAL'17}{November 7--10, 2017}{Los Angeles Area,
+CA, USA}\acmPrice{15.00}\acmDOI{10.1145/3139958.3139991}
+\acmISBN{978-1-4503-5490-5/17/11}
+\maketitle
+
+\vspace{-0.15in}
+\section*{Categories and Subject Descriptors}
+\vspace{-0.025in}
+H.3.5 [\textbf{Information Storage and Retrieval}]: Online Information Services-\textit{Commercial services}
+
+\vspace{-0.1in}
+\section*{Keywords}
+\vspace{-0.025in}
+Ride-sharing, Revenue Maximization, Spatial Crowdsourcing
+
+\input{sec_introduction}
+\input{sec_background}
+\input{sec_bidding}
+\input{sec_stmodel}
+\input{sec_mechanism}
+\input{sec_experiments}
+\input{sec_related}
+\input{sec_conclusion}
+
+
+\section*{Acknowledgement}
+This research has been funded in in part by NSF grants IIS-1320149 and CNS-1461963, METRANS Transportation Center under grants from Caltrans (DTRT12-G-UTC57), and the USC Integrated Media Systems Center. Any opinions, findings and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of any of the sponsors.
+
+\begin{scriptsize}
+\bibliographystyle{acm}
+\bibliography{sigproc}
+\end{scriptsize}
+
+\end{document}

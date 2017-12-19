@@ -1,0 +1,123 @@
+\section{The Latent Space Transition Model}
+\label{sec:stmodel}
+
+In \Cref{sec:bidding}, we showed how the drivers can take advantage of the platform if they know how many bids are being submitted and the distribution of the bids. In this section, we show how the drivers can estimate the number of bids, based on historical data.
+
+We assume for each location $p$ and time $t$, there are a potential of $\beta_{p}^t$ ride requests submitted to the system. A transition matrix $A^t$ called the \emph{network demand at time t} shows the fraction of riders moving from one location to another location at each point in time. The $pq$-th entry of $A^t$, shown as $\alpha_{pq}^t$, gives the fraction of riders going from location $p$ to location $q$ at time $t$. This means that the \emph{number} of riders requesting a ride from $p$ to $q$ at time $t$ is given by $\beta_p^t\,\alpha_{pq}^t$.
+
+We can compute the number of available drivers at location $p$ at the start of time $t$ as:
+\begin{equation}
+\label{eq:drivers}
+v_p^t = \sum_q \alpha_{qp}^{t-1} \min \left\lbrace v_q^{t-1}, \beta_q^{t-1} \right\rbrace  + \delta_p^t
+\end{equation}
+where $\delta_p^t$ is the number of drivers who enter the system at time $t$ in location $p$.
+
+To predict the number of drivers that enter the platform (i.e., $\delta_p^t$) we use the approach in \cite{Chiang15} where  a grid-based Gaussian mixture model is introduced to predict the number of passengers for taxi bookings at a specific time and location.
+
+The other key component in estimating the number of available drivers at each location (\Cref{eq:drivers}) is learning the network demand matrix at each point in time. In the remainder of this section, we introduce a \emph{Latent Space Transition Model (LSTM)} where we model the demand network as a \emph{Latent Dirichlet Allocation (LDA)}\cite{Blei03} model. We first explain how we can model the network demand matrix as an LDA and subsequently explain how we can learn the parameters of the model using historic data.
+
+\subsection{Network Demand Model}
+\label{subsec:model}
+
+An LDA is a generative probabilistic model for collections of discrete data, in which each item of a collection is modeled as a finite mixture over an underlying set of topics. Each topic is, in turn, modeled as an infinite mixture over an underlying set of topic probabilities\cite{Blei03}. For example LDA is widely used in natural language processing where the observations are words in documents. LDA then assumes each document is a mixture of a small number of topics and tends to find patterns that probabilistically associate the words in the document to topics.
+
+With regard to Ride-sharing environments, various factors (hereafter, topics) such as locality (i.e., source and destination neighborhoods), time and weather, can influence the network demand. Row $p$ of the matrix $A^t$ (i.e., $A_p^t$), gives the probability distribution over the destination of requests submitted at time $t$ in location $p$. Therefore, we can think of $A_p^t$ as a collection of destinations where the different topics impact the probability of each location being the destination of those specific requests. For example, a high demand for rides from a business district in a city to residential neighborhoods can be attributed to the locality topic.
+
+In the remainder of this section we assume that the entire geographical space is discretized into smaller regions using a grid index. Similarly, we assume the temporal space is discretized into equal length time slots. For a set of ride request data $\chi_1, \chi_2, \cdots, \chi_d$ in the form of $(source, destination, time)$, we define a spatial document as:
+
+\begin{definition}[Spatial Document]
+For every source region $p$ and time $t$, we define the Spatial Document $X_p^t$ as a vector of length $w$ such that $x_{pq}^t$ for $1 \leq q \leq w$ records the number of requests originated in location $p$ for destination $q$ at time $t$.
+\end{definition}
+
+We assume each spatial document is a $k$ component \emph{Multinomial Mixture Model (MMM)}. Consequently, each spatial document is modeled as an independent draw from the probability mass function:
+\begin{equation}
+\label{eq:multpmf}
+p(x_i) = \sum_{j=1}^k \sum_{p=1}^w x_{ip}\cdot\psi_{ij}\cdot\mu_{jp}
+\end{equation}
+where,
+\begin{itemize}
+\item $\mu_j \in \mathbb{R}^w$, $w$ is the total number of regions and $\mu_{jp}$ is the unknown probability of selecting region $p$ from topic $j$.
+\item $\psi_{ij}$ is the unknown probability of selecting topic $j$ for document $i$, such that $\sum_{j=1}^k \psi_{ij} = 1$.
+\end{itemize}
+
+Consequently, the generative model for each destination region in spatial document $i$ with latent variables $(\psi_i,\mu_{1:k})$ can be written as:
+\begin{enumerate}
+\item We draw latent topic indicators $z_{ip} \stackrel{iid}{\sim} \textrm{Mult}(\psi_i)$.
+\item For each topic $z_{ip}$, we can draw $x$ from the topic's multinomial distribution:
+\begin{equation*}
+x \vert z_{ip} \stackrel{ind}{\sim} \textrm{Mult}(\mu_{z_{ip}})
+\end{equation*}
+\end{enumerate}
+
+\subsection{Parameter Inference}
+
+In order to learn the parameters of the model introduced in \Cref{subsec:model}, we utilize the \emph{expectation maximization (EM)} algorithm. The EM algorithm iteratively finds the maximum likelihood estimates of parameters of a statistical model which depends on unobserved latent variables. Each iteration of the EM algorithm consists of two steps. The \emph{expectation (E)} step which estimates each latent variable $z$'s conditional on the observed data $p(z_{1:n,1:w}\vert x_{1:n,1:w};\psi_{1:n},\mu_{1:k})$. Subsequently, the \emph{maximization (M)} step, finds the corresponding parameters that maximize the expected log-likelihood w.r.t. the latent variables estimated in the E step.
+
+Before we explain each step in more details, we need to have the complete log-likelihood function for the model introduced in \Cref{subsec:model}. The log-likelihood for our model can be computed as:
+
+\begin{align}
+\mathcal{L}_{\mu,\psi} =&\:log\,p(x_{1:n,1:w}, z_{1:n,1:w};\psi_{1:n}, \mu_{1:k})\nonumber\\
+=& \sum_{i=1}^n\sum_{p=1}^w log\,p(x_{ip}, z_{ip};\psi_i, \mu_{1:k}) \label{eq:likelihood}\\
+=& \sum_{i=1}^n\sum_{p=1}^w log\,\sum_{j=1}^k \mathbb{I}\left\lbrace z_{ip} = j \right\rbrace\,x_{ip}\,\psi_{iz_{ip}}\mu_{z_{ip}p} \nonumber
+\end{align}
+
+where $\mathbb{I}$ is the indicator function.
+
+\subsubsection{E-Step}
+
+In this step, we estimate the conditional distribution of each $z_{ip}$ given $x_{ip}$ ($p(z_{ip} = j\vert x_{ip};\psi_i, \mu_{1:k})$). By Bayes's rule:
+\begin{equation}
+p(z_{ip} = j\vert x_{ip};\psi_i, \mu_{1:k}) \propto p(z_{ip} = j;\psi_i)\,p(x_{ip}\vert z_{ip};\mu_{1:k}) 
+\end{equation}
+By plugging in the densities based on \Cref{eq:multpmf} we get:
+\begin{equation}
+\label{eq:estep}
+p(z_{ip} = j\vert x_{ip};\psi_i, \mu_{1:k}) = \frac{\psi_{ij}\,\mu_{jp}}{\sum_{l=1}^k \psi_{il}\,\mu_{lp}}
+\end{equation}
+
+For simplicity, we show this estimated conditional distribution as $\tau_{ipj}$.
+
+\subsubsection{M-Step}
+
+This step will maximizes the expected complete log-likelihood. Given the updated latent variables from the E-Step, it can be derived that the following setting updates the log-likelihood of our model:
+\begin{equation}
+\label{eq:mstep}
+\psi_{ij} = \frac{\sum_{p=1}^w x_{ip}\,\tau_{ijp}}{\sum_{p=1}^w x_{ip}} \quad\quad\quad
+\mu_{jp} = \frac{\sum_{i=1}^n x_{ip}\,\tau_{ijp}}{\sum_{q=1}^w\sum_{i=1}^n x_{iq}\,\tau_{ijq}}
+\end{equation}
+
+\Cref{algo:emalgo} shows the overall process of inferring the parameters of the statistical model introduced in \Cref{subsec:model}. In Lines~\ref{ln:psi} and \ref{ln:mu}, $Dir()$ represents the Dirichlet distribution and is used to initialize values for $\psi$ and $\mu$. We used the Dirichlet distribution since it is the conjugate prior for the Multinomial distribution. In Line~\ref{ln:like1} the log-likelihood of the data is computed with the initial values of $\psi$ and $\mu$. The \textbf{while} loop (Line~\ref{ln:whiles}-\ref{ln:whilee}) iteratively performs the \emph{E-Step} and \emph{M-Step} to update $\psi$, $\mu$ and the auxiliary variable $\tau$. After each step, it computes the log-likelihood with the updated parameters and if the improvement of the log-likelihood is less than a predefined $\epsilon$, it terminates the algorithm and returns the final parameters.
+
+\begin{algorithm}
+\caption{EM($ X_{1:n}, \boldsymbol{\gamma_1}, \boldsymbol{\gamma_2}$)}
+\label{algo:emalgo}
+\begin{algorithmic}[1]
+\REQUIRE $X_{1:n}$ are $n$ spatial documents, $\boldsymbol{\gamma_1}$ and $\boldsymbol{\gamma_2}$ are vectors of positive reals with size $k$ and $w$ respectively. 
+\ENSURE $\mu, \psi$ as the parameters of the Multinomial Mixture Model
+\FOR{$i = 1:n$}
+	\STATE $\psi_i \leftarrow Dir(\boldsymbol{\gamma_1})$\label{ln:psi}
+\ENDFOR
+\FOR{$k = 1:K$}
+	\STATE $\mu_k = Dir(\boldsymbol{\gamma_2})$\label{ln:mu}
+\ENDFOR
+\STATE $\mathcal{L}_{\mu, \psi}^0 =$ compute likelihood from \Cref{eq:likelihood}\label{ln:like1}
+\STATE $converge=$ false, $n \leftarrow 1$
+\WHILE {($!converge$)}\label{ln:whiles}
+	\STATE update $\tau$ from \Cref{eq:estep}
+    \STATE update $\mu$ and $\psi$ from \Cref{eq:mstep}
+    \STATE $\mathcal{L}_{\mu, \psi}^n =$ compute likelihood from \Cref{eq:likelihood}
+    \IF {($\mathcal{L}_{\mu, \psi}^n - \mathcal{L}_{\mu, \psi}^{n-1} < \epsilon$)}
+    	\STATE $converge =$ true
+    \ENDIF
+    \STATE $n \leftarrow n + 1$
+\ENDWHILE \label{ln:whilee}
+\RETURN $\mu, \psi$
+\end{algorithmic}
+\end{algorithm}
+
+Each spatial document $X$, corresponds to one row of the transition matrix, $A$. Assuming the corresponding spatial document of $A_p^t$ is $X_i$, each cell of matrix $A$ can be derived as follows:
+
+\begin{equation}
+\alpha_{pq}^t = \sum_{j=1}^k \psi_{ij}\cdot\mu_{jq}
+\end{equation}
+where index $i$ in $\psi_{ij}$ refers to the spacial document $X_p^t$.

@@ -1,0 +1,75 @@
+\section{Background}
+\label{sec:background}
+
+In this section, we briefly review the key components of the APART framework\cite{Asghari16}. 
+
+\subsection{Definitions}
+%The road network is represented as a graph $G(I, E)$, where each node represents intersections, and each edge represents a road segment. Each edge $(i,j) \in E$ $(i, j \in I)$ is associated with a weight $c(i,j)$ which is a travel cost (can be either time or distance) from $i$ to $j$.
+We first define three key concepts of the APART framework.
+
+\begin{definition} [Ride Request]
+\label{def:req}
+A ride request r can be represented as $\left\langle s_r, e_r, w_r, \epsilon_r, \lambda_r \right\rangle$ consisting of a starting point $s_r$ and an end point $e_r$. Each request also specifies $w_r$ as the maximum time the rider is willing to wait after making a request and $\epsilon_r$ denotes the relative detour the rider can tolerate. In addition, a rider's profile $\lambda_r: \mathbb{R}_{+} \rightarrow \left[ 0, 1 \right]$, specifies the relative discount in exchange for an incurred detour of $\Delta \in \mathbb{R}_{+}$.
+\end{definition}
+
+\begin{definition} [Driver]
+A driver $d$ is represented as $\left\langle \mathcal{R}_d, n_d, \theta_d \right\rangle$ where $\mathcal{R}_d \subset \mathcal{R}$ is the set of ride requests assigned to $d$, and $n_d$ is the maximum number of requests $d$ can accept at any point in time. A driver also has a profile $\theta_d: \mathbb{R}_{+}  \rightarrow \$ $\footnote{In this paper, we show monetary values with $\$ $} which specifies the monetary cost of $d$ providing service to its assigned request for a duration $\omega \in \mathbb{R}_{+}$.
+\end{definition}
+
+\begin{definition} [Schedule]
+Schedule $\pi_d$ for driver $d$ on the set of requests $\mathcal{R}_d$ with n requests, is an ordered sequence $\left\langle x_1, \cdots, x_{2n} \right\rangle$, of pick-up and drop-off points of requests in $\mathcal{R}_d$, where for each $r \in \mathcal{R}_d$, $s_r$ precedes $e_r$ in $\pi_d$.
+\end{definition}
+
+The driver follows the sequence of picking up and dropping off riders. For every two nodes $x_a, x_b \in \pi_d$ where $x_a$ precedes $x_b$. We show the cost of traveling from $x_a$ to $x_b$ in schedule $\pi_d$ with $\phi_{\pi_d}(x_a, x_b)$.
+
+\subsection{Dispatch Requests}
+\label{subsec:dispatch}
+APART considers drivers as bidders and ride requests as goods. The server plays the role of a central auctioneer in APART. \Cref{fig:scenario} explains how ride requests are dispatched to drivers at a very high level: (1) Everything starts with a passenger submitting a new ride request to the server. (2) Once the server receives a new task, it notifies the available drivers in the vicinity of the pick-up location about the new request. (3) Each driver independently computes his bid by finding the optimal schedule that can fit the new request into his current schedule. The bidding process is performed as a \textit{sealed-bid auction} where drivers simultaneously submit bids and no other driver knows how much the other drivers have bid.(4) Once all the bids are received, the server assigns the passenger to the driver with the optimal bid.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.95\columnwidth]{fig/scenario}
+	\vspace{-3mm}\caption{Simple Scenario}\label{fig:scenario}
+\end{figure}
+
+\begin{algorithm}
+\caption{Dispatch($\mathcal{D}, r, startTime$)}
+\label{algo:dispatch}
+\begin{algorithmic}[1]
+\REQUIRE $\mathcal{D}$ is the set of currently available drivers, $r$ is a new request and $startTime$ is the current time
+\ENSURE $d \in \mathcal{D}$ as the driver that request $r$ is assigned to
+\STATE $d_{opt} \leftarrow $ \emph{null}
+\STATE $Bids_r \leftarrow \emptyset$
+\STATE $\mathcal{D}_r \leftarrow$ EligibleDrivers$(r)$
+\FOR{$d \in \mathcal{D}_r$} \label{line:loop_start}
+	\STATE $bid_d^r \leftarrow $ ComputeBid$(d, \pi_d, r, startTime)$ \label{line:compute}
+	\STATE $Bids_r \leftarrow Bids_r \cup \{bid_d^r\}$
+\ENDFOR \label{line:loop_end}
+\STATE $d_{opt} \leftarrow \argmax_d \left\lbrace bid_d^r \mid bid_d^r \in Bids \right\rbrace$ \label{line:select}
+\RETURN $d_{opt}$
+\end{algorithmic}
+\end{algorithm}
+
+\Cref{algo:dispatch} outlines the process of assigning an incoming request $r$, where $\mathcal{D}_r$ is the set of eligible drivers for request $r$ (line~\ref{line:loop_start}). For each candidate driver $d$, the \emph{ComputeBid} method (line \ref{line:compute}) is executed to perform scheduling and compute $d$'s bid (\Cref{subsec:bidcomp}). Subsequently, the platform chooses the driver with the highest bid. In case of a tie in line \ref{line:select}, the algorithm randomly selects one driver among the ones with the highest bid. Notice that in practice all the iterations of the \textbf{for} loop in \Cref{algo:dispatch} (lines \ref{line:loop_start}-\ref{line:loop_end}) run in parallel.
+
+\subsection{Bid Computation}
+\label{subsec:bidcomp}
+
+Once a driver is notified of a new request, it has to compute a bid. The bid each driver generates reflects the profit the system can gain if the request is assigned to that driver. Once the ride-sharing application on the driver's phone receives the request, it generates a bid and submits the bid to the server. When a new request is assigned to a driver, he will be notified with an updated schedule. This means that the human driver's interaction with APART is limited to configuring and reporting his profile on the ride-sharing application.
+
+\begin{algorithm}[!h]
+	\caption{ComputeBid($d, \pi_d, r, startTime$)}
+	\label{algo:comp_bid}
+	\begin{algorithmic}[1]
+		\REQUIRE $d$ is a driver with schedule $\pi_d$, $r$ is a new request and $startTime$ is the current time.
+		\ENSURE additional $profit$ that $d$ can generate by accepting $r$
+		\STATE $newProfit \leftarrow $FindBestSchedule$(d, \pi_d, r, startTime)$\label{ln:fbs}
+        \STATE $oldProfit\leftarrow $ GetProfit$(d, \pi_d, startTime)$ \label{ln:gps}
+		\STATE $additionProfit \leftarrow newProfit - oldProfit$
+		\RETURN $additionProfit$
+	\end{algorithmic}
+\end{algorithm}
+
+\Cref{algo:comp_bid} outlines the bid computation process. First, the algorithm calls \textit{FindBestSchedule} (line~\ref{ln:fbs}) which finds the best valid schedule and its corresponding profit. Because each driver's bid is the \textit{additional} profit that the new request can generate for the platform, the algorithm calculates $oldProfit$ for $d$'s original schedule using the \textit{GetProfit} method (line~\ref{ln:gps}). Finally, the additional profit that $d$ can generate by accepting $r$ is the difference between $newProfit$ and $oldProfit$. The \textit{FindBestSchedule} method uses a branch-and-bound technique to search for the optimal schedule that can fit the new request into a driver's existing schedule. The \textit{GetProfit} method takes a valid schedule ($\pi$) and a driver $d$ as input and computes the total fare collected from the passengers serviced with $\pi$ and the total cost of $d$ performing $\pi$ and returns the difference between the collected fare and cost as the profit of the schedule. In \Cref{sec:mechanism} we explain how the fare and cost of rides are computed. Further details of the \textit{FindBestSchedule} and \textit{GetProfit} methods are out of the scope of this paper and can be found in \cite{Asghari16}.
+
+Once drivers submit their bids, the server selects the driver with the highest bid and assigns the new request to that driver.

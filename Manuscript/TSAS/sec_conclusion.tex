@@ -1,8 +1,0 @@
-\section{Conclusion and Future Work}
-\label{sec:conclusion}
-
-In this paper, we studied the problem of real-time ride-sharing. Unlike existing studies, our objective is to maximize the revenue of the platform provider without compromising service quality, hence we introduced APART with a fair pricing model so that higher profits cannot be gained by scamming the riders. With APART, riders were able to set their monetary preferences through their profiles, and consequently the trips were generated according to our price-aware assignment mechanism. We validated our framework with a large scale New York City's taxi trips data. The experimental results demonstrated the effectiveness and efficiency of our framework in terms of both service rate and quality. Also, the distributed nature of APART allowed for real-time processing of requests.
-
-In future, we plan to expand the framework by considering a time-dependent road network, where pre-computing the shortest paths between different nodes of the road network becomes impossible. Another interesting direction is to batch the requests arriving within a short period of time (e.g., 5 seconds). 
-\vspace{-0.1in}
-%This is because in large markets where the requests are submitted at a high rate, the server can wait for this short time to bundle multiple requests and process them together. It is expected to generate better assignments if multiple requests are processed at the same time. However, this introduces new challenges such as the one-request-to-many-drivers matching in APART will become a many-requests-to-many-drivers, hence matching will be more complex.

@@ -1,0 +1,86 @@
+\section{Competitive Bidding}
+\label{sec:bidding}
+
+With APART, a driver's income is as much as his reported cost. This is called the first-price auction scheme. Here, we explain how bidders can compute their bids in a first-price scenario to manipulate the system and increase their own income. We assume the bidders know how many other bidders are participating in the auction and also know the distribution of their bids, but not the exact value for everyone else's bids. We denote the \emph{probability density function} and the \emph{cumulative distribution function} of the bids with $f(.)$ and $F(.)$, respectively. Also, for every bidder $i$ with valuation $v_i$, we assume there exists a \emph{strategy function} $s_i(.)$ that bidder $i$ applies to its valuation to compute what bid to submit. We are interested to find the optimal $s_i(.)$ such that bidder $i$'s \emph{expected utility} $E[u_i]$ is maximized.
+
+Before we continue, we make two assumptions:
+\begin{enumerate}
+\item The \emph{strategy function} $s_i(.)$ for every user is strictly increasing. In other words, if $v_1 < v_2$ then $s_i(v_1) < s_i(v_2)$.
+\item We will restrict our search to symmetric equilibria (i.e., all bidders use the same equilibria strategy).
+\end{enumerate}
+
+We show everything from the point of view of bidder $1$. However, since we are considering only symmetric equilibria, the computation will be the same for all other bidders. We start by defining the expected utility of bidder $1$ as:
+\begin{equation}
+\label{eq:utility1}
+E[u_1] = \left(v_1 - s_1\left( v_1 \right) \right) \cdot Prob \left[win_1\right] 
+\end{equation}
+where $Prob\left[win_1\right]$ is the probability of bidder $1$ winning.
+
+To compute $Prob\left[win_1\right]$, first we consider a single bidder $i$. For bidder 1 to win over bidder $i$ we need to have $s_i(v_i) < s_1(v_1)$.
+\begin{align*}
+Prob\left[s_i(v_i) < s_1(v_1)\right] &= Prob\left[v_i < s_i^{-1}\left(s_1\left(v_1\right)\right)\right]\\
+&=F\left[ s_i^\prime\left(s_1\left(v_1\right)\right)\right]\\
+&=F(v_1)
+\end{align*}
+
+The last equation holds because all bidders use the same strategy function and thus, $s_i(x) = s_j(x)$ for every bidder $i$ and $j$.
+
+Bidder $1$ wins if her bid is higher than all other $n-1$ bidders. Since every bidder $i$'s bid ($i \neq 1$) is independent of other bidders we can say:
+\begin{align*}
+Prob\left[win_1\right] &= \left(Prob\left[s_i(v_i) < s_1(v_1)\right]\right)^{n-1}\\
+&= F(v_1)^{n-1}
+\end{align*}
+
+Now we can rewrite \Cref{eq:utility1} as:
+\begin{equation}
+\label{eq:utility2}
+E[u_1] = \left(v_1 - s_1\left(v_1\right)\right)\,F(v_1)^{n-1}
+\end{equation}
+
+We can maximize $E[u_1]$ by differentiating \Cref{eq:utility2} w.r.t. $b_1$ and setting it equal to zero, where $b_1$ is bidder $1$'s bid. In other words, $b_1 = s_1(v_1)$.
+\begin{align*}
+\frac{\partial}{\partial\,b_1}E[u_1] &= 0\\
+\frac{\partial}{\partial\,b_1}\left(v_1 - b_1\right)\,F\left(s_1^{-1}\left(b_1\right)\right)^{n-1} &= 0
+\end{align*}
+
+Using the Chain Rule and the Product Rule we get:
+\begin{equation*}
+\left(v_1 - b_1\right)\cdot\frac{\partial\, F\left(s_1^{-1}\left(b_1\right)\right)^{n-1}}{\partial\,F\left(s_1^{-1}\left(b_1\right)\right)}\cdot\frac{\partial\,F\left(s_1^{-1}\left(b_1\right)\right)}{\partial\left(s_1^{-1}\left(b_1\right)\right)}\cdot\frac{\partial\,\left(s_1^{-1}\left(b_1\right)\right)}{\partial b_1} = F\left(s_1^{-1}\left(b_1\right)\right)^{n-1}
+\end{equation*}
+
+We know that the derivative of the cumulative probability function $F(.)$ is the probability density function $f(.)$. Also:
+\begin{equation*}
+\frac{\partial}{\partial b_1}\left(s_1^{-1}\left(b_1\right)\right) = \frac{1}{s_1^\prime\left(s_1^{-1}\left(b_1\right)\right)}
+\end{equation*}
+
+Then we will have:
+\begin{align}
+\frac{\left(v_1 - b_1\right)\left(n-1\right)\cdot F\left(s_1^{-1}\left(b_1\right)\right)^{n-2}\cdot f\left(s_1^{-1}\left(b_1\right)\right)}{s_1^\prime\left(s_1^{-1}\left(b_1\right)\right)} &= F\left(s_1^{-1}\left(b_1\right)\right)^{n-1}\\
+\frac{\left(v_1 - b_1\right)\left(n-1\right)\cdot f\left(s_1^{-1}\left(b_1\right)\right)}{s_1^\prime\left(s_1^{-1}\left(b_1\right)\right)} &= F\left(s_1^{-1}\left(b_1\right)\right)\label{eq:deriv1}
+\end{align}
+
+Knowing that $s_1^{-1}\left(b_1\right) = v_1$, we can re-write \Cref{eq:deriv1} as:
+\begin{equation}
+\label{eq:differ1}
+\left(v_1 - b_1\right)\left(n-1\right)\cdot f\left(v_1\right)\cdot\frac{1}{s_1^\prime\left(v_1\right)} = F\left(v_1\right)
+\end{equation}
+
+We can set $b_1 = s_1\left(v_1\right)$ and re-arrange \Cref{eq:differ1} and get:
+\begin{equation}
+\label{eq:differ2}
+s_1^\prime\left(v_1\right) = \left(n-1\right)\left(\frac{f\left(v_1\right)\,\left(v_1 - s_1\left(v_1\right)\right)}{F\left(v_1\right)}\right)
+\end{equation}
+
+Solving the differential equation of \Cref{eq:differ2} yields the optimal strategy function $s_1(.)$ for bidder $1$ which gives her what to bid for a valuation of $v_1$. To solve \Cref{eq:differ2}, we need to know $f(.)$ and $F(.)$ (i.e., the probability density function and cumulative density functions of the bids). For example, assuming the bids are uniformly distributed in the range $\left[0,v_{max}\right]$ we will have:
+\begin{equation*}
+\forall x \in \left[0, v_{max}\right] \quad\quad f(x) = \frac{1}{v_{max}} \quad\quad \textrm{and} \quad\quad F(x) = \frac{x}{v_{max}}
+\end{equation*}
+
+Using these values for $f(.)$ and $F(.)$ in \Cref{eq:differ2} we get:
+\begin{equation}
+\label{eq:bid}
+s_1(v_1) = \left(\frac{n-1}{n} \right) v_1
+\end{equation}
+Which give the optimal bidding strategy if every driver's valuation is a uniform random variable in $\left[0,v_{max}\right]$.
+
+%\moedit{Show what $s(.)$ will be for this bid distribution}

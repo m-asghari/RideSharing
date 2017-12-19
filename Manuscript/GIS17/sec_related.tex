@@ -1,0 +1,53 @@
+\section{Related Work}
+\label{sec:related}
+
+Following, we review the related works in two separate categories.
+
+\subsection{Location Prediction}
+
+With the rapid growth of GPS enabled devices and the availability of fine-grained location data, many location prediction approaches have been studied in the past few years. This research includes location recommendation systems \cite{Noulas12,Yin13,Yuan13,Zhang14,Wang16}, human mobility modeling \cite{Cho11,Lichman14,Chiang15}, etc.
+
+In location recommendation systems, the goal is to predict the user's next check-in location based on their social network. In \cite{Yin13} and \cite{Yuan13}, the next location prediction is enhanced by incorporating the spatial and temporal correlation of users' data, respectively. In \cite{Noulas12}, in addition to spatiotemporal features, several social and behavioral features are proposed and the effect of each feature on predicting the user's next location is studied separately. Furthermore, in \cite{Zhang14,Wang16} the sequence of users' check-ins are exploited in order to predict the next check-in location. Compared with these studies, rather than studying an \emph{individual's} next check-in \emph{venue}, our model predicts the transition pattern of the \emph{population} between different \emph{regions}. In our work, instead of having personalized trajectories, we only know the point to point trips of anonymous individuals so it is not possible to look at the movement pattern of a single user. Furthermore, previous studies focus on the correlation between the types of venues visited by each user. This requires all venues visited by different users to be labeled appropriately in advance. Unlike the \textit{supervised} nature of these prediction approaches, our model generation process is completely \textit{unsupervised}.
+
+With regard to human mobility, previous studies model the distribution of geolocal events (i.e., check-ins, taxi bookings, etc.) over space and time. Lichman et al. \cite{Lichman14} predict the spatial distribution of check-in data by interpolating the spatial distributions of both the individuals and the population. In \cite{Cho11}, separate spatial and temporal Gaussian components are exploited to model check-in data. On the other hand, Chiang et al. \cite{Chiang15}, propose a unified Gaussian mixture model to predict spatiotemporal dynamics of taxi bookings. Similar techniques can be used with our model to predict the number of \emph{new} drivers that are added to the platform in each region at any point in time. However, another aspect of our model is to predict the number of drivers who have already been in the platform and \emph{relocated} to a certain location. This requires the transition pattern of users within the framework which has not been studied in previous approaches.
+
+%\textbf{Protecting Locations with Differential Privacy Under Temporal Correlations\cite{Xiao15}}\\
+%The paper itself is not directly related, however some sections are. Specifically \textbf{Section 2.2 Mobility and Inference Model} seems to have some overlap. However, this study assumes that they already have the transition patterns of users (which is our goal). One of the references \cite{Liao07} seem to be more relevant.\\
+
+%\textbf{Mobile Location Prediction in Spatio-Temporal Context\cite{Gao12b}}\\
+%This work defines:
+%\begin{equation*}
+%p\left(v_i = l \vert t_i = t, v_{i-1 = l_k}\right) \propto p\left(t_i=t \vert v_i = l\right)\cdot p\left(v_i = l \vert v_{i-1} = l_k\right)
+%\end{equation*}
+%In order to compute the spatial prior ($p\left(t_i=t \vert v_i = l\right)$), they use the work in \cite{Gao12a}. For the temporal constraint ($p\left(v_i = l \vert v_{i-1} = l_k\right)$), they use the users historical visits to a place and show that it's similar to a Gaussian distribution so they assume overall, a user's visit of a specific location follows a Gaussian distribution over time.\\
+
+%\textbf{Mining User Mobility Features for Next Place Prediction in Location-based Services\cite{Noulas12}}\\
+%The problem studies the \emph{Next Check-in Problem} where the goal is to predict the next exact place a user will visit next given historical data and the current location. The authors introduce several spatio-temporal, social and behavioral features that can affect the next place a user visits. Each feature is studied independently and also when all features are combined together using linear ridge regression and M5 decision trees\cite{Quinlan92}.\\
+
+%\textbf{Regularity and Conformity: Location Prediction Using Heterogeneous Mobility Data\cite{Wang15}}\\
+%The paper looks at regularity (similar periodic patterns) and conformity (irregular movements influenced by others) in human mobility. For the regularity factor, looks at historical data for transition patterns. \textbf{Section 3.2 Location Profiling Based on Gravity Model} seems most relevant as it proposes a mechanism for computing the transition matrix between different cells.\\
+%Also, the related work section gives a good overview of the research in this area.\\
+
+%\textbf{Where Are the Passengers?: A Grid-based Gaussian Mixture Model for Taxi Bookings\cite{Chiang15}}\\
+%In this work a GMM is proposed to predict the number of taxi requests in each region. The difference of our work is that we need want to predict the number of drivers available in each region. This consist of two parameters. (1) the number of drivers entering the system at each location and (2) the number of drivers whom arrive in that region due to a previous service. While the first parameter can be estimated using the techniques in \cite{Chiang15}, the second parameter requires computing the demand network and due to the nature of this network, a GMM is not capable of estimating the demand network. Consequently we need to introduce an MMM which is the focus of this study.\\
+
+%\textbf{LORE: Exploiting Sequential Influence for Location Recommendations \cite{Zhang14}}\\
+%Assumes they have the complete trajectory of the passengers, however we only have one previous location.
+
+%\begin{itemize}
+%\item We don't look at \emph{individuals} and predict their next \emph{venue} but rather are interested in the transition pattern of the general public between different regions
+%\item We don't have personalized data about individuals so it is not possible to look at one persons trajectory beyond the one point.
+%\item we don't manually label different locations
+%\end{itemize}
+\vspace{-0.05in}
+\subsection{Mechanism design for ride-sharing}
+
+Several mechanisms have been introduced to promote ride-sharing in traditional peer-to-peer carpooling platforms \cite{Kamar09,Kleiner11,Cheng14,Zhao15,Shen16}. These mechanisms assume passengers have valuations for each driver and assign passengers to drivers based on this valuation. Most previous studies assume all the information regarding passengers and drivers are known a priori and process the ride requests in batch \cite{Kamar09,Kleiner11,Cheng14,Zhao15}. These mechanism do not work in on-line environments and cannot provide an immediate response to ride requests, which is a key requirement of the current commercial ride-sharing platforms. One exception is the mechanism proposed in \cite{Shen16} that does generate on-line assignments. However, it assumes the drivers are autonomous and comply with any assignment made by the platform and thus the drivers' incentives are ignored. Furthermore, none of these mechanisms consider the platform providers revenue in their pricing model.
+
+%\textbf{An Online Mechanism for Ridesharing in Autonomous Mobility-on-demand Systems\cite{Shen16}}\\
+%Is on-line, however assumes the fleet consists of autonomous drivers who comply with any assignment made by the server. Provides a cost to the passenger when a request is received and the passenger can either accept or reject so the passenger does not have to reveal his valuation.\\
+
+%\textbf{A Mechanism for Dynamic Ride Sharing Based on Parallel Auctions\cite{Kleiner11}}\\
+%\textbf{Collaboration and Shared Plans in the Open World: Studies of Ridesharing\cite{Kamar09}}\\
+%\textbf{Mechanisms for Arranging Ride Sharing and Fare Splitting for Last-mile Travel Demands\cite{Cheng14}}\\
+%Neither of these mechanism work in on-line assignment scenarios.

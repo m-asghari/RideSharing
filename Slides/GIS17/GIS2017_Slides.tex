@@ -23,7 +23,8 @@
    \tikz[baseline,overlay]\node[every overlay node]
 }%
 
-\definecolor{mygreen}{RGB}{0, 108, 57}
+\definecolor{pathgreen}{RGB}{2, 155, 81}
+\definecolor{pathblue}{RGB}{0, 124, 181}
 
 \usepackage{amsmath}
 \usepackage{mathtools}
@@ -37,7 +38,7 @@
 
 \begin{document}
 
-\graphicspath{ {Graphics/}{Graphics/old/} }
+\graphicspath{ {Graphics/} }
 
 \title[USC Viterbi School of Engineering]{An On-line Truthful and Individually Rational Pricing Mechanism for Ride-sharing}  
 \author[Mohammad Asghari]{\small{Speaker:}\\Mohammad Asghari\\
@@ -45,7 +46,7 @@
 \begin{flushleft}
 \tiny{
 \hspace{1.25in}Joint work with\\
-\hspace{1.25in}Cyrus Shahabi, Faculty of CS Department at USC}\\
+\hspace{1.25in}Cyrus Shahabi, Faculty of Computer Science at University of Southern California}\\
 \vspace{-0.25in}
 \end{flushleft}}
 
@@ -70,13 +71,13 @@
 \begin{frame}\frametitle{Motivation}
 \begin{figure}
 	\centering
-    \includegraphics[width = 0.75\columnwidth]{carpool.eps}
+    \includegraphics[width = 0.75\columnwidth]{carpool}
 \end{figure}
 \begin{itemize}
 \item<2-> Increasing popularity of commercial ride-sharing platforms
 \begin{figure}
 	\centering
-    \includegraphics[width = 0.55\columnwidth]{ride-sharings.eps}
+    \includegraphics[width = 0.55\columnwidth]{ride-sharings}
 \end{figure}
 \end{itemize}
 \end{frame}
@@ -85,17 +86,17 @@
 \vspace{-0.28in}
 \begin{figure}
 	\centering
-    \includegraphics[width = 0.55\columnwidth]{ride-sharings.eps}
+    \includegraphics[width = 0.55\columnwidth]{ride-sharings}
 \end{figure}
 \vspace{-0.23in}
 \begin{itemize}
 \item Monetary Incentives.
-\item<2-> Price-aware Real-time Ride-sharing at Scale \textbf{(SIGSPATIAL'16) [1]} 
+\item<2-> Auction-based framework for ride-sharing \textbf{(SIGSPATIAL'16) [1]} 
 \vspace{-0.1in}
 \only<3->{
 \begin{figure}
 	\centering
-    \includegraphics[width = 0.75\columnwidth]{pricing3.eps}
+    \includegraphics[width = 0.75\columnwidth]{pricing3}
 \end{figure}
 }
 \end{itemize}
@@ -117,132 +118,106 @@
 \end{frame}
 
 \section{Framework Overview}
-\frame{\frametitle{Outline}\tableofcontents}
-
-\begin{frame}\frametitle{Rider's Fare}
-for every request \textit{r}:
-\begin{itemize}
-\item<1-> $\phi_r$: shortest path between $r.s$ and $r.e$
-\item<2-> $F: \mathbb{R}_{+}  \rightarrow \$ $ such that $F(\phi_r)$ is the default fare of a ride
-\end{itemize}
-\begin{columns}
-\column{0.5\textwidth}
-\begin{itemize}
-\item<3-> $\hat{\phi}_r$: actual trip of \textit{r}
-\item<3-> $\Delta_r = \frac{\hat{\phi}_r - \phi_r}{\phi_r}$
-\item<4-> $\lambda: \mathbb{R}_{+} \rightarrow \left[ 0, 1 \right] $ specifies the discount for $\Delta_r \in \mathbb{R}_{+}$
-\end{itemize}
-\vspace{0.25in}
-\only<5->{
-\begin{block}{}
-\begin{equation*}
-fare(r) = F(\phi_r) \cdot \lambda(\Delta_r)
-\end{equation*}
-\end{block}
-}
-
-\column{0.5\textwidth}
-\only<5->{
-\begin{center}
-\footnotesize{Rider Profile Example}
-\end{center}
-\vspace{-0.15in}
-\begin{figure}
-	\centering
-    \includegraphics[width = 0.95\columnwidth]{rider_profile}
-    \label{fig:quality}
-\end{figure}
-}
-\end{columns}
-\end{frame}
-
-\begin{frame}\frametitle{Driver's Cost}
-\vspace{-0.15in}
-for every driver \textit{v}:
-\begin{itemize}
-\item $\theta: \mathbb{R}_{+}  \rightarrow \$ $ specifies the monetary cost of \textit{v} driving a distance $d \in \mathbb{R}_{+}$
-\begin{itemize}
-\item<2-> $\theta: \mathbb{N} \times \mathbb{R}_{+}  \rightarrow \$$
-\end{itemize}
-\end{itemize}
-\begin{columns}
-\column{0.60\textwidth}
-\vspace{-0.1in}
-\only<4->{
-\begin{exampleblock}{}
-\begin{equation*}
-cost(\pi_d, \hat{\theta_d}) = \int_{start_{\pi_d}}^{end_{\pi_d}} \mathbb{I}\left\lbrace \pi_d^t \neq \left\langle \right\rangle\right\rbrace.\hat{\theta_d}(t)dt
-\end{equation*}
-\begin{itemize}
-\item $\mathbb{I}$: indicator function
-\item $\pi_d^t$: driver's schedule at \textit{t}. 
-\item $start_{\pi_d}$: first pick-up time of $\pi_d$
-\item $end_{\pi_d}$: last drop-off time of $\pi_d$
-\end{itemize}
-\end{exampleblock}
-}
-\column{0.40\textwidth}
-\only<3->{
-\begin{center}
-\footnotesize{Driver Profile Example}
-\end{center}
-\vspace{-0.15in}
-\begin{figure}
-	\centering
-    \includegraphics[width = 0.95\columnwidth]{driver_profile}
-    \label{fig:quality}
-\end{figure}
-}
-\end{columns}
-\end{frame}
-
-\begin{frame}\frametitle{Task Dispatching}
+\begin{frame}\frametitle{Overview}
 \only<1>{
 \vspace{-0.15in}
 \begin{figure}
 	\centering
-    \includegraphics[width = 0.95\columnwidth]{rs_dispatch}
+    \includegraphics[width = 0.95\columnwidth]{overview1}
+\end{figure}
+}
+\only<2>{
+\vspace{-0.15in}
+\begin{figure}
+	\centering
+    \includegraphics[width = 0.95\columnwidth]{overview2}
+\end{figure}
+}
+\only<3>{
+\vspace{-0.15in}
+\begin{figure}
+	\centering
+    \includegraphics[width = 0.95\columnwidth]{overview3}
+\end{figure}
+}
+\only<4>{
+\vspace{-0.15in}
+\begin{figure}
+	\centering
+    \includegraphics[width = 0.95\columnwidth]{overview4}
 \end{figure}
 }
 \end{frame}
 
 \begin{frame}\frametitle{Bid Computation}
 \begin{columns}
-\column{0.7\textwidth}
+\column{0.5\textwidth}
 \vspace{-0.3in}
-\only<1>{
+\only<1-2>{
 \vspace{-0.15in}
 \begin{figure}
 	\centering
-    \includegraphics[width = 0.825\columnwidth]{rs_bid}
+    \includegraphics[width = \columnwidth]{bid1}
 \end{figure}
 }
-\column{0.3\textwidth}
+\only<3->{
+\vspace{-0.15in}
+\begin{figure}
+	\centering
+    \includegraphics[width = \columnwidth]{bid2}
+\end{figure}
+}
+\column{0.5\textwidth}
 \only<1->{
-\vspace{0.75in}
-\begin{alertblock}{}
-$bid = profit^* - profit$
-\end{alertblock}
+\small{Each driver has a \textcolor{pathblue}{current} schedule $\pi$.}
+}
+\only<2->{
+\small{\begin{equation*}
+profit(\pi, \hat{\theta_d)} = \sum_{r \in \pi} fare(r) - cost(\pi, \hat{\theta_d})
+\end{equation*}}
+}
+\only<3->{
+\small{For a new request, each driver computes a \textcolor{pathgreen}{best potential} schedule $\pi^*$.}
+}
+\only<4->{
+\small{\begin{equation*}
+bid = profit(\pi^*, \hat{\theta_d)} - profit(\pi, \hat{\theta_d)}
+\end{equation*}}
+}
+\only<5->{
+\begin{exampleblock}{}
+The driver can manipulate his bid by misreporting his type $\theta$.
+\end{exampleblock}
 }
 \end{columns}
-\begin{equation*}
-profit(\pi, \hat{\theta_d)} = \sum_{r \in \pi} fare(r) - cost(\pi, \hat{\theta_d})
-\end{equation*}
 \end{frame}
 
 \section{Competitive Bidding}
 \begin{frame}\frametitle{Competitive Bidding}
-Every driver will attempt to maximize his own utility:
-\begin{equation*}
-E[u_i] = \left(v_i - s_i\left( v_i \right) \right) \cdot Prob \left[win_i\right] 
-\end{equation*}
-\only<1>{
 \begin{itemize}
-\item $Prob\left[win_1\right]$ is the probability that driver $i$ wins the auction
-\item $v_i(.)$ is driver $i$'s \emph{true} valuation of the request
-\item $s_i(.)$ is the \emph{strategy function} that driver $i$ applies to his true valuation to compute his optimal bid
+\item Assume the \textbf{true} profit a driver can generate for a request is \$10 but he only bids \$8.
+\item<2-> \textbf{If the driver wins}, then he gains an additional \$2.
+\item<3-> The \textbf{utility gain} of the driver can be computed as:
+\only<3>{
+\begin{equation*}
+E[u_i] = \left(v_i - b_i \right) \cdot Prob \left[win(b_i)\right] 
+\end{equation*}
+\begin{itemize}
+\item $v_i$ is driver $i$'s \emph{true} valuation (/bid) for the request
+\item $b_i$ is what the driver actually bid
+\item $Prob\left[win(b_i)\right]$ is the probability that driver $i$ wins the auction by bidding $b_i$.
 \end{itemize}
 }
+\only<4>{
+\begin{equation*}
+E[u_i] = \left(v_i - \textcolor{red}{s_i\left( v_i \right)} \right) \cdot Prob \left[win(\textcolor{red}{s_i\left( v_i \right)})\right] 
+\end{equation*}
+\item Our goal is to find a \textbf{strategy function} $s_i(.)$ that any driver can apply to it's \textbf{true} valuation to get his optimal bid.
+\begin{equation*}
+b_i = s_i(v_i)
+\end{equation*}
+}
+\end{itemize}
 \end{frame}
 
 \begin{frame}\frametitle{Competitive Bidding}
@@ -280,70 +255,80 @@ s_i^\prime\left(v_i\right) = \left(n-1\right)\left(\frac{f\left(v_i\right)\,\lef
 
 \section{Latent Space Transition Model}
 \begin{frame}\frametitle{Model}
+The number of drivers in location $i$ at time $t$, is the sum of:
 \begin{itemize}
-\item We assume we have $n$ locations
-\item<2-> $\beta_p^t$ shows the number of ride requests for location $p$ at time $t$
-\item<3-> $A^t$ is the \textit{network demand} matrix at time $t$:
+\item Drivers that enter the platform in location $i$ at time $t$.\only<2>{\textcolor{red}{[2]}}\only<3->{[2]}
+\only<3->{\vspace{0.023in}}
+\item Drivers that finish a trip in location $i$ at time $t$.
+\only<3->{
 \begin{itemize}
-\item<3-> $\alpha_{pq}^t$ shows the fraction of requests at $p$ going to $q$.
-\end{itemize} 
-\item<4-> The number of drivers in location $p$ at time $t$:
-\vspace{-0.1in}
-\only<4>{
-\begin{equation*}
-v_p^t = \sum_{q=1}^n \alpha_{pq}^{t-1} min \left\lbrace v_q^{t-1}, \beta_q^{t-1} \right\rbrace + \delta_p^t
-\end{equation*}
-}
-\only<5>{
-\begin{equation*}
-v_p^t = \sum_{q=1}^n \alpha_{pq}^{t-1} \textcolor{red}{min \left\lbrace v_q^{t-1}, \beta_q^{t-1} \right\rbrace} + \delta_p^t
-\end{equation*}
-}
-\only<6>{
-\begin{equation*}
-v_p^t = \sum_{q=1}^n \alpha_{pq}^{t-1} min \left\lbrace v_q^{t-1}, \beta_q^{t-1} \right\rbrace + \textcolor{red}{\delta_p^t}
-\end{equation*}
-}
-\only<7>{
-\begin{equation*}
-v_p^t = \sum_{q=1}^n \textcolor{red}{\alpha_{pq}^{t-1}} min \left\lbrace v_q^{t-1}, \beta_q^{t-1} \right\rbrace + \delta_p^t
-\end{equation*}
-}
-\begin{itemize}
-\item<5-> $min \left\lbrace v_q^{t-1}, \beta_q^{t-1} \right\rbrace$ gives the number of serviced trips at location $q$
-\item<6-> $\delta_p^t$ gives the number of \textit{new} drivers entering the platform at time $t$ in location $p$ [2]
+\item Need to learn the \textbf{network transition} matrix.
+\begin{columns}
+\column{0.6\textwidth}
+\begin{figure}
+	\centering
+    \includegraphics[width = 0.45\textwidth]{network_demand1}
+\end{figure}
+\column{0.4\textwidth}
+\vspace{0.7in}\\
+$\alpha_{ij}$ gives the probability of a request with pick-up location $i$ at time $t$ having a destination location $j$.
+\end{columns}
 \end{itemize}
+}
 \end{itemize}
-\only<6->{
-\vspace{0.3in}
+
+
+\only<2>{
+\vspace{2.1in}
+\tiny{\textcolor{red}{[2] Cheng et. al., Where are the passengers? A grid-based gaussian mixture model for taxi bookings, SIGSPATIAL'15}}
+}
+\only<3->{
+\vspace{0.345in}
 \tiny{[2] Cheng et. al., Where are the passengers? A grid-based gaussian mixture model for taxi bookings, SIGSPATIAL'15}
 }
 \end{frame}
 
 \begin{frame}\frametitle{Latent Space Transition Model}
-\begin{itemize}
-\item Row $p$ in $A^t$ gives the probability distribution over destination of requests in $p$ at $t$
-\begin{itemize}
-\item various factors (/topics) can influence this distribution; e.g., locality, time, weather, etc.
-\end{itemize}
-\item<2-> We model each row of $A^t$ as a $k$ component \textit{Multinomial Mixture Model (MMM)}
-\begin{itemize}
-\item<3-> We assume the observed (/training) data corresponding to each row is randomly generated as follows:
-\begin{enumerate}
-\item We draw a latent topic $j \stackrel{iid}{\sim} \textrm{Mult}(\psi_i)$.
-\item For each topic $j$, the observed data $x$ is drawn from the topic's multinomial distribution:
-\begin{equation*}
-x \vert j \stackrel{ind}{\sim} \textrm{Mult}(\mu_j)
-\end{equation*}
-\end{enumerate}
-\only<4-5>{\begin{itemize}
-\item<4-5> $\psi_{ij}$ is the \textbf{unknown} probability of selecting topic $j$ for row $i$
-\item<5-5> $\mu_{jp}$ is the \textbf{unknown} probability of selecting location $p$ from topic $j$
-\end{itemize}
+Each row $i$ in $A^t$ gives the probability distribution over the destination of requests in location $i$ at time $t$.
+\only<1>{
+\vspace{0.19in}
+\begin{figure}
+	\centering
+    \includegraphics[width = 0.4\textwidth]{network_demand2}
+\end{figure}
 }
-\item<6-> We use the \textit{Maximum Log Likelihood} estimation method with the \textit{Expectation Maximization} algorithm to estimate the unknown parameters of the model.
+\only<2->{
+\only<3>{\vspace{.09in}}
+\begin{figure}
+	\centering
+    \includegraphics[width = 0.4\textwidth]{network_demand3}
+\end{figure}
+}
+\only<3>{\vspace{0.12in}}
+\begin{itemize}
+\item<2-> Various factors (/topics) can affect the probability of location $j$ being the destination; e.g., locality, time, weather, etc.
+\only<3>{
+\begin{align*}
+p(j) = &\text{importance(locality}|\text{location i)}\cdot p(j|\text{locality}) + \\
+&\text{importance(time}|\text{location i)}\cdot p(j|\text{time}) + \\
+&\cdots
+\end{align*}
+}
+\item<4-> In general, the probability of location $j$ being the destination is:
+\only<4->{
+\begin{equation*}
+p(j) = \sum_{k} p(k|i)\cdot p(j|k)
+\end{equation*}
+}
+\item<5-> Our goal is to find the best $p(k|i)$ for every $i$ and $p(j|k)$ for every $k$ that matches the training data.
 \end{itemize}
-\end{itemize}
+\only<6->{
+\begin{textblock*}{11cm}(1cm,4.2cm)
+\begin{alertblock}{}
+We use the \textbf{log likelihood estimation} method with the \textbf{expectation maximization} algorithm to find the unknown probability distributions.
+\end{alertblock}
+\end{textblock*}
+}
 \end{frame}
 
 \section{SPARP Mechanism}
@@ -426,7 +411,7 @@ $\forall r$, the reserved price $b_s^r$, is the minimum price the platform sets 
 \end{block}
 \begin{itemize}
 \item<2-> If $b_s < b_2$: Driver with $b_1$ wins and pays $b_2$.
-\item<3-> If $b_1 < b_s$: We assume $b_1$ wins and pays 0.
+\item<3-> If $b_1 < b_s$: We assume $b_1$ wins and pays $b_2$.
 \item<4-> If $b_2 < b_s < b_1$: Driver with $b_1$ wins and pays $b_s$.
 \end{itemize}
 \only<4->{
@@ -452,17 +437,9 @@ $\forall r$, the reserved price $b_s^r$, is the minimum price the platform sets 
 }
 \begin{itemize}
 \item<5-> We assume for every $r$:
-\begin{columns}
-\column{0.5\textwidth}
 \begin{equation*}
-b_s^r = F(\phi_r) - \theta^*(\phi_r)
+b_s^r = \text{base fare of }r - \text{cost of most expensive driver}
 \end{equation*}
-\column{0.5\textwidth}
-\vspace{-0.15in}
-\begin{equation*}
-\theta^* = \argmax_\theta \left\lbrace \theta(\phi_r) \mid \theta \in \Theta \right\rbrace 
-\end{equation*}
-\end{columns}
 \end{itemize}
 \end{frame}
 
@@ -481,17 +458,17 @@ b_s^r = F(\phi_r) - \theta^*(\phi_r)
 \item<2-> Algorithms:
 \only<2>{
 \begin{itemize}
-\item Prediction Model
-\begin{itemize}
-\item LSTM
-\item LORE(Additive Markov Chains)[3]
-\end{itemize} 
-\item Revenue Generation
-\begin{itemize}
+%\item Prediction Model
+%\begin{itemize}
+%\item LSTM
+%\item LORE(Additive Markov Chains)[3]
+%\end{itemize} 
+%\item Revenue Generation
+%\begin{itemize}
 \item FPACB (First-price Auction w/ Competitive Bidding)[1]
 \item SPA (Second-price Auction)
 \item SPARP (Second-price Auction w/ Reserved Price)
-\end{itemize}
+%\end{itemize}
 \end{itemize}
 }
 \item<3-> Parameters:
@@ -503,15 +480,11 @@ b_s^r = F(\phi_r) - \theta^*(\phi_r)
 			\hline
 			Parameter & Values \\
 			\hline \hline
-            Gide Size (km) & 1, \textbf{2}, 3, 4, 5 \\ 
-			\hline
-			Time Slot Size (hour) & 1, \textbf{2}, 3,  4, 5, 6\\ 
-			\hline
-			Max Wait Time (min) & 3, \textbf{6}, 9, 12, 15, 20 \\ 
-			\hline
+%            Gide Size (km) & 1, \textbf{2}, 3, 4, 5 \\ 
+%			\hline
+%			Time Slot Size (hour) & 1, \textbf{2}, 3,  4, 5, 6\\ 
+%			\hline
 			\# of Drivers & 1000, 2000, \textbf{5000},  10000, 20000\\ 
-			\hline
-			Max Passengers & 2, 3, \textbf{4}, 5, 6 \\
 			\hline
 			Max Allowed Detour & 25\%, \textbf{50\%}, 75\%, 100\%\\
 			\hline
@@ -519,66 +492,41 @@ b_s^r = F(\phi_r) - \theta^*(\phi_r)
 	\end{center}
 \end{table}
 }
-\item<4-> Pricing Model:
-\only<4>{
-\begin{equation*}
-	\begin{split}
-		F(\phi_r) =& 2 \times \phi_r\\
-		\forall r, \lambda_r(\Delta_r) = & 1 - \Delta_r^2\\
-		\forall d, \theta_d(l) = & 1.5 * l
-	\end{split}
-\end{equation*}
-}
+\item<4-> Use the  Pricing Model in [1].
 \end{itemize}
 \only<2>{
-\vspace{0.5in}
-\tiny{[1] Asghari et. al., Price-aware Real-time Ride-sharing at Scale: An Auction-based Approach, SIGSPATIAL'17}\\
-\tiny{[3] Zhang et. al., Lore: Exploiting sequential influence for location recommendation, SIGIR'13}
+\vspace{1.1in}
+\tiny{[1] Asghari et. al., Price-aware Real-time Ride-sharing at Scale: An Auction-based Approach, SIGSPATIAL'17}
+%\tiny{[3] Zhang et. al., Lore: Exploiting sequential influence for location recommendation, SIGIR'13}
+}
+\only<4>{
+\vspace{1.6in}
+\tiny{[1] Asghari et. al., Price-aware Real-time Ride-sharing at Scale: An Auction-based Approach, SIGSPATIAL'17}
 }
 \end{frame}
 
-\begin{frame}\frametitle{Prediction Model}
-\begin{itemize}
-\item Used k-fold cross validation to get train/test data
-\item Used the Kullback-Leibler Divergence(KLD) metric to evaluate the outcome of the model:
-\small{
-\begin{equation*}
-KLD\left(P \middle\| Q\right)=\sum_i P(i) \log \frac{P(i)}{Q(i)}
-\end{equation*}
-}
-\end{itemize}
-\vspace{-0.25in}
-\begin{figure}
-	\centering
-    \includegraphics[width = 0.45\columnwidth]{klddiff}\\
-    \tiny{\textbf{\textit{LSTM Vs LORE - Varying Cell \& Time Slot}}}
-\end{figure}
-\end{frame}
-
-\begin{frame}\frametitle{Revenue Generation}
-\begin{itemize}
-\item Compared the revenue of SPA \& SPARP w/ that of FPACB
-\end{itemize}
-\begin{columns}
-\column{0.5\textwidth}
-\begin{figure}
-	\centering
-    \includegraphics[width = 0.95\columnwidth]{nd2revdiff}\\
-    \small{\textbf{\textit{Number of Drivers}}}
-\end{figure}
-\column{0.5\textwidth}
-\begin{figure}
-	\centering
-    \includegraphics[width = 0.95\columnwidth]{mad2revdiff}\\
-    \small{\textbf{\textit{Max Allowed Detour}}}
-\end{figure}
-\end{columns}
-\end{frame}
+%\begin{frame}\frametitle{Prediction Model}
+%\begin{itemize}
+%\item Used k-fold cross validation to get train/test data
+%\item Used the Kullback-Leibler Divergence(KLD) metric to evaluate the outcome of the model:
+%\small{
+%\begin{equation*}
+%KLD\left(P \middle\| Q\right)=\sum_i P(i) \log \frac{P(i)}{Q(i)}
+%\end{equation*}
+%}
+%\end{itemize}
+%\vspace{-0.25in}
+%\begin{figure}
+%	\centering
+%   \includegraphics[width = 0.45\columnwidth]{klddiff}\\
+%    \tiny{\textbf{\textit{LSTM Vs LORE - Varying Cell \& Time Slot}}}
+%\end{figure}
+%\end{frame}
 
 \begin{frame}\frametitle{Untruthful Bidding}
 \begin{itemize}
 \item Use LSTM to predict the number of drivers
-\item Assume the bids are uniformly distributed in $[0, F(\phi_r)]$
+\item Assume the bids are uniformly distributed in $[0, \text{base fare of r}]$
 \end{itemize}
 \begin{table}
   \centering
@@ -607,9 +555,28 @@ KLD\left(P \middle\| Q\right)=\sum_i P(i) \log \frac{P(i)}{Q(i)}
                          		&Income per Mile (Median)&\$1.21&\$1.23&\$1.23\\
     \hline
   \end{tabular}
-  \caption{Effects of Untruthful Bidding}
   \label{tab:untruthful}
 \end{table}
+\end{frame}
+
+\begin{frame}\frametitle{Revenue Generation}
+\begin{itemize}
+\item Compared the revenue of SPA \& SPARP w/ that of FPACB
+\end{itemize}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{figure}
+	\centering
+    \includegraphics[width = 0.95\columnwidth]{nd2revdiff}\\
+    \small{\textbf{\textit{Number of Drivers}}}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+	\centering
+    \includegraphics[width = 0.95\columnwidth]{mad2revdiff}\\
+    \small{\textbf{\textit{Max Allowed Detour}}}
+\end{figure}
+\end{columns}
 \end{frame}
 
 \section*{Q \& A}

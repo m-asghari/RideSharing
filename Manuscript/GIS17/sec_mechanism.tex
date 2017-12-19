@@ -1,0 +1,134 @@
+\section{The \emph{SPARP} Mechanism}
+\label{sec:mechanism}
+
+\subsection{Pricing Model}
+\label{subsec:pricing}
+Every request $r$ has a default fare based on the duration of the shortest trip, $\phi(s_r, e_r)$ (For convenience, we show this as $\phi_r$). We define function $F: \mathbb{R}_{+}  \rightarrow \$ $ such that $F(\phi_r)$ is the default fare of a ride. In addition, we show the \textit{actual} route between the two end points of a ride with $\hat{\phi}_r$ and define the detour of a ride as $\Delta_r = \hat{\phi}_r - \phi_r$. As explained in definition \Cref{def:req}, each request is associated with a profile as a tool for the rider to specify how much discount he expects to receive in return for a certain amount of detour on his trip.
+
+Subsequently, for a request $r$ with shortest trip $\phi_r$, detour $\Delta_r$ and a profile $\lambda_r$, the final fare is represented as:
+\begin{equation}
+\label{eq:fare}
+fare(r) = F(\phi_r) \cdot \lambda_r(\Delta_r)
+\end{equation}
+
+Every driver has a profile which allows them to set their minimum expectations for participating in the platform. A driver's profile represents the cost of the driver participating in the platform. The profile can depend on any number of parameters; e.g., the length of the trip, the number of passengers, etc. In \cite{Asghari16} we studied the effect of various profiles for the drivers. Here, we assume a driver's profile only depends on the duration for which the driver provides service. 
+
+Drivers can misreport their actual profiles if it is to their best interest. We show driver $d$'s reported profile as $\hat{\theta_d} \in \Theta$ where $\Theta$ is the set of all possible profiles. At any point in time, each driver has a schedule. Therefore, for every driver $d$, the cost of servicing schedule $\pi_d$ based on the reported profile $\hat{\theta_d}$ is:
+\begin{equation}
+\label{eq:cost}
+cost(\pi_d, \hat{\theta_d}) = \int_{start_{\pi_d}}^{end_{\pi_d}} \mathbb{I}\left\lbrace \pi_d^t \neq \left\langle \right\rangle\right\rbrace.\hat{\theta_d}(t)dt
+\end{equation}
+
+\noindent Where $\mathbb{I}$ is the indicator function and $\pi_d^t$ is the driver's schedule at time $t$. In addition, $start_{\pi_d}$ and $end_{\pi_d}$ are the first pick-up time and last drop-off time of $\pi_d$.
+
+For every request $r$ assigned to a driver, depending on the driver's reported profile ($\hat{\theta_d}$) the driver has to pay a \emph{profit} to the platform provider ($\rho(r)$). We can define driver $d$'s payments to the platform and income for servicing schedule $\pi_d$ as:
+\begin{align}
+\label{eq:income}
+payment(\pi_d, \hat{\theta_d}) &= \sum_{r \in \pi_d} \rho_r\\
+income(\pi_d, \hat{\theta_d}) &= \sum_{r \in \pi_d} fare(r) - payment(\pi_d, \hat{\theta_d})
+\end{align}
+
+For every driver $d$, we define the \emph{utility} as the difference between his income and cost for servicing schedule $\pi_d$:
+\begin{equation}
+u(\pi_d, \hat{\theta_d}, \theta_d) = income(\pi_d, \hat{\theta_d}) - cost(\pi_d, \theta_d)
+\end{equation}
+
+If a driver does not participate in the ride-sharing platform, both the cost and income is zero. We say the platform is \emph{individually rational} if no driver receives a negative utility by participating in the platform. Another crucial aspect of the framework should be preventing the drivers to strategically manipulate the platform by misreporting their profiles, which is known as \emph{truthfulness}.
+
+\begin{definition} [Truthfulness]
+A platform is \emph{truthful} if and only if for every driver $d$, $\forall \hat{\theta_d} \in \Theta \land \hat{\theta_d} \neq \theta_d$, $u(\pi_d, \hat{\theta_d}, \theta_d) \leq u(\pi_d, \theta_d, \theta_d)$.
+\end{definition}
+
+\noindent That is, a platform is truthful if the dominant (most profitable) strategy for drivers is to report their profiles truthfully.
+
+The overall goal of the platform is to maximize the revenue of the platform provider.
+
+\begin{definition} [Revenue]
+Given the matching $M(\mathcal{D}, \mathcal{R})$ between the set of drivers $\mathcal{D}$ and requests $\mathcal{R}$, the revenue of the platform provider is
+\begin{equation}
+revenue(M(\mathcal{D}, \mathcal{R})) = \sum_{d \in \mathcal{D}} payments(\pi_d, \hat{\theta_d})
+\end{equation}
+\end{definition}
+
+We call a framework \emph{budget balanced} if $revenue(M(\mathcal{D}, \mathcal{R})) \geq 0$. Otherwise, we say the framework runs a \emph{deficit}.
+
+\subsection{Payments}
+In \Cref{subsec:pricing} we mentioned that for every request $r$ assigned to a driver, the driver has to pay $\rho_r$ to the platform provider. In this section we explain what $\rho_r$ should be so that the platform be:
+\begin{enumerate}
+\item \emph{individually rational}; i.e., the drivers do not end up with a negative utility.
+\item \emph{truthful}; i.e., the drivers cannot manipulate the framework by misreporting their profiles.
+\end{enumerate}
+
+Based on \Cref{algo:comp_bid} the value of the bid driver $d$ submits to the server for request $r$ ($bid_d^r$) is equal to the \emph{additional profit} driver $d$ generates by accepting a new request $r$.
+\begin{theorem}
+If for every request $r$ assigned to driver $d$, $\rho_r \leq bid_d^r$ then the ride-sharing platform is individually rational.
+\end{theorem}
+\begin{proof}
+From \Cref{eq:income} we know:
+\begin{align*}
+income(\pi_d, \hat{\theta}_d) &= \sum_{r \in \pi_d} fare(r) - \sum_{r \in \pi_d} \rho_r \\
+&\geq \sum_{r \in \pi_d} fare(r) - \sum_{r \in \pi_d} bid_d^r
+\end{align*}
+
+for every request $r$ and driver $d$, $bid_d^r$ is the difference between the profit $d$ can make after accepting $r$ ($\gamma_r^d$) and the profit $d$ can make before accepting $r$ ($\gamma_{r-}^d$). Therefore:
+%\begin{align*}
+%income(\pi_d, \hat{\theta}_d) &\geq \sum_{r \in \pi_d} fare(r) - \sum_{r \in \pi_d} (\gamma_r^d - \gamma_{r-}^d)\\
+%&\geq \sum_{r \in \pi_d} fare(r) - \left( (\gamma_{r_1}^d - \gamma_{r_1-}^d) + (\gamma_{r_2}^d - \gamma_{r_2-}^d) + \cdots + (\gamma_{r_n}^d - \gamma_{r_n-}^d) \right)
+%\end{align*}
+\begin{equation*}
+income(\pi_d, \hat{\theta}_d) \geq \sum_{r \in \pi_d} fare(r) - \sum_{r \in \pi_d} (\gamma_r^d - \gamma_{r-}^d)
+\end{equation*}
+
+Assuming $\left\langle r_1, r_2, \cdots, r_n \right\rangle$ shows the order in which driver $d$ accepts the request we can say $\gamma_{r_i-}^d = \gamma_{r_{i-1}}^d$ and hence:
+\begin{equation*}
+income(\pi_d, \hat{\theta}_d) \geq \sum_{r \in \pi_d} fare(r) - (\gamma_{r_n}^d - \gamma_{r_1-}^d)
+\end{equation*}
+
+Before accepting the first request, the driver cannot generate any profit (i.e., $\gamma_{r_1-}^d = 0$). Furthermore, the profit each driver generates for the platform is equal to the difference the total collected fares and the cost of that driver:
+\begin{equation*}
+\gamma_{r_n}^d = \sum_{r \in \pi_d} fare(r) - cost(\pi_d, \hat{\theta}_d)
+\end{equation*}
+
+Therefore:
+\begin{align*}
+income(\pi_d, \hat{\theta}_d) &\geq \sum_{r \in \pi_d} fare(r) - \left(\sum_{r \in \pi_d} fare(r) - cost(\pi_d, \hat{\theta}_d) \right) \\
+&\geq cost(\pi_d, \hat{\theta}_d)
+\end{align*}
+
+In other words, the driver's income is always at least as much as his costs which implies the utility is always non-negative and the platform is individually rational.
+\end{proof}
+
+Intuitively, by adopting a first-price auction scheme (i.e., for every request $r$, $\rho_r = bid_{d_{opt}}^r$ where ${d_{opt}}$ is the driver with the highest bid), the platform can maximize its revenue while remaining individually rational. However, computing the profit of a schedule depends on the driver's reported profile. Consequently, a driver's reported profile can eventually affect the driver's bid. The disadvantage of setting $\rho_r = bid_{d_{opt}}^r$ is that drivers would have the incentive to lower their bids by misreporting their profiles and hence, the framework will not be truthful. \Cref{th:truthful} shows by adopting a second-price auction scheme, the drivers do not have an incentive to misreport their profiles.
+
+One of the key features of the second-price auction scheme is truthfulness. In \Cref{th:truthful} we show how truthfulness is guaranteed in APART by adopting the second price-auction scheme.
+\begin{theorem}
+\label{th:truthful}
+If for every request $r$ assigned to driver $d$, $\rho_r$ is equivalent to the value of the second highest bid, then the platform is truthful.
+\end{theorem}
+\begin{proof}
+We assume $d_2$ is the driver with the second highest bid and $bid_{d_2}^r$ is his corresponding bid. We show that the winning driver $d_{opt}$ cannot increase his utility by misreporting his profile and either increasing or decreasing his bid. We show $d_{opt}$'s bid based on his actual profile as $bid_{d_{opt}}^r$ and his bid based on a misreported profile as $\overline{bid}_{d_{opt}}^r$.\\
+\textbf{Case 1: $bid_{d_2}^r < bid_{d_{opt}}^r < \overline{bid}_{d_{opt}}^r$:} In this case $d_{opt}$ will have the highest bid so he will be selected as the winner and his payment will be $bid_{d_2}^r$.\\
+\textbf{Case 2: $bid_{d_2}^r < \overline{bid}_{d_{opt}}^r < bid_{d_{opt}}^r$:} Similar to the first case, here $d_{opt}$ will have the highest bid and will be assigned the request. The second highest bid is still from $d_2$ and hence, $d_{opt}$ will still pay $bid_{d_2}^r$ to the platform provider.\\
+\textbf{Case 3: $\overline{bid}_{d_{opt}}^r < bid_{d_2}^r < bid_{d_{opt}}^r$:} In this case, $d_{opt}$ will no longer have the highest bid and $r$ will not be assigned to him. Therefore, both his $cost$ and $payment$ will be $0$ and there will be no change to his $utility$.\\
+Consequently, in all three cases, $d_{opt}$ cannot increase his utility by misreporting his profile and thus, the framework is truthful.
+\end{proof}
+
+With $\rho_r > 0$ for every request $r$, we can guarantee that the platform is \emph{budget balanced}.
+
+\begin{lemma}
+If for every request $r$, $\rho_r > 0$, then the ride-sharing platform is budget balanced.
+\end{lemma}
+
+Asking the drivers to pay an equivalent amount to the second highest bid takes away any incentives for the drivers to misreport their profiles. However, if there is only one driver who can fit the request in his current schedule and thus there will be no second highest bid and the driver will not pay anything to the platform. To avoid situations like this, the platform can set a \emph{reserved price} for every request.
+
+\begin{definition}[Reserved Price] 
+For every request $r$, the reserved price $bid_{server}^r$, is a hidden minimum price the platform sets for the payments it expects from the winning driver.
+\end{definition}
+
+The server treats the reserved price as another bid. If there is no other bid higher than the reserved price, the server does not assign the request to any driver. Otherwise, the reserved price guarantees the second highest bid is not 0. With APART, for every request, the reserved price is the difference between the requests default fare and the cost of the most expensive driver servicing that request:
+
+\begin{equation*}
+\bigforall r, \ bid_{server}^r = F(w_r) - \theta^*(w_r) \quad \textrm{and} \quad \theta^* = \argmax_\theta \left\lbrace \theta(w_r) \mid \theta \in \Theta \right\rbrace 
+\end{equation*}
+
+\noindent where $\Theta$ is the set of all possible profiles for the drivers.
