@@ -23,10 +23,15 @@ public class DynamicPricingMain {
         int[] supplies = generateInitialSupply(demands[0].length, TOTAL_DRIVERS);
 
         Optimizer locOptimizer = new LocalOptimizer(demands, supplies, transitions);
-        locOptimizer.Run();
+        double localOptRev = locOptimizer.Run();
 
-        Optimizer predOptimizer = new PredictiveOptimizer(demands, supplies, transitions);
-        predOptimizer.Run();
+        for (double error = 0.; error <= 1.; error += 0.05) {
+            System.out.printf("Prediction Error: %.2f\n", error);
+            Optimizer predOptimizer = new PredictiveOptimizer(demands, supplies, transitions, error);
+            double predOptRev = predOptimizer.Run();
+            System.out.printf("Local: %.2f, Predictive: %.2f, Ratio: %.2f\n", localOptRev, predOptRev, (predOptRev - localOptRev)/localOptRev);
+        }
+
     }
 
     private static int[][] getDemands() throws IOException {
