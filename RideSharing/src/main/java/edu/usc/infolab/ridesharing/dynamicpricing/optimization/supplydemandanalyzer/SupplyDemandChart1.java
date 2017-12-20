@@ -1,4 +1,4 @@
-package edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer;
+package edu.usc.infolab.ridesharing.dynamicpricing.optimization.supplydemandanalyzer;
 
 /**
  * Created by Mohammad on 11/15/2017.

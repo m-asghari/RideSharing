@@ -1,9 +1,7 @@
 package edu.usc.infolab.ridesharing.dynamicpricing.optimization.optimizer;
 
-import edu.usc.infolab.Counter;
-import edu.usc.infolab.ridesharing.datasets.IO;
-import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.SupplyDemandChart;
-import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.SupplyDemandChart1;
+import edu.usc.infolab.ridesharing.dynamicpricing.optimization.supplydemandanalyzer.SupplyDemandChart;
+import edu.usc.infolab.ridesharing.dynamicpricing.optimization.supplydemandanalyzer.SupplyDemandChart1;
 
 import java.io.IOException;
 import java.util.*;
