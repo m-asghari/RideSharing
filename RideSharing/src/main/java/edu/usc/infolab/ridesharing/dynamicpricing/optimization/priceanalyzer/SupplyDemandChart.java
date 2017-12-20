@@ -78,6 +78,13 @@ public abstract class SupplyDemandChart{
         return (newAdjustedSupply * newOptPrice) - (m_currentPrice * trips);
     }
 
+    public String getSummary() {
+        return String.format("%d,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,",
+                m_location, m_demand, m_supply,
+                m_equilibriumPrice, m_optPrice, m_currentPrice,
+                getNumberOfTrips(m_optPrice), getNumberOfTrips(m_currentPrice));
+    }
+
     protected abstract double getEquilibriumPrice();
 
     protected abstract double getOptimalDemandPrice();

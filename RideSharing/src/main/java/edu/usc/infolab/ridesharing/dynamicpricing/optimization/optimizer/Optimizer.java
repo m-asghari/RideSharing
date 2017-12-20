@@ -2,6 +2,11 @@ package edu.usc.infolab.ridesharing.dynamicpricing.optimization.optimizer;
 
 import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.SupplyDemandChart;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -12,10 +17,16 @@ public abstract class Optimizer {
     protected int[] m_supplies;
     protected double[][][] m_transitions;
 
-    public Optimizer(int[][] demands, int[] supplies, double[][][] transitions) {
+    private FileWriter fw;
+    private BufferedWriter bw;
+
+    public Optimizer(int[][] demands, int[] supplies, double[][][] transitions) throws IOException{
         m_demands = demands;
         m_supplies = supplies;
         m_transitions = transitions;
+
+        fw = new FileWriter(String.format("summary_%s_%s.csv", getType(), new SimpleDateFormat("dd-MMM-yy_HH-mm-ss").format(Calendar.getInstance().getTime())));
+        bw = new BufferedWriter(fw);
     }
 
     protected int[] getFutureSupply(SupplyDemandChart[] sources, int currentTime) {
@@ -30,5 +41,20 @@ public abstract class Optimizer {
         return futureSupplies;
     }
 
-    public abstract double Run();
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        bw.close();
+        fw.close();
+    }
+
+    public abstract double Run() throws IOException;
+
+    protected void log(String message) throws IOException {
+        bw.flush();
+        bw.write(message);
+        bw.write("\n");
+    }
+
+    protected abstract String getType();
 }

@@ -15,7 +15,7 @@ import java.util.Random;
 public class DynamicPricingMain {
     private static final String DEMAND_FILE = "../Data/NYCTaxiDataset/TripData/ReformattedData/05-May/demands/demand_5_1_tract.csv";
     private static final String TRANSITION_FILE = "../Data/NYCTaxiDataset/TripData/ReformattedData/05-May/transitions/transition_5_1_tract.csv";
-    private static final int TOTAL_DRIVERS = 30000;
+    private static final int TOTAL_DRIVERS = 10000;
 
     public static void main(String[] args) throws IOException {
         int[][] demands = getDemands();
@@ -25,12 +25,17 @@ public class DynamicPricingMain {
         Optimizer locOptimizer = new LocalOptimizer(demands, supplies, transitions);
         double localOptRev = locOptimizer.Run();
 
-        for (double error = 0.; error <= 1.; error += 0.05) {
+        Optimizer predOptimizer = new PredictiveOptimizer(demands, supplies, transitions);
+        double predOptRev = predOptimizer.Run();
+
+        System.out.printf("Local: %.2f, Predictive: %.2f, Ratio: %.2f\n", localOptRev, predOptRev, (predOptRev - localOptRev)/localOptRev);
+
+        /*for (double error = 0.; error <= 1.; error += 0.05) {
             System.out.printf("Prediction Error: %.2f\n", error);
             Optimizer predOptimizer = new PredictiveOptimizer(demands, supplies, transitions, error);
             double predOptRev = predOptimizer.Run();
             System.out.printf("Local: %.2f, Predictive: %.2f, Ratio: %.2f\n", localOptRev, predOptRev, (predOptRev - localOptRev)/localOptRev);
-        }
+        }*/
 
     }
 

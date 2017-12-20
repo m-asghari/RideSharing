@@ -1,21 +1,32 @@
 package edu.usc.infolab.ridesharing.dynamicpricing.optimization.optimizer;
 
 import edu.usc.infolab.Counter;
+import edu.usc.infolab.ridesharing.datasets.IO;
 import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.SupplyDemandChart;
 import edu.usc.infolab.ridesharing.dynamicpricing.optimization.priceanalyzer.SupplyDemandChart1;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
  * Created by mohammad on 11/20/17.
  */
 public class PredictiveOptimizer extends Optimizer {
-    public PredictiveOptimizer(int[][] demands, int[] supplies, double[][][] transitions) {
+    private static final Random RAND = new Random();
+
+    private double m_preditionError = 0.;
+
+    public PredictiveOptimizer(int[][] demands, int[] supplies, double[][][] transitions) throws IOException {
         super(demands, supplies, transitions);
     }
 
+    public PredictiveOptimizer(int[][] demands, int[] supplies, double[][][] transitions, double error) throws IOException{
+        super(demands, supplies, transitions);
+        m_preditionError = error;
+    }
+
     @Override
-    public double Run() {
+    public double Run() throws IOException{
         double totalRevenue = 0;
         int timeIntervalsSize = m_demands.length;
         int locationsSize = m_supplies.length;
@@ -49,7 +60,10 @@ public class PredictiveOptimizer extends Optimizer {
 
             int[] futureSupplies = getFutureSupply(sourcePQ.toArray(new SupplyDemandChart[0]), t);
             for (int i = 0; i < locationsSize; i++) {
-                SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[t+1][i], futureSupplies[i], i);
+                double rand = ((RAND.nextDouble() * 2) - 1);
+                int d = m_demands[t+1][i];
+                double error =  rand * m_preditionError * d;
+                SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[t+1][i] + (int)error, futureSupplies[i], i);
                 destinationPQ.add(priceAnalyzer);
             }
 
@@ -108,7 +122,9 @@ public class PredictiveOptimizer extends Optimizer {
             }
 
             for (Iterator<SupplyDemandChart> it = sourcePQ.iterator(); it.hasNext();) {
-                timeInstanceRevenue += it.next().getRevenue();
+                SupplyDemandChart sdc = it.next();
+                log(String.format("%d,%s", t, sdc.getSummary()));
+                timeInstanceRevenue += sdc.getRevenue();
             }
 
             // (TODO): adjust future supplies
@@ -121,11 +137,21 @@ public class PredictiveOptimizer extends Optimizer {
         // (TODO): last time instance
         double lastInstanceRevenue = 0;
         for (int i = 0; i < locationsSize; i++) {
-            SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[timeIntervalsSize-1][i], m_supplies[i], i);
-            lastInstanceRevenue += priceAnalyzer.getRevenue();
+            SupplyDemandChart1 sdc = new SupplyDemandChart1(m_demands[timeIntervalsSize-1][i], m_supplies[i], i);
+            log(String.format("%d,%s", timeIntervalsSize - 1, sdc.getSummary()));
+            lastInstanceRevenue += sdc.getRevenue();
         }
         totalRevenue += lastInstanceRevenue;
 
         return totalRevenue;
+    }
+
+    @Override
+    protected String getType() {
+        return "predictive";
+    }
+
+    public void setPredictionError(double error) {
+        m_preditionError = error;
     }
 }
