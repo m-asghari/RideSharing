@@ -14,11 +14,11 @@ public class PredictiveOptimizer extends Optimizer {
 
     private double m_preditionError = 0.;
 
-    public PredictiveOptimizer(int[][] demands, int[] supplies, double[][][] transitions) throws IOException {
+    public PredictiveOptimizer(double[][] demands, double[] supplies, double[][][] transitions) throws IOException {
         super(demands, supplies, transitions);
     }
 
-    public PredictiveOptimizer(int[][] demands, int[] supplies, double[][][] transitions, double error) throws IOException{
+    public PredictiveOptimizer(double[][] demands, double[] supplies, double[][][] transitions, double error) throws IOException{
         super(demands, supplies, transitions);
         m_preditionError = error;
     }
@@ -56,29 +56,30 @@ public class PredictiveOptimizer extends Optimizer {
                 }
             });
 
-            int[] futureSupplies = getFutureSupply(sourcePQ.toArray(new SupplyDemandChart[0]), t);
+            double[] futureSupplies = getFutureSupply(sourcePQ.toArray(new SupplyDemandChart[0]), t);
             for (int i = 0; i < locationsSize; i++) {
                 double rand = ((RAND.nextDouble() * 2) - 1);
-                int d = m_demands[t+1][i];
+                double d = m_demands[t+1][i];
                 double error =  rand * m_preditionError * d;
-                SupplyDemandChart1 priceAnalyzer = new SupplyDemandChart1(m_demands[t+1][i] + (int)error, futureSupplies[i], i);
-                destinationPQ.add(priceAnalyzer);
+                SupplyDemandChart1 sdc = new SupplyDemandChart1(m_demands[t+1][i] + (int)error, futureSupplies[i], i);
+                destinationPQ.add(sdc);
             }
 
-
             // Compute current and max number of trips
-            int[][] maxTrips = new int[locationsSize][locationsSize];
-            int[][] currentTrips = new int[locationsSize][locationsSize];
+            double[][] maxDemand = new double[locationsSize][locationsSize];
+            double[][] currentTrips = new double[locationsSize][locationsSize];
+            double[] srcTrips = new double[m_supplies.length];
+            double[] desTrips = new double[m_supplies.length];
             for (Iterator<SupplyDemandChart> it = sourcePQ.iterator(); it.hasNext();) {
                 SupplyDemandChart source = it.next();
-                for (int j = 0; j < maxTrips.length; j++) {
-                    maxTrips[source.getID()][j] = (int)Math.round(m_demands[t][source.getID()] * m_transitions[t][source.getID()][j]);
-                    currentTrips[source.getID()][j] = (int)Math.round(source.getCurrentPrice() * m_transitions[t][source.getID()][j]);
+                for (int j = 0; j < maxDemand.length; j++) {
+                    maxDemand[source.getID()][j] = m_demands[t][source.getID()] * m_transitions[t][source.getID()][j];
+                    currentTrips[source.getID()][j] = source.getCurrentTrips() * m_transitions[t][source.getID()][j];
+                    srcTrips[source.getID()] += source.getCurrentTrips() * m_transitions[t][source.getID()][j];
+                    desTrips[j] += source.getCurrentTrips() * m_transitions[t][source.getID()][j];
                 }
             }
 
-
-            double extraRev = 0;
             while (!destinationPQ.isEmpty() && destinationPQ.peek().revInc(1) > sourcePQ.peek().revDec(1)) {
                 SupplyDemandChart destinationTop = destinationPQ.poll();
                 double revInc = destinationTop.revInc(1);
@@ -97,7 +98,8 @@ public class PredictiveOptimizer extends Optimizer {
                     }
 
                     sourceID = sourceTop.getID();
-                    if (currentTrips[sourceID][destID] + 1 <= maxTrips[sourceID][destID]) {
+                    if (currentTrips[sourceID][destID] + 1 <= maxDemand[sourceID][destID] &&
+                            srcTrips[sourceID] + 1 <= m_supplies[sourceID]) {
                         foundCompatible = true;
                         break;
                     }
@@ -106,6 +108,8 @@ public class PredictiveOptimizer extends Optimizer {
                 if (foundCompatible) {
                     //timeInstanceRevenue += (destinationTop.revInc(1) - sourceTop.revDec(1));
                     currentTrips[sourceID][destID]++;
+                    srcTrips[sourceID]++;
+                    desTrips[destID]++;
 
                     double newSourcePrice = sourceTop.getAdjustedPrice(sourceTop.getCurrentTrips() + 1);
                     sourceTop.setCurrentPrice(newSourcePrice);
@@ -126,7 +130,12 @@ public class PredictiveOptimizer extends Optimizer {
             }
 
             // (TODO): adjust future supplies
-            futureSupplies = getFutureSupply(sourcePQ.toArray(new SupplyDemandChart[0]), t);
+            for (int i = 0; i < m_supplies.length; i++) {
+                futureSupplies[i] = m_supplies[i] - srcTrips[i] + desTrips[i];
+                if (futureSupplies[i] < 0) {
+                    System.out.printf("PredictiveOptimizer - Run - futureSupply: %.2f, supply: %.2f, srcTrips: %.2f, desTrips: %.2f\n", futureSupplies[i], m_supplies[i], srcTrips[i], desTrips[i]);
+                }
+            }
             m_supplies = futureSupplies;
 
             totalRevenue += timeInstanceRevenue;

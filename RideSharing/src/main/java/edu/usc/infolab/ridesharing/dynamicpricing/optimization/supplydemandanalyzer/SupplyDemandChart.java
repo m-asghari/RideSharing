@@ -4,14 +4,14 @@ package edu.usc.infolab.ridesharing.dynamicpricing.optimization.supplydemandanal
  * Created by Mohammad on 11/15/2017.
  */
 public abstract class SupplyDemandChart{
-    protected int m_demand;
-    protected int m_supply;
+    protected double m_demand;
+    protected double m_supply;
     protected double m_optPrice;
     protected double m_equilibriumPrice;
     protected double m_currentPrice;
     private int m_location;
 
-    public SupplyDemandChart(int demand, int supply, int location) {
+    public SupplyDemandChart(double demand, double supply, int location) {
         m_demand = demand;
         m_supply = supply;
         m_location = location;
@@ -33,7 +33,7 @@ public abstract class SupplyDemandChart{
 
     public double getCurrentTrips() { return getNumberOfTrips(m_currentPrice); }
 
-    public void addSupply(int count) {
+    public void addSupply(double count) {
         m_supply += count;
         double optDemandPrice = getOptimalDemandPrice();
         m_equilibriumPrice = getEquilibriumPrice();
@@ -61,12 +61,13 @@ public abstract class SupplyDemandChart{
     //    return m_supply - (int)getNumberOfTrips(price);
     //}
 
-    public int getUnusedSupply() { return m_supply - (int)getNumberOfTrips(m_currentPrice); }
+    public double getUnusedSupply() { return m_supply - getNumberOfTrips(m_currentPrice); }
 
     public double revDec(double deltaTrips) {
         double trips = getNumberOfTrips(m_currentPrice);
         double newPrice = adjustedDemand_inverse(trips + deltaTrips);
-        if (newPrice < m_equilibriumPrice) return Double.MAX_VALUE;
+        if (newPrice < m_equilibriumPrice)
+            return Double.MAX_VALUE;
         return (m_currentPrice * trips) - ((trips + deltaTrips) * newPrice);
     }
 
@@ -79,7 +80,7 @@ public abstract class SupplyDemandChart{
     }
 
     public String getSummary() {
-        return String.format("%d,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,",
+        return String.format("%d,%.1f,%.1f,%.6f,%.6f,%.6f,%.1f,%.1f,",
                 m_location, m_demand, m_supply,
                 m_equilibriumPrice, m_optPrice, m_currentPrice,
                 getNumberOfTrips(m_optPrice), getNumberOfTrips(m_currentPrice));

@@ -6,13 +6,13 @@ package edu.usc.infolab.ridesharing.dynamicpricing.optimization.supplydemandanal
 public class SupplyDemandChart1 extends SupplyDemandChart {
     private static final double maxP = 5;
 
-    public SupplyDemandChart1(int demand, int supply, int location) {
+    public SupplyDemandChart1(double demand, double supply, int location) {
         super(demand, supply, location);
     }
 
     @Override
     protected double getEquilibriumPrice() {
-        return maxP * Math.sqrt((double)m_demand/(m_demand + m_supply));
+        return maxP * Math.sqrt(m_demand/(m_demand + m_supply));
     }
 
     @Override
@@ -38,12 +38,12 @@ public class SupplyDemandChart1 extends SupplyDemandChart {
     protected double adjustedDemand_inverse(double trips) {
         if (trips < 0) return maxP;
         if (trips > m_demand) return 0;
-        double temp = Math.sqrt((double)(m_demand - trips)/m_demand);
+        double temp = Math.sqrt((m_demand - trips)/m_demand);
         return maxP * temp;
     }
 
     @Override
     protected double getPotentialOptimalPrice(double deltaTrips) {
-        return maxP * Math.sqrt((double)(m_demand)/(m_supply + m_demand + deltaTrips));
+        return maxP * Math.sqrt(m_demand/(m_supply + m_demand + deltaTrips));
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Mohammad on 11/15/2017.
  */
 public class LocalOptimizer extends Optimizer {
-    public LocalOptimizer(int[][] demands, int[] supplies, double[][][] transitions) throws IOException {
+    public LocalOptimizer(double[][] demands, double[] supplies, double[][][] transitions) throws IOException {
         super(demands, supplies, transitions);
     }
 
@@ -27,7 +27,7 @@ public class LocalOptimizer extends Optimizer {
                 timeInstanceRevenue += sdc.getRevenue();
                 sources.add(sdc);
             }
-            int[] futureSupplies = getFutureSupply(sources.toArray(new SupplyDemandChart[0]), t);
+            double[] futureSupplies = getFutureSupply(sources.toArray(new SupplyDemandChart[0]), t);
             m_supplies = futureSupplies;
 
             totalRevenue += timeInstanceRevenue;

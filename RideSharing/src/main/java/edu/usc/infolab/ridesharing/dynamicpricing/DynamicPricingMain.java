@@ -15,12 +15,12 @@ import java.util.Random;
 public class DynamicPricingMain {
     private static final String DEMAND_FILE = "../Data/NYCTaxiDataset/TripData/ReformattedData/05-May/demands/demand_5_1_tract.csv";
     private static final String TRANSITION_FILE = "../Data/NYCTaxiDataset/TripData/ReformattedData/05-May/transitions/transition_5_1_tract.csv";
-    private static final int TOTAL_DRIVERS = 10000;
+    private static final int TOTAL_DRIVERS = 20000;
 
     public static void main(String[] args) throws IOException {
-        int[][] demands = getDemands();
+        double[][] demands = getDemands();
         double[][][] transitions = getTransitions();
-        int[] supplies = generateInitialSupply(demands[0].length, TOTAL_DRIVERS);
+        double[] supplies = generateInitialSupply(demands[0].length, TOTAL_DRIVERS);
 
         Optimizer locOptimizer = new LocalOptimizer(demands, supplies, transitions);
         double localOptRev = locOptimizer.Run();
@@ -39,7 +39,7 @@ public class DynamicPricingMain {
 
     }
 
-    private static int[][] getDemands() throws IOException {
+    private static double[][] getDemands() throws IOException {
         FileReader fr = new FileReader(DEMAND_FILE);
         BufferedReader br = new BufferedReader(fr);
 
@@ -48,12 +48,12 @@ public class DynamicPricingMain {
         int timeInstanceSize = Integer.parseInt(fields[0]);
         int locationsSize = Integer.parseInt(fields[1]);
 
-        int[][] demands = new int[timeInstanceSize][locationsSize];
+        double[][] demands = new double[timeInstanceSize][locationsSize];
         for (int t = 0; t < timeInstanceSize; t++) {
             line = br.readLine();
             fields = line.split(",");
             for (int i = 0; i < locationsSize; i++) {
-                demands[t][i] = Integer.parseInt(fields[i+1]);
+                demands[t][i] = Double.parseDouble(fields[i+1]);
             }
         }
         br.close();
@@ -77,7 +77,11 @@ public class DynamicPricingMain {
                 line = br.readLine();
                 fields = line.split(",");
                 for (int j = 1; j < locationsSize; j++) {
-                    transitions[t][i][j] = Double.parseDouble(fields[j]);
+                    double value = Double.parseDouble(fields[j]);
+                    if (Double.isNaN(value)) {
+                        value = 0;
+                    }
+                    transitions[t][i][j] = value;
                 }
             }
         }
@@ -88,8 +92,8 @@ public class DynamicPricingMain {
         return transitions;
     }
 
-    private static int[] generateInitialSupply(int locationSize, int totalDrivers) {
-        int[] supplies = new int[locationSize];
+    private static double[] generateInitialSupply(int locationSize, int totalDrivers) {
+        double[] supplies = new double[locationSize];
         Random rand = new Random();
         for (int i = 0; i < totalDrivers; i++) {
             supplies[rand.nextInt(locationSize)]++;
