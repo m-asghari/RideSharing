@@ -41,6 +41,14 @@ public abstract class SupplyDemandChart{
         m_currentPrice = m_optPrice;
     }
 
+    public void removeSupply(double count) {
+        m_supply -= count;
+        double optDemandPrice = getOptimalPrice();
+        m_equilibriumPrice = getEquilibriumPrice();
+        m_optPrice = (optDemandPrice > m_equilibriumPrice) ? optDemandPrice : m_equilibriumPrice;
+        m_currentPrice = m_optPrice;
+    }
+
     public void setCurrentPrice(double price) { m_currentPrice = price; }
 
     public double getNumberOfTrips(double price) {
@@ -77,6 +85,16 @@ public abstract class SupplyDemandChart{
         double newSupply = m_supply + deltaTrips;
         double newAdjustedSupply = newSupply * F_w(newOptPrice);
         return (newAdjustedSupply * newOptPrice) - (m_currentPrice * trips);
+    }
+
+    public double revAfterSupplyDec(double deltaSupply) {
+        SupplyDemandChart1 sdc = new SupplyDemandChart1(m_demand, m_supply-deltaSupply, -1);
+        return getRevenue() - sdc.getRevenue();
+    }
+
+    public double revAfterSupplyInc(double deltaSupply) {
+        SupplyDemandChart1 sdc = new SupplyDemandChart1(m_demand, m_supply+deltaSupply, -1);
+        return sdc.getRevenue() - getRevenue();
     }
 
     public String getSummary() {

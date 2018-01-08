@@ -20,6 +20,9 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Maven: com.esri.geometry:esri-geometry-api:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.12" level="project" />
     <orderEntry type="library" name="Maven: au.com.bytecode:opencsv:2.4" level="project" />
     <orderEntry type="library" name="Maven: com.esri.geometry:esri-geometry-api:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
